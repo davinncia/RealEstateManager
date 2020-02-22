@@ -30,6 +30,9 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    //ViewModel
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+
     //Unit Test
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'

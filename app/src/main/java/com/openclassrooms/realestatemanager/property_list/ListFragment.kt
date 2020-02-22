@@ -8,14 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.PropertyViewModel
 import com.openclassrooms.realestatemanager.R
 
 
 class ListFragment : Fragment(), PropertyListAdapter.OnItemClickListener {
 
     private lateinit var propertyAdapter: PropertyListAdapter
+    private lateinit var viewModel: PropertyViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -24,8 +29,13 @@ class ListFragment : Fragment(), PropertyListAdapter.OnItemClickListener {
 
         initRecyclerView(rootView)
 
-        val dummyData = arrayListOf("1", "2", "3", "4", "5", "6")
-        propertyAdapter.populateList(dummyData)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this).get(PropertyViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        viewModel.propertiesLiveData.observe(this, Observer {
+            propertyAdapter.populateList(ArrayList(it))
+        })
 
         return rootView
     }
@@ -44,12 +54,12 @@ class ListFragment : Fragment(), PropertyListAdapter.OnItemClickListener {
     }
 
 
+    override fun onItemClick(i: Int) {
+        viewModel.selectProperty(i)
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() = ListFragment()
-    }
-
-    override fun onItemClick(i: Int) {
-        Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
     }
 }

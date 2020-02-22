@@ -4,20 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context="com.openclassrooms.realestatemanager.MainActivity"
     android:gravity="center">
 
 
-    <!--<include layout="@layout/fragment_list"/>
+    <!--<include layout="@layout/fragment_list"/>-->
     <fragment
         android:id="@+id/fragment_list"
         android:name="com.openclassrooms.realestatemanager.property_list.ListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
--->
-    <FrameLayout
-        android:id="@+id/place_holder_fragments"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <fragment
+        android:id="@+id/fragment_details"
+        android:name="com.openclassrooms.realestatemanager.property_details.DetailsFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"/>
 
 </LinearLayout>
