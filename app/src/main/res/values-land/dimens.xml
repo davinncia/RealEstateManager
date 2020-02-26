@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="picture_size">200dp</dimen>
+    <dimen name="text_medium">26sp</dimen>
+    <dimen name="text_large">32sp</dimen>
+    <dimen name="text_small">21sp</dimen>
+    <dimen name="margin">32dp</dimen>
+    <dimen name="padding">32dp</dimen>
+</resources>

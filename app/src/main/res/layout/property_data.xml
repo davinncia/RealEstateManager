@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/iv_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:src="@drawable/ic_area"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_area_title_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/area"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:paddingStart="@dimen/padding"
+        android:paddingTop="@dimen/padding"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/iv_area"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_area_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="200sqrm"
+        android:textSize="@dimen/text_small"
+        android:paddingStart="@dimen/padding"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/iv_area"
+        app:layout_constraintTop_toBottomOf="@id/tv_area_title_data" />
+
+    <ImageView
+        android:id="@+id/iv_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:src="@drawable/ic_house"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_area_data" />
+
+    <TextView
+        android:id="@+id/tv_rooms_title_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/rooms"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:paddingStart="@dimen/padding"
+        android:paddingTop="@dimen/padding"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/iv_rooms"
+        app:layout_constraintTop_toBottomOf="@id/tv_area_data" />
+
+    <TextView
+        android:id="@+id/tv_rooms_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="24"
+        android:textSize="@dimen/text_small"
+        android:paddingStart="@dimen/padding"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/iv_rooms"
+        app:layout_constraintTop_toBottomOf="@id/tv_rooms_title_data" />
+
+
+
+    <!-- LOCATION -->
+
+    <ImageView
+        android:id="@+id/iv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:src="@drawable/ic_location"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_location_title_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/location"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:paddingStart="@dimen/padding"
+        android:paddingTop="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_location"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_location_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="L.A. \nThe pace to be \nNice street"
+        android:textSize="@dimen/text_small"
+        android:paddingStart="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_location"
+        app:layout_constraintTop_toBottomOf="@id/tv_location_title_data" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

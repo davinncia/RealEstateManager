@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.model.Property
 
-class PropertyListAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyListAdapter.PropertyViewHolder>() {
+class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
-    private var properties = ArrayList<String>()
+    private var properties = ArrayList<Property>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_property_list, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.property_item, parent, false)
         return PropertyViewHolder(view)
     }
 
@@ -23,7 +24,7 @@ class PropertyListAdapter(val clickListener: OnItemClickListener) : RecyclerView
         holder.bind(properties[position])
     }
 
-    fun populateList(data: ArrayList<String>){
+    fun populateList(data: ArrayList<Property>){
         this.properties = data
         notifyDataSetChanged()
     }
@@ -35,10 +36,14 @@ class PropertyListAdapter(val clickListener: OnItemClickListener) : RecyclerView
             itemView.setOnClickListener{ clickListener.onItemClick(adapterPosition) }
         }
 
-        private val textView = itemView.findViewById<TextView>(R.id.tv_list_test)
+        private val typeView = itemView.findViewById<TextView>(R.id.tv_property_item_type)
+        private val cityView = itemView.findViewById<TextView>(R.id.tv_property_item_city)
+        private val priceView = itemView.findViewById<TextView>(R.id.tv_property_item_price)
 
-        fun bind(item: String){
-            textView.text = item
+        fun bind(property: Property){
+            typeView.text = property.type.toString()
+            cityView.text = property.address.city
+            priceView.text = "${property.price}$"
         }
     }
 

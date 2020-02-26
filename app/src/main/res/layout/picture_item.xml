@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/iv_picture_item"
+    android:layout_width="@dimen/picture_size"
+    android:layout_height="@dimen/picture_size"
+    android:scaleType="centerCrop"
+    android:layout_margin="@dimen/margin"
+    tools:src="@drawable/default_house">
+
+</ImageView>

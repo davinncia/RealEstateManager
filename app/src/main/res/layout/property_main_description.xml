@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_property_pictures_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pictures"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_property_pictures"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picture_size"
+       />
+
+    <TextView
+        android:id="@+id/tv_property_description_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_property_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ablabalbalbalbalbalbalbalablablablablablablablabalb balalblabalb balbalba balbalbla balbalba balbalabl balbala balblablbalbalbalbla"
+        android:textSize="@dimen/text_small"
+        android:maxLength="1000"
+        android:paddingStart="@dimen/padding"
+        android:paddingEnd="@dimen/padding"
+        />
+
+
+</LinearLayout>
