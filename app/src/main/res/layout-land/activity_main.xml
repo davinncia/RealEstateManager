@@ -8,7 +8,7 @@
     tools:context="com.openclassrooms.realestatemanager.MainActivity"
     android:gravity="center">
 
-    <!--
+
         <fragment
             android:name="com.openclassrooms.realestatemanager.property_list.ListFragment"
             android:id="@+id/fragment_list_main_landscape"
@@ -22,19 +22,20 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"/>
-    -->
 
-        <FrameLayout
-            android:id="@+id/place_holder_fragment_list"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+    <!--
+       <FrameLayout
+           android:id="@+id/place_holder_fragment_list"
+           android:layout_width="0dp"
+           android:layout_height="match_parent"
+           android:layout_weight="1"/>
 
-        <FrameLayout
-            android:id="@+id/place_holder_fragment_details"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"/>
+       <FrameLayout
+           android:id="@+id/place_holder_fragment_details"
+           android:layout_width="0dp"
+           android:layout_height="match_parent"
+           android:layout_weight="3"/>
 
+-->
 
 </LinearLayout>

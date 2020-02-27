@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /*
+        Old implementation
         if (savedInstanceState == null) {
             //First activity opening
             if (findViewById<FrameLayout>(R.id.place_holder_fragment_details) != null) {
@@ -39,8 +42,11 @@ class MainActivity : AppCompatActivity() {
             openDetailsFragment()
         }
 
+         */
+
     }
 
+    /*
     private fun openListFragment() {
         val listFragment = ListFragment.newInstance()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -54,4 +60,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.place_holder_fragment_details, detailsFragment, DETAILS_FRAG_TAG)
                 .commit()
     }
+
+     */
 }

@@ -24,7 +24,7 @@ class PicturesAdapter(private val pictureUris: List<Uri>) : RecyclerView.Adapter
 
         val currentItem = pictureUris[position]
         holder.bindView(currentItem)
-        
+
     }
 
     inner class PicturesViewHolder(private val imageView: ImageView) : RecyclerView.ViewHolder(imageView) {

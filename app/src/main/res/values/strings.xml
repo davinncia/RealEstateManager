@@ -7,4 +7,6 @@
     <string name="area">Area</string>
     <string name="rooms">Rooms</string>
     <string name="location">Location</string>
+
+    <string name="googleApiKey">AIzaSyA3oK6RYN9pGYaUi_gTzx4_dUOpAcuSqF0</string>
 </resources>

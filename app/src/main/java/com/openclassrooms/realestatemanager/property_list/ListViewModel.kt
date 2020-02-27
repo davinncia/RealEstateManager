@@ -22,7 +22,7 @@ class ListViewModel(val inMemoRepo: InMemoryRepository) : ViewModel() {
 
         //DUMMY DATA
         val property1 = Property(PropertyType.HOUSE, 23_434_555F, 400F, 9,
-                "Beauty property, enough for one big family.", Address("N.Y.", "street", 0), 234242442,
+                "Beauty property, enough for one big family.", Address("Le Mas d'Agenais", "Rue Labarthe", 1), 234242442,
                 Agent("Phil", "Delamaison"))
         val property2 = Property(PropertyType.CASTLE, 100_000_000F, 2930F, 28,
                 "Expensive domain, better be rich af.", Address("L.A.", "streert", 2), 234242442,

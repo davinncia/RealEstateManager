@@ -4,22 +4,25 @@ package com.openclassrooms.realestatemanager.property_details
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.openclassrooms.realestatemanager.MainActivity
+import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Property
 
 
 class DetailsFragment : Fragment() {
+
+    private lateinit var viewModel: DetailsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -30,7 +33,7 @@ class DetailsFragment : Fragment() {
 
 
         //Details ViewModel
-        val viewModel = ViewModelProviders.of(
+        viewModel = ViewModelProviders.of(
                 this, ViewModelFactory()).get(DetailsViewModel::class.java)
 
         viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
@@ -67,6 +70,10 @@ class DetailsFragment : Fragment() {
         //Location
         rootView.findViewById<TextView>(R.id.tv_location_data).text =
                 "${property.address.city}\n${property.address.streetNbr} ${property.address.street}"
+        //Static map
+        val mapView = rootView.findViewById<ImageView>(R.id.iv_static_map)
+        val pictureUrl = viewModel.getStaticMapStringUrlGivenAddress(property.address, resources.getString(R.string.googleApiKey))
+        Glide.with(this.requireContext()).load(pictureUrl).error(R.drawable.static_map).into(mapView)
     }
 
     companion object{
