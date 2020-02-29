@@ -9,4 +9,6 @@
     <string name="location">Location</string>
 
     <string name="googleApiKey">AIzaSyA3oK6RYN9pGYaUi_gTzx4_dUOpAcuSqF0</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="internet_connection_missing">Internet connection missing...</string>
 </resources>

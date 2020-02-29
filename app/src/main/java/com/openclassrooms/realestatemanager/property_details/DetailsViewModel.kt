@@ -1,19 +1,24 @@
 package com.openclassrooms.realestatemanager.property_details
 
+import android.app.Application
 import android.content.res.Resources
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
+import com.openclassrooms.realestatemanager.repository.NetworkRepository
+import com.openclassrooms.realestatemanager.utils.AddressConverter
 
-class DetailsViewModel(inMemoRepo: InMemoryRepository) : ViewModel() {
+class DetailsViewModel(inMemoRepo: InMemoryRepository, networkRepo: NetworkRepository,
+                       val application: Application) : ViewModel() {
 
     private var propertySelectionMutable = inMemoRepo.propertySelectionMutable
     val propertySelection: LiveData<Property> = propertySelectionMutable
 
-
+    val networkAvailableLiveData: LiveData<Boolean> = networkRepo.isConnected
 
     fun getStaticMapStringUrl(lat: String, lng: String) : String {
         //40.718217

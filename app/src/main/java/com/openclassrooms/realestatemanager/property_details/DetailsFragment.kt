@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,11 +19,13 @@ import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.property_map.MapsActivity
 
 
 class DetailsFragment : Fragment() {
 
     private lateinit var viewModel: DetailsViewModel
+    private var networkAvailable = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -30,15 +33,21 @@ class DetailsFragment : Fragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_details, container, false)
 
+        rootView.findViewById<ImageView>(R.id.iv_static_map).setOnClickListener { launchGoogleMaps() }
 
-
-        //Details ViewModel
+        //VIEW MODEL
         viewModel = ViewModelProviders.of(
-                this, ViewModelFactory()).get(DetailsViewModel::class.java)
+                this, ViewModelFactory(requireActivity().application)).get(DetailsViewModel::class.java)
 
+        //Property
         viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
             initPicturesRecyclerView(rootView, arrayListOf())
             completeUi(rootView, it)
+        })
+
+        //Network
+        viewModel.networkAvailableLiveData.observe(viewLifecycleOwner, Observer {
+            networkAvailable = it
         })
 
 
@@ -74,6 +83,19 @@ class DetailsFragment : Fragment() {
         val mapView = rootView.findViewById<ImageView>(R.id.iv_static_map)
         val pictureUrl = viewModel.getStaticMapStringUrlGivenAddress(property.address, resources.getString(R.string.googleApiKey))
         Glide.with(this.requireContext()).load(pictureUrl).error(R.drawable.static_map).into(mapView)
+    }
+
+    private fun launchGoogleMaps(){
+
+        //Check internet connection
+        if (networkAvailable) {
+            //Start map activity
+            startActivity(MapsActivity.newIntent(this.requireContext()))
+        } else {
+            Toast.makeText(this.requireContext(), getString(R.string.internet_connection_missing), Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
     companion object{

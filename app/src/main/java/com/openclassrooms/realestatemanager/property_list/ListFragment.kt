@@ -33,7 +33,7 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
         initRecyclerView(rootView)
 
         viewModel = ViewModelProviders.of(
-                this, ViewModelFactory()).get(ListViewModel::class.java)
+                this, ViewModelFactory(requireActivity().application)).get(ListViewModel::class.java)
 
         viewModel.propertiesLiveData.observe(viewLifecycleOwner, Observer {
             //TODO: empty list view
