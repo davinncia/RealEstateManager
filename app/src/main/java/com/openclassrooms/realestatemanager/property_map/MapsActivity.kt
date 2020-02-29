@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -52,6 +53,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun placeMarkers(properties: List<Property>) {
+        Log.d("debuglog", "COROUTINE: Finished")
 
         for (item in properties){
             val latLng = LatLng(item.address.latitude, item.address.longitude)

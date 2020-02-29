@@ -2,13 +2,13 @@ package com.openclassrooms.realestatemanager.property_map
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.*
 import com.openclassrooms.realestatemanager.utils.AddressConverter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapsViewModel(private val application: Application) : ViewModel() {
 
@@ -49,34 +49,44 @@ class MapsViewModel(private val application: Application) : ViewModel() {
                 "Smallish flat, nice for a first investment.", Address("Chicago", "streert", 39), 234242442,
                 Agent("Phil", "Delamaison"))
 
-         checkExistingLatLng(arrayListOf(property1, property2, property3))
-    }
-
-    private fun checkExistingLatLng(properties: List<Property>){
-
-        val filteredProperties: ArrayList<Property> = arrayListOf()
-
-        for (item in properties){
-
-            if (item.address.latitude == 0.0 && item.address.longitude == 0.0) {
-                //No Position available
-                val strAddress = "${item.address.streetNbr} ${item.address.street} ${item.address.city}"
-                val latLng = AddressConverter.getLatLng(application, strAddress)
-
-                if (latLng == LatLng(0.0, 0.0)){
-                    //Still not found : won't show on the map
-                    Log.d("debuglog", "Geocoder failed.")
-                } else {
-                    item.address.latitude = latLng.latitude
-                    item.address.longitude = latLng.longitude
-                    //TODO: save in db
-                    filteredProperties.add(item)
-                }
-            } else {
-                filteredProperties.add(item)
-            }
+        //TODO NINO 3: My first coroutine
+        viewModelScope.launch {
+            checkExistingLatLng(arrayListOf(property1, property2, property3))
         }
 
-        propertiesMutable.value = filteredProperties
+
+    }
+
+
+
+
+    private suspend fun checkExistingLatLng(properties: List<Property>){
+        withContext(Dispatchers.IO) {
+
+            val filteredProperties: ArrayList<Property> = arrayListOf()
+
+            for (item in properties) {
+
+                if (item.address.latitude == 0.0 && item.address.longitude == 0.0) {
+                    //No Position available
+                    val strAddress = "${item.address.streetNbr} ${item.address.street} ${item.address.city}"
+                    val latLng = AddressConverter.getLatLng(application, strAddress)
+
+                    if (latLng == LatLng(0.0, 0.0)) {
+                        //Still not found : won't show on the map
+                        Log.d("debuglog", "Geocoder failed.")
+                    } else {
+                        item.address.latitude = latLng.latitude
+                        item.address.longitude = latLng.longitude
+                        //TODO: save in db
+                        filteredProperties.add(item)
+                    }
+                } else {
+                    filteredProperties.add(item)
+                }
+            }
+
+            propertiesMutable.postValue(filteredProperties)
+        }
     }
 }
