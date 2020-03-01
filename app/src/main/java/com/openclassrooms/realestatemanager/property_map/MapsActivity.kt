@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -17,15 +18,18 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.property_details.DetailsActivity
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var viewModel: MapsViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,22 +48,40 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.isMyLocationEnabled = true
+        mMap.setOnMyLocationButtonClickListener(this)
+        mMap.setOnInfoWindowClickListener {
+            navigateToPropertyDetails(it)
+        }
 
         viewModel.propertiesLiveData.observe(this, Observer {
             placeMarkers(it)
         })
-
-
     }
 
     private fun placeMarkers(properties: List<Property>) {
-        Log.d("debuglog", "COROUTINE: Finished")
 
         for (item in properties){
             val latLng = LatLng(item.address.latitude, item.address.longitude)
-            mMap.addMarker(MarkerOptions().position(latLng).title(item.type.toString()))
+            mMap.addMarker(MarkerOptions()
+                    .position(latLng)
+                    .title(item.type.toString()))
+                    .tag = item.roomNbr //TODO: set Id as tag
         }
     }
+
+    private fun navigateToPropertyDetails(marker: Marker){
+        Toast.makeText(this, "Navigating...", Toast.LENGTH_SHORT).show()
+        val strId = marker.tag.toString()
+        viewModel.selectProperty(strId.toInt())
+        //Return to last DetailsActivity in task & cleaning BackStack
+        startActivity(DetailsActivity.newIntent(this).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+    }
+
+    override fun onMyLocationButtonClick(): Boolean {
+        return false
+    }
+
 
     //--------------------------------------------------------------------------------------//
     //                                    P E R M I S S I O N
@@ -95,4 +117,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fun newIntent(context: Context) = Intent(context, MapsActivity::class.java)
     }
+
 }

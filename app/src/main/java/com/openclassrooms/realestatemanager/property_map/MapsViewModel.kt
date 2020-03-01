@@ -5,12 +5,13 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.*
+import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MapsViewModel(private val application: Application) : ViewModel() {
+class MapsViewModel(private val application: Application, private val inMemoRepo: InMemoryRepository) : ViewModel() {
 
     private var propertiesMutable = MutableLiveData<List<Property>>()
     val propertiesLiveData: LiveData<List<Property>> = propertiesMutable
@@ -49,15 +50,13 @@ class MapsViewModel(private val application: Application) : ViewModel() {
                 "Smallish flat, nice for a first investment.", Address("Chicago", "streert", 39), 234242442,
                 Agent("Phil", "Delamaison"))
 
-        //TODO NINO 3: My first coroutine
+        //TODO NINO 4: My first coroutine
         viewModelScope.launch {
             checkExistingLatLng(arrayListOf(property1, property2, property3))
         }
 
 
     }
-
-
 
 
     private suspend fun checkExistingLatLng(properties: List<Property>){
@@ -74,7 +73,7 @@ class MapsViewModel(private val application: Application) : ViewModel() {
 
                     if (latLng == LatLng(0.0, 0.0)) {
                         //Still not found : won't show on the map
-                        Log.d("debuglog", "Geocoder failed.")
+                        Log.d("debuglog", "GeoCoder failed.")
                     } else {
                         item.address.latitude = latLng.latitude
                         item.address.longitude = latLng.longitude
@@ -88,5 +87,12 @@ class MapsViewModel(private val application: Application) : ViewModel() {
 
             propertiesMutable.postValue(filteredProperties)
         }
+    }
+
+    fun selectProperty(id: Int){
+
+        val property = propertiesLiveData.value?.find { it.roomNbr == id } //TODO: Use id again
+
+        if (property != null) inMemoRepo.propertySelectionMutable.value = property
     }
 }

@@ -87,6 +87,7 @@ class DetailsFragment : Fragment() {
 
     private fun launchGoogleMaps(){
 
+        //TODO: remove frag from stack
         //Check internet connection
         if (networkAvailable) {
             //Start map activity

@@ -34,7 +34,7 @@ class ListViewModel(val inMemoRepo: InMemoryRepository) : ViewModel() {
         propertiesMutable.value = arrayListOf(property1, property2, property3)
     }
 
-    fun selectProperty(position: Int) {
+    fun selectProperty(position: Int) { //TODO: Use Id instead (see map mv)
 
         if (propertiesLiveData.value == null) return
         inMemoRepo.propertySelectionMutable.value = propertiesLiveData.value!![position]

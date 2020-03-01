@@ -34,10 +34,11 @@
 
         <activity
             android:name=".property_map.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".Glide" />
-        <activity android:name=".property_details.DetailsActivity" />
-        <activity android:name=".MainActivity">
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".property_details.DetailsActivity" />
+        <activity
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

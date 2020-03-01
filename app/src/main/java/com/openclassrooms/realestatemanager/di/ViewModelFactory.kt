@@ -23,7 +23,7 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
             return ListViewModel(InMemoryRepository.getInstance()) as T
 
         } else if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
-            return MapsViewModel(application) as T
+            return MapsViewModel(application, InMemoryRepository.getInstance()) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel class")

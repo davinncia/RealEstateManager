@@ -10,7 +10,6 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 //TODO NINO 3: GeoCoder, "static" function. Best practice package level ?
-//TODO: coroutine
 class AddressConverter {
 
     companion object {
