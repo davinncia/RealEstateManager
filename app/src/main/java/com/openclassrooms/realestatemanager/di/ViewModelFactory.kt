@@ -8,6 +8,7 @@ import com.openclassrooms.realestatemanager.property_list.ListViewModel
 import com.openclassrooms.realestatemanager.property_map.MapsViewModel
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.NetworkRepository
+import com.openclassrooms.realestatemanager.repository.PropertyRepository
 
 
 class ViewModelFactory(private val application: Application): ViewModelProvider.Factory {
@@ -20,7 +21,9 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
                     application) as T
 
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
-            return ListViewModel(InMemoryRepository.getInstance()) as T
+            return ListViewModel(application,
+                    InMemoryRepository.getInstance(),
+                    PropertyRepository.getInstance(application)) as T
 
         } else if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
             return MapsViewModel(application, InMemoryRepository.getInstance()) as T

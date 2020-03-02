@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,8 +37,8 @@ class DetailsFragment : Fragment() {
         rootView.findViewById<ImageView>(R.id.iv_static_map).setOnClickListener { launchGoogleMaps() }
 
         //VIEW MODEL
-        viewModel = ViewModelProviders.of(
-                this, ViewModelFactory(requireActivity().application)).get(DetailsViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
+                .get(DetailsViewModel::class.java)
 
         //Property
         viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
@@ -87,7 +88,6 @@ class DetailsFragment : Fragment() {
 
     private fun launchGoogleMaps(){
 
-        //TODO: remove frag from stack
         //Check internet connection
         if (networkAvailable) {
             //Start map activity

@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
@@ -32,10 +32,10 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
         initRecyclerView(rootView)
 
-        viewModel = ViewModelProviders.of(
-                this, ViewModelFactory(requireActivity().application)).get(ListViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
+                .get(ListViewModel::class.java)
 
-        viewModel.propertiesLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.allProperties.observe(viewLifecycleOwner, Observer {
             //TODO: empty list view
             propertyAdapter.populateList(ArrayList(it))
         })
@@ -56,8 +56,8 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
         }
     }
 
-    override fun onItemClick(i: Int) {
-        viewModel.selectProperty(i)
+    override fun onItemClick(propertyId: Int) {
+        viewModel.selectProperty(propertyId)
 
         //TODO NINO 2: opening details activity
         //Open details if portrait (handset)
@@ -71,15 +71,6 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
         startActivity(DetailsActivity.newIntent(this.requireContext()))
 
-        /*
-        val detailsFragment = DetailsFragment.newInstance()
-        val fm = fragmentManager
-        fm?.beginTransaction()
-                ?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                ?.addToBackStack(null)
-                ?.replace(R.id.place_holder_fragment_list, detailsFragment, MainActivity.DETAILS_FRAG_TAG)
-                ?.commit()
-         */
     }
 
     companion object {

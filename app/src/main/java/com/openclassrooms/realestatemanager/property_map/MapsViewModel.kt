@@ -42,18 +42,20 @@ class MapsViewModel(private val application: Application, private val inMemoRepo
         //DUMMY DATA
         val property1 = Property(PropertyType.HOUSE, 23_434_555F, 400F, 9,
                 "Beauty property, enough for one big family.", Address("Le Mas d'Agenais", "Rue Labarthe", 1), 234242442,
-                Agent("Phil", "Delamaison"))
+                "Phil")
         val property2 = Property(PropertyType.CASTLE, 100_000_000F, 2930F, 28,
                 "Expensive domain, better be rich af.", Address("L.A.", "streert", 2), 234242442,
-                Agent("Phil", "Delamaison"))
+                "Phil")
         val property3 = Property(PropertyType.FLAT, 444_444F, 92F, 3,
                 "Smallish flat, nice for a first investment.", Address("Chicago", "streert", 39), 234242442,
-                Agent("Phil", "Delamaison"))
+                "Phil")
+
 
         //TODO NINO 4: My first coroutine
         viewModelScope.launch {
             checkExistingLatLng(arrayListOf(property1, property2, property3))
         }
+
 
 
     }
@@ -87,11 +89,14 @@ class MapsViewModel(private val application: Application, private val inMemoRepo
 
             propertiesMutable.postValue(filteredProperties)
         }
+
+
     }
+
 
     fun selectProperty(id: Int){
 
-        val property = propertiesLiveData.value?.find { it.roomNbr == id } //TODO: Use id again
+        val property = propertiesLiveData.value?.find { it.id == id }
 
         if (property != null) inMemoRepo.propertySelectionMutable.value = property
     }

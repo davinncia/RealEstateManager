@@ -33,7 +33,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
     inner class PropertyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         init {
-            itemView.setOnClickListener{ clickListener.onItemClick(adapterPosition) }
+            itemView.setOnClickListener{ clickListener.onItemClick(properties[adapterPosition].id) }
         }
 
         private val typeView = itemView.findViewById<TextView>(R.id.tv_property_item_type)
@@ -41,13 +41,13 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         private val priceView = itemView.findViewById<TextView>(R.id.tv_property_item_price)
 
         fun bind(property: Property){
-            typeView.text = property.type.toString()
+            typeView.text = property.type
             cityView.text = property.address.city
             priceView.text = "${property.price}$"
         }
     }
 
     interface OnItemClickListener{
-        fun onItemClick(i: Int)
+        fun onItemClick(propertyId: Int)
     }
 }

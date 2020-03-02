@@ -1,19 +1,16 @@
 package com.openclassrooms.realestatemanager.property_map
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.maps.CameraUpdateFactory
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -39,17 +36,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        checkLocationPermission() //Locate only after this line
 
-        viewModel  = ViewModelProviders.of(this, ViewModelFactory(this.application)).get(MapsViewModel::class.java)
-
+        viewModel  = ViewModelProvider(this, ViewModelFactory(this.application)).get(MapsViewModel::class.java)
     }
 
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.isMyLocationEnabled = true
-        mMap.setOnMyLocationButtonClickListener(this)
+
+        checkLocationPermission()
+
         mMap.setOnInfoWindowClickListener {
             navigateToPropertyDetails(it)
         }
@@ -59,16 +55,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         })
     }
 
+    private fun activateLocalization(){
+
+            mMap.isMyLocationEnabled = true
+            mMap.setOnMyLocationButtonClickListener(this)
+
+    }
+
+
     private fun placeMarkers(properties: List<Property>) {
 
         for (item in properties){
             val latLng = LatLng(item.address.latitude, item.address.longitude)
             mMap.addMarker(MarkerOptions()
                     .position(latLng)
-                    .title(item.type.toString()))
-                    .tag = item.roomNbr //TODO: set Id as tag
+                    .title(item.type))
+                    .tag = item.id
         }
     }
+
 
     private fun navigateToPropertyDetails(marker: Marker){
         Toast.makeText(this, "Navigating...", Toast.LENGTH_SHORT).show()
@@ -92,7 +97,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
                 != PackageManager.PERMISSION_GRANTED) {
             //Not granted yet
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
-        }
+        } else
+            activateLocalization()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -103,7 +109,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     //Not granted, exit map then
                     finish()
-                }
+                } else
+                    activateLocalization()
             }
         }
     }
