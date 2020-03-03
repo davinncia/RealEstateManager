@@ -22,17 +22,6 @@ class ListViewModel(application: Application,
 
     init {
         //fetchProperties()
-        dummyData()
-    }
-
-    private fun dummyData() {
-
-        val property = Property(PropertyType.CASTLE, 23_434_555F, 400F, 9,
-                "Beauty property, enough for one big family.",
-                Address("Le Mas d'Agenais", "Rue Labarthe", 1),
-                234242442, "Phil")
-
-        insert(property)
     }
 
     /*

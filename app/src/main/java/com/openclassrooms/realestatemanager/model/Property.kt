@@ -16,7 +16,7 @@ data class Property(
         //val picturesUri: Array<Int>,
         @Embedded val address: Address, //This will store all Address fields in the same table
         //array POI,
-        @ColumnInfo(name = "creation_time") val creationTime: Long,
+        @ColumnInfo(name = "creation_time") var creationTime: Long,
         val agent: String,//val agent: Agent,
         @ColumnInfo(name = "is_sold") val isSold: Boolean = false,
         @ColumnInfo(name = "selling_time") val sellingTime: Long = 0) {
@@ -33,6 +33,7 @@ enum class PropertyType {
  */
 
 class PropertyType {
+
     companion object {
         const val HOUSE = "HOUSE"
         const val LOFT = "LOFT"

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.openclassrooms.realestatemanager.MainActivity
@@ -40,6 +41,11 @@ class DetailsActivity : AppCompatActivity() {
         super.onStop()
         Log.d("debuglog", "Details Activity stopped")
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.details_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     companion object {

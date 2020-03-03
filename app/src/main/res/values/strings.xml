@@ -11,4 +11,19 @@
     <string name="googleApiKey">AIzaSyA3oK6RYN9pGYaUi_gTzx4_dUOpAcuSqF0</string>
     <string name="title_activity_maps">Map</string>
     <string name="internet_connection_missing">Internet connection missing...</string>
+    <string name="add">Add</string>
+    <string name="search">Search</string>
+    <string name="save">Save</string>
+    <string name="field_missing">Field missing.</string>
+    <string name="saving">Saving...</string>
+    <string name="edit">Edit</string>
+
+    <string-array name="property_types">
+        <item>HOUSE</item>
+        <item>FLAT</item>
+        <item>MANOR</item>
+        <item>CASTLE</item>
+        <item>LOFT</item>
+    </string-array>
+
 </resources>

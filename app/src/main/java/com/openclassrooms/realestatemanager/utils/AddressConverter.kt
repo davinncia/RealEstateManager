@@ -14,7 +14,7 @@ class AddressConverter {
 
     companion object {
 
-        const val MAX_RESPONSES = 1
+        private const val MAX_RESPONSES = 1
 
         /**
          * Util function converting a string address into a LatLng object.
