@@ -13,14 +13,14 @@ class InMemoryRepository {
     val propertySelectionMutable = MutableLiveData<Property>()
 
     init {
-        /*
-        //DEBUG
-        val property = Property(PropertyType.HOUSE, 23_434_555F, 100F, 3,
-                "beauty", Address("N.Y.", "streert", 0), 234242442,
-                Agent("Phil", "Delamaison"))
+
+        //Empty property with -1 as id by default
+        val property = Property(PropertyType.HOUSE, 0F, 0F, 0,
+                "", Address("", "", 0), 0,
+               "Phil")
+        property.id = -1
         propertySelectionMutable.value = property
 
-         */
     }
 
     //Singleton

@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.utils.AddressConverter
 class DetailsViewModel(inMemoRepo: InMemoryRepository, networkRepo: NetworkRepository,
                        val application: Application) : ViewModel() {
 
+
     private var propertySelectionMutable = inMemoRepo.propertySelectionMutable
     val propertySelection: LiveData<Property> = propertySelectionMutable
 

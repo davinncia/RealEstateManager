@@ -42,8 +42,13 @@ class DetailsFragment : Fragment() {
 
         //Property
         viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
-            initPicturesRecyclerView(rootView, arrayListOf())
-            completeUi(rootView, it)
+            if (it.id == -1) {
+                //Nothing selected
+                //TODO: Empty View
+            } else {
+                initPicturesRecyclerView(rootView, arrayListOf())
+                completeUi(rootView, it)
+            }
         })
 
         //Network
@@ -95,8 +100,6 @@ class DetailsFragment : Fragment() {
         } else {
             Toast.makeText(this.requireContext(), getString(R.string.internet_connection_missing), Toast.LENGTH_SHORT).show()
         }
-
-
     }
 
     companion object{

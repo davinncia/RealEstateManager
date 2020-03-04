@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
@@ -20,42 +21,82 @@ class EditActivity : AppCompatActivity() {
     private lateinit var viewModel: EditViewModel
 
     private var isNew: Boolean = true
+    private var propertyId = -1
+
+    private lateinit var spinner: Spinner
+    private lateinit var priceView: EditText
+    private lateinit var areaView: EditText
+    private lateinit var roomsView: EditText
+    private lateinit var descriptionView: EditText
+    private lateinit var cityView: EditText
+    private lateinit var streetView: EditText
+    private lateinit var streetNbrView: EditText
+    private lateinit var agentView: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        spinner = findViewById(R.id.spinner_edit_type)
+        priceView = findViewById(R.id.et_edit_price)
+        areaView = findViewById(R.id.et_edit_area)
+        roomsView = findViewById(R.id.et_edit_room_nbr)
+        descriptionView = findViewById(R.id.et_edit_description)
+        cityView = findViewById(R.id.et_edit_city)
+        streetView = findViewById(R.id.et_edit_street)
+        streetNbrView = findViewById(R.id.et_edit_street_nbr)
+        agentView = findViewById(R.id.et_edit_agent_name)
+
         isNew = intent.getBooleanExtra(IS_NEW_KEY, true)
 
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
+
+        if (!isNew) {
+            //Editing an already existing property
+            viewModel.selectedProperty.observe(this, Observer {
+                if (it.id == -1) {
+                    //Yet none is selected...
+                    Toast.makeText(this, getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                propertyId = it.id
+                completeEditTexts(it)
+            })
+        }
     }
 
-    private fun completeEditTexts(){
-
+    private fun completeEditTexts(property: Property){
+        priceView.setText(property.price.toString())
+        areaView.setText(property.area.toString())
+        roomsView.setText(property.roomNbr.toString())
+        descriptionView.setText(property.description)
+        cityView.setText(property.address.city)
+        streetView.setText(property.address.street)
+        streetNbrView.setText(property.address.streetNbr.toString())
+        agentView.setText(property.agent)
     }
 
     private fun checkInputsAndSave() {
         //TYPE
-        val spinner = findViewById<Spinner>(R.id.spinner_edit_type)
         val type = spinner.selectedItem.toString()
         //PRICE
-        val strPrice = findViewById<EditText>(R.id.et_edit_price).text.toString()
+        val strPrice = priceView.text.toString()
         //AREA
-        val strArea = findViewById<EditText>(R.id.et_edit_area).text.toString()
+        val strArea = areaView.text.toString()
         //ROOM NUMBER
-        val strRooms = findViewById<EditText>(R.id.et_edit_room_nbr).text.toString()
+        val strRooms = roomsView.text.toString()
         //DESCRIPTION
-        val description = findViewById<EditText>(R.id.et_edit_description).text.toString()
+        val description = descriptionView.text.toString()
         //CITY
-        val city = findViewById<EditText>(R.id.et_edit_city).text.toString()
+        val city = cityView.text.toString()
         //STREET
-        val street = findViewById<EditText>(R.id.et_edit_street).text.toString()
+        val street = streetView.text.toString()
         //STREET NBR
-        val strStreetNbr = findViewById<EditText>(R.id.et_edit_street_nbr).text.toString()
+        val strStreetNbr = streetNbrView.text.toString()
         //CREATION TIME
         val creationTime = System.currentTimeMillis()
         //AGENT
-        val agent = findViewById<EditText>(R.id.et_edit_agent_name).text.toString()
+        val agent = agentView.text.toString()
 
         val inputs = arrayOf(type, strPrice, strArea, strRooms, description, city, street, strStreetNbr, agent)
 

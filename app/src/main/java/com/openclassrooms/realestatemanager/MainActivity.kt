@@ -25,28 +25,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*
-        Old implementation
-        if (savedInstanceState == null) {
-            //First activity opening
-            if (findViewById<FrameLayout>(R.id.place_holder_fragment_details) != null) {
-                //LANDSCAPE
-                openListFragment()
-                openDetailsFragment()
-
-            } else {
-                //PORTRAIT
-                openListFragment()
-
-            }
-
-        } else if (findViewById<FrameLayout>(R.id.place_holder_fragment_details) != null) {
-            //From portrait to landscape
-            //TODO NINO 0: Once opened, recreated every rotation by activity
-            openDetailsFragment()
-        }
-
-         */
 
     }
 
@@ -72,8 +50,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.item_main_menu_edit -> {
-                Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show()
-                //TODO check something is selected
+                startActivity(EditActivity.newIntent(this, false))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -81,20 +58,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    /*
-    private fun openListFragment() {
-        val listFragment = ListFragment.newInstance()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.place_holder_fragment_list, listFragment, LIST_FRAG_TAG).commit()
-    }
-
-    private fun openDetailsFragment() {
-        val detailsFragment = DetailsFragment.newInstance()
-        supportFragmentManager.beginTransaction()
-                //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.place_holder_fragment_details, detailsFragment, DETAILS_FRAG_TAG)
-                .commit()
-    }
-
-     */
 }

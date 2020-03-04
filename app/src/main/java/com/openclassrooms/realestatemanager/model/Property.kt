@@ -18,8 +18,8 @@ data class Property(
         //array POI,
         @ColumnInfo(name = "creation_time") var creationTime: Long,
         val agent: String,//val agent: Agent,
-        @ColumnInfo(name = "is_sold") val isSold: Boolean = false,
-        @ColumnInfo(name = "selling_time") val sellingTime: Long = 0) {
+        @ColumnInfo(name = "is_sold") var isSold: Boolean = false,
+        @ColumnInfo(name = "selling_time") var sellingTime: Long = 0) {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
