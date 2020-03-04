@@ -57,7 +57,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             val latLng = findLatLng(property.address)
             property.address.latitude = latLng.latitude
             property.address.longitude = latLng.longitude
-            
+
             propertyRepo.insert(property)
         }
     }

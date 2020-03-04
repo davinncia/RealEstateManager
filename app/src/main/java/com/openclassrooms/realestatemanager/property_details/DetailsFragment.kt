@@ -46,6 +46,7 @@ class DetailsFragment : Fragment() {
                 //Nothing selected
                 //TODO: Empty View
             } else {
+                Log.d("debuglog", it.address.latitude.toString())
                 initPicturesRecyclerView(rootView, arrayListOf())
                 completeUi(rootView, it)
             }

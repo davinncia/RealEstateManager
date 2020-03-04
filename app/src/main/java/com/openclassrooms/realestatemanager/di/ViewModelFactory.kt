@@ -27,7 +27,8 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
                     PropertyRepository.getInstance(application)) as T
 
         } else if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
-            return MapsViewModel(application, InMemoryRepository.getInstance()) as T
+            return MapsViewModel(application, InMemoryRepository.getInstance(),
+                    PropertyRepository.getInstance(application)) as T
 
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             return EditViewModel(application,

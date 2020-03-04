@@ -9,7 +9,6 @@ import com.openclassrooms.realestatemanager.model.PropertyType
 //TODO NINO 1: InMemoRepo
 class InMemoryRepository {
 
-    //TODO Set a default property in case garbage collected (?)
     val propertySelectionMutable = MutableLiveData<Property>()
 
     init {
