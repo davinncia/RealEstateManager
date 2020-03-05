@@ -7,4 +7,9 @@
         android:title="@string/edit"
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/item_details_menu_sale_status"
+        android:title="@string/change_sale_status"
+        />
 </menu>

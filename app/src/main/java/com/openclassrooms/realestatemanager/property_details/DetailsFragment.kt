@@ -4,9 +4,7 @@ package com.openclassrooms.realestatemanager.property_details
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.property_edit.EditActivity
 import com.openclassrooms.realestatemanager.property_map.MapsActivity
 
 
@@ -28,9 +27,12 @@ class DetailsFragment : Fragment() {
     private lateinit var viewModel: DetailsViewModel
     private var networkAvailable = false
 
+    private var hasSelection = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         Log.d("debuglog", "Details fragment created")
+        setHasOptionsMenu(true)
 
         val rootView = inflater.inflate(R.layout.fragment_details, container, false)
 
@@ -42,11 +44,13 @@ class DetailsFragment : Fragment() {
 
         //Property
         viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
+
             if (it.id == -1) {
                 //Nothing selected
+                hasSelection = false
                 //TODO: Empty View
             } else {
-                Log.d("debuglog", it.address.latitude.toString())
+                hasSelection = true
                 initPicturesRecyclerView(rootView, arrayListOf())
                 completeUi(rootView, it)
             }
@@ -61,9 +65,9 @@ class DetailsFragment : Fragment() {
         return rootView
     }
 
-    private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<Uri>){
+    private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<Uri>) {
 
-        if (uris.isEmpty()){
+        if (uris.isEmpty()) {
             val uri = Uri.parse(
                     "android.resource://com.openclassrooms.realestatemanager/drawable/default_house")
             uris.add(uri)
@@ -76,7 +80,7 @@ class DetailsFragment : Fragment() {
                 }
     }
 
-    private fun completeUi(rootView: View, property: Property){
+    private fun completeUi(rootView: View, property: Property) {
         //Description
         rootView.findViewById<TextView>(R.id.tv_property_description).text = property.description
         //Area
@@ -92,7 +96,7 @@ class DetailsFragment : Fragment() {
         Glide.with(this.requireContext()).load(pictureUrl).error(R.drawable.static_map).into(mapView)
     }
 
-    private fun launchGoogleMaps(){
+    private fun launchGoogleMaps() {
 
         //Check internet connection
         if (networkAvailable) {
@@ -103,7 +107,36 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    companion object{
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        requireActivity().menuInflater.inflate(R.menu.details_menu, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.item_details_menu_edit -> {
+                if (hasSelection) {
+                    startActivity(EditActivity.newIntent(requireContext(), false))
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            R.id.item_details_menu_sale_status -> {
+                if (hasSelection) {
+                    viewModel.changeSaleStatus()
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    companion object {
         fun newInstance() = DetailsFragment()
     }
 

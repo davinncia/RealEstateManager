@@ -24,17 +24,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
+        //menu?.clear()
         inflater.inflate(R.menu.main_menu, menu)
-        if (resources.getBoolean(R.bool.is_landscape)) {
-            //Showing edit option if landscape mode
-            menu?.findItem(R.id.item_main_menu_edit)?.isVisible = true
-        }
         return true
     }
 
@@ -47,10 +42,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.item_main_menu_search -> {
                 Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.item_main_menu_edit -> {
-                startActivity(EditActivity.newIntent(this, false))
                 true
             }
             else -> super.onOptionsItemSelected(item)

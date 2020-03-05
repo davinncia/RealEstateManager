@@ -18,8 +18,9 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
         if (modelClass.isAssignableFrom(DetailsViewModel::class.java)) {
-            return DetailsViewModel(InMemoryRepository.getInstance(), NetworkRepository.getInstance(application),
-                    application) as T
+            return DetailsViewModel(application, InMemoryRepository.getInstance(),
+                    NetworkRepository.getInstance(application),
+                    PropertyRepository.getInstance(application)) as T
 
         } else if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
             return ListViewModel(application,

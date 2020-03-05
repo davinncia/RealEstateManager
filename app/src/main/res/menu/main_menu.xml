@@ -16,11 +16,13 @@
         android:icon="@drawable/ic_search"
         />
 
+    <!--
     <item
         android:id="@+id/item_main_menu_edit"
         android:title="@string/edit"
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom"
         android:visible="false"/>
+-->
 
 </menu>

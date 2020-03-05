@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -59,19 +60,16 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
     override fun onItemClick(propertyId: Int) {
         viewModel.selectProperty(propertyId)
 
-        //TODO NINO 2: opening details activity
+
         //Open details if portrait (handset)
         if (!resources.getBoolean(R.bool.is_landscape)) {
             //PORTRAIT
-            openDetailsActivity()
+            startActivity(DetailsActivity.newIntent(this.requireContext()))
         }
     }
 
-    private fun openDetailsActivity() {
 
-        startActivity(DetailsActivity.newIntent(this.requireContext()))
 
-    }
 
     companion object {
         fun newInstance() = ListFragment()

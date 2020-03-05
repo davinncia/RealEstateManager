@@ -1,9 +1,13 @@
 package com.openclassrooms.realestatemanager.property_list
 
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.model.Property
@@ -39,11 +43,14 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         private val typeView = itemView.findViewById<TextView>(R.id.tv_property_item_type)
         private val cityView = itemView.findViewById<TextView>(R.id.tv_property_item_city)
         private val priceView = itemView.findViewById<TextView>(R.id.tv_property_item_price)
+        private val soldBanner = itemView.findViewById<ImageView>(R.id.iv_sold)
 
         fun bind(property: Property){
             typeView.text = property.type
             cityView.text = property.address.city
             priceView.text = "${property.price}$"
+            if (property.isSold) soldBanner.visibility = View.VISIBLE
+            else soldBanner.visibility = View.INVISIBLE
         }
     }
 

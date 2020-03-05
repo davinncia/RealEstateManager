@@ -15,6 +15,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/default_house" />
 
+    <ImageView
+        android:id="@+id/iv_sold"
+        android:layout_width="@dimen/picture_size"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_sold" />
+
 
     <TextView
         android:id="@+id/tv_property_item_type"

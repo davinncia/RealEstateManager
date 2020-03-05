@@ -45,21 +45,6 @@ class DetailsActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.details_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.item_details_menu_edit -> {
-                startActivity(EditActivity.newIntent(this, false))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     companion object {
         fun newIntent(context: Context): Intent = Intent(context, DetailsActivity::class.java)
     }
