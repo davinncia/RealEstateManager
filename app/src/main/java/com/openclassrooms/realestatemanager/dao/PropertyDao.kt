@@ -13,9 +13,15 @@ interface PropertyDao {
     @Query("SELECT * FROM property_table")
     fun getAllProperties(): LiveData<List<Property>> //Automatically asynchronous
 
+    @Query("SELECT * FROM property_table WHERE id = :id")
+    suspend fun getProperty(id: Int): Property
+
     @Insert
     suspend fun insertProperty(property: Property)
 
     @Update
     suspend fun updateProperty(property: Property)
+
+    @Query("UPDATE property_table SET is_sold = :isSold, selling_time = :timeInMillis WHERE id = :propertyId")
+    suspend fun changeSaleStatus(propertyId: Int, isSold: Boolean, timeInMillis: Long)
 }

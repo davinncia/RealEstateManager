@@ -10,6 +10,7 @@ import com.openclassrooms.realestatemanager.property_map.MapsViewModel
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.NetworkRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
+import com.openclassrooms.realestatemanager.utils.AddressConverter
 
 
 class ViewModelFactory(private val application: Application): ViewModelProvider.Factory {
@@ -29,12 +30,13 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
 
         } else if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
             return MapsViewModel(application, InMemoryRepository.getInstance(),
-                    PropertyRepository.getInstance(application)) as T
+                    PropertyRepository.getInstance(application), AddressConverter()) as T
 
         } else if (modelClass.isAssignableFrom(EditViewModel::class.java)) {
             return EditViewModel(application,
                     InMemoryRepository.getInstance(),
-                    PropertyRepository.getInstance(application)) as T
+                    PropertyRepository.getInstance(application),
+                    AddressConverter()) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -15,6 +15,8 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 
 class EditActivity : AppCompatActivity() {
 
@@ -22,6 +24,7 @@ class EditActivity : AppCompatActivity() {
 
     private var isNew: Boolean = true
     private var propertyId = -1
+    private var isSold: Boolean = false
 
     private lateinit var spinner: Spinner
     private lateinit var priceView: EditText
@@ -60,12 +63,13 @@ class EditActivity : AppCompatActivity() {
                     finish()
                 }
                 propertyId = it.id
+                isSold = it.isSold
                 completeEditTexts(it)
             })
         }
     }
 
-    private fun completeEditTexts(property: Property){
+    private fun completeEditTexts(property: PropertyUi){
         priceView.setText(property.price.toString())
         areaView.setText(property.area.toString())
         roomsView.setText(property.roomNbr.toString())
@@ -73,7 +77,7 @@ class EditActivity : AppCompatActivity() {
         cityView.setText(property.address.city)
         streetView.setText(property.address.street)
         streetNbrView.setText(property.address.streetNbr.toString())
-        agentView.setText(property.agent)
+        agentView.setText(property.agentName)
     }
 
     private fun checkInputsAndSave() {
@@ -93,8 +97,6 @@ class EditActivity : AppCompatActivity() {
         val street = streetView.text.toString()
         //STREET NBR
         val strStreetNbr = streetNbrView.text.toString()
-        //CREATION TIME
-        val creationTime = System.currentTimeMillis()
         //AGENT
         val agent = agentView.text.toString()
 
@@ -104,10 +106,10 @@ class EditActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.field_missing), Toast.LENGTH_SHORT).show()
         } else {
 
-            val address = Address(city, street, strStreetNbr.toInt())
+            val address = AddressUi(city, street, strStreetNbr.toInt())
 
-            val property = Property(type, strPrice.toFloat(), strArea.toFloat(), strRooms.toInt(),
-                    description, address, creationTime, agent)
+            val property = PropertyUi(type, strPrice.toFloat(), strArea.toFloat(), strRooms.toInt(),
+                    description, address, agent, isSold, propertyId)
 
             viewModel.saveInDb(property, isNew)
             Toast.makeText(this, getString(R.string.saving), Toast.LENGTH_SHORT).show()

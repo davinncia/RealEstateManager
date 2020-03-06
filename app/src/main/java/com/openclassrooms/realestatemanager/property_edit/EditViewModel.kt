@@ -8,50 +8,61 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
 import kotlinx.coroutines.launch
 
 class EditViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
-                    private val propertyRepo: PropertyRepository)
+                    private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter)
     : AndroidViewModel(application) {
 
-    val selectedProperty: LiveData<Property> = inMemoRepo.propertySelectionMutable
+    val selectedProperty: LiveData<PropertyUi> = inMemoRepo.propertySelectionMutable
 
 
-    fun saveInDb(property: Property, isNew: Boolean) {
+    fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
+
         if (isNew)
-            insert(property)
+            insert(uiProperty)
         else
-            update(property)
+            update(uiProperty)
     }
 
-    private fun update(property: Property) {
-        //Setting previous non editable attributes
-        property.id = selectedProperty.value!!.id
-        property.creationTime = selectedProperty.value!!.creationTime
-        property.address.latitude = selectedProperty.value!!.address.latitude
-        property.address.longitude = selectedProperty.value!!.address.longitude
-        property.isSold = selectedProperty.value!!.isSold
-        property.sellingTime = selectedProperty.value!!.sellingTime
+    private fun update(uiProperty: PropertyUi) {
 
         viewModelScope.launch {
-            //Updating LatLng if address changed
-            if (property.address != selectedProperty.value!!.address) {
-                val latLng = findLatLng(property.address)
-                property.address.latitude = latLng.latitude
-                property.address.longitude = latLng.longitude
-            }
-            Log.d("debuglog", property.address.latitude.toString())
+            //Getting corresponding Property
+            val oldProperty = propertyRepo.getProperty(uiProperty.id)
 
-            inMemoRepo.propertySelectionMutable.value = property
-            propertyRepo.update(property)
+            //Modify fields
+            val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
+            val updatedProperty = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr,
+                    uiProperty.description, address, oldProperty.creationTime, uiProperty.agentName,
+                    oldProperty.isSold, oldProperty.sellingTime)
+            updatedProperty.id = oldProperty.id
+
+            //Updating LatLng if address changed
+            val oldAddress = AddressUi(oldProperty.address.city, oldProperty.address.street, oldProperty.address.streetNbr)
+            if (uiProperty.address != oldAddress) {
+                val latLng = findLatLng(address)
+                updatedProperty.address.latitude = latLng.latitude
+                updatedProperty.address.longitude = latLng.longitude
+            }
+
+            //Updating new property
+            inMemoRepo.propertySelectionMutable.value = uiProperty
+            propertyRepo.update(updatedProperty)
         }
     }
 
 
-    private fun insert(property: Property) {
+    private fun insert(uiProperty: PropertyUi) {
+
+        val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
+        val property = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr, uiProperty.description,
+                address, System.currentTimeMillis(), uiProperty.agentName, uiProperty.isSold)
 
         viewModelScope.launch {
             val latLng = findLatLng(property.address)
@@ -64,6 +75,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
     private fun findLatLng(address: Address): LatLng {
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
-        return AddressConverter.getLatLng(getApplication(), strAddress)
+        return addressConverter.getLatLng(getApplication(), strAddress)
     }
 }

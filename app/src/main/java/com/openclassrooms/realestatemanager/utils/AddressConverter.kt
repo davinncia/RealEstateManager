@@ -9,37 +9,35 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-//TODO NINO 3: GeoCoder, "static" function. Best practice package level ?
+
 class AddressConverter {
 
-    companion object {
+    /**
+     * Util function converting a string address into a LatLng object.
+     * Returns LatLng(0.0, 0.0) if didn't find a match
+     */
+    fun getLatLng(context: Context, strAddress: String): LatLng {
 
-        private const val MAX_RESPONSES = 1
+        val geoCoder = Geocoder(context)
+        val address: List<Address>
+        var latLng = LatLng(0.0, 0.0)
 
-        /**
-         * Util function converting a string address into a LatLng object.
-         * Returns LatLng(0.0, 0.0) if didn't find a match
-         */
-        fun getLatLng(context: Context, strAddress: String): LatLng {
-
-
-                val geoCoder = Geocoder(context)
-                val address: List<Address>
-                var latLng = LatLng(0.0, 0.0)
-
-                try {
-                    address = geoCoder.getFromLocationName(strAddress, MAX_RESPONSES)
-                    if (address.isEmpty()) {
-                        Log.e("Error", "No address found")
-                        return latLng
-                    }
-
-                    latLng = LatLng(address[0].latitude, address[0].longitude)
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+        try {
+            address = geoCoder.getFromLocationName(strAddress, MAX_RESPONSES)
+            if (address.isEmpty()) {
+                Log.e("Error", "No address found")
                 return latLng
             }
+
+            latLng = LatLng(address[0].latitude, address[0].longitude)
+
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+        return latLng
     }
+
+    companion object {
+        private const val MAX_RESPONSES = 1
+    }
+}

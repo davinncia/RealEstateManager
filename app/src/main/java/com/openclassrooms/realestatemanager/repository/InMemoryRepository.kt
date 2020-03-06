@@ -2,23 +2,31 @@ package com.openclassrooms.realestatemanager.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.openclassrooms.realestatemanager.model.Address
-import com.openclassrooms.realestatemanager.model.Agent
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model.PropertyType
+import com.openclassrooms.realestatemanager.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 
-//TODO NINO 1: InMemoRepo
+
 class InMemoryRepository {
 
-    val propertySelectionMutable = MutableLiveData<Property>()
+    //val propertySelectionMutable = MutableLiveData<PropertyWrapper>()
+    val propertySelectionMutable = MutableLiveData<PropertyUi>()
 
     init {
 
+        //TODO: rather use wrapper
         //Empty property with -1 as id by default
-        val property = Property(PropertyType.HOUSE, 0F, 0F, 0,
-                "", Address("", "", 0), 0,
-               "Phil")
-        property.id = -1
-        propertySelectionMutable.value = property
+        val uiProperty = PropertyUi(PropertyType.HOUSE, 0F, 0F, 0, "",
+                AddressUi("", "", 0), "", false,
+                -1)
+        propertySelectionMutable.value = uiProperty
+
+    }
+
+    sealed class PropertyWrapper {
+        data class Property(val address: String): PropertyWrapper()
+        object EmptyProperty: PropertyWrapper()
 
     }
 

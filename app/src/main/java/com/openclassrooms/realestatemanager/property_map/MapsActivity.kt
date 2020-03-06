@@ -14,12 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.model_ui.PropertyMarker
 import com.openclassrooms.realestatemanager.property_details.DetailsActivity
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
@@ -50,30 +49,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
             navigateToPropertyDetails(it)
         }
 
-        viewModel.propertiesLiveData.observe(this, Observer {
+        viewModel.markersLiveData.observe(this, Observer {
             placeMarkers(it)
         })
     }
 
     private fun activateLocalization(){
-
             mMap.isMyLocationEnabled = true
             mMap.setOnMyLocationButtonClickListener(this)
-
     }
 
 
-    private fun placeMarkers(properties: List<Property>) {
+    private fun placeMarkers(propertyMarkers: List<PropertyMarker>) {
 
-        for (item in properties){
-            val latLng = LatLng(item.address.latitude, item.address.longitude)
+        for (marker in propertyMarkers){
             mMap.addMarker(MarkerOptions()
-                    .position(latLng)
-                    .title(item.type))
-                    .tag = item.id
+                    .position(marker.latLng)
+                    .title(marker.title))
+                    .tag = marker.id
         }
     }
-
 
     private fun navigateToPropertyDetails(marker: Marker){
         Toast.makeText(this, "Navigating...", Toast.LENGTH_SHORT).show()
@@ -86,8 +81,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     override fun onMyLocationButtonClick(): Boolean {
         return false
     }
-
-
     //--------------------------------------------------------------------------------------//
     //                                    P E R M I S S I O N
     //--------------------------------------------------------------------------------------//

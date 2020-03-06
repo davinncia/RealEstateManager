@@ -39,12 +39,6 @@ class DetailsActivity : AppCompatActivity() {
                 .commit()
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d("debuglog", "Details Activity stopped")
-
-    }
-
     companion object {
         fun newIntent(context: Context): Intent = Intent(context, DetailsActivity::class.java)
     }

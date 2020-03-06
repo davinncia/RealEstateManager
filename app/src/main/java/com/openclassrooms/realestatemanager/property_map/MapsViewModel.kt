@@ -1,10 +1,12 @@
 package com.openclassrooms.realestatemanager.property_map
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.*
+import com.openclassrooms.realestatemanager.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.model_ui.PropertyMarker
+import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
@@ -13,12 +15,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
-                    private val propertyRepo: PropertyRepository) : AndroidViewModel(application) {
+                    private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter) : AndroidViewModel(application) {
 
     private var propertiesMutable = MutableLiveData<List<Property>>()
-    val propertiesLiveData: LiveData<List<Property>> = propertiesMutable
 
-    //val markersLiveData: LiveData<List<PropertyMarker>>
+    val markersLiveData: LiveData<List<PropertyMarker>> = Transformations.map(propertiesMutable) {
+        val markers = arrayListOf<PropertyMarker>()
+
+        for (item in it) {
+            val latLng = LatLng(item.address.latitude, item.address.longitude)
+            val marker = PropertyMarker(latLng, item.type, item.id)
+            markers.add(marker)
+        }
+        return@map markers
+    }
+
+
 
     init {
         fetchProperties()
@@ -29,14 +41,12 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
         //Get data
         val properties = propertyRepo.allProperties.value ?: return
 
-        //TODO NINO 4: My first coroutine
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             checkExistingLatLng(properties)
         }
     }
 
     private suspend fun checkExistingLatLng(properties: List<Property>){
-        withContext(Dispatchers.IO) {
 
             val filteredProperties: ArrayList<Property> = arrayListOf()
 
@@ -45,7 +55,7 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 if (item.address.latitude == 0.0 && item.address.longitude == 0.0) {
                     //No Position available
                     val strAddress = "${item.address.streetNbr} ${item.address.street} ${item.address.city}"
-                    val latLng = AddressConverter.getLatLng(getApplication(), strAddress)
+                    val latLng = addressConverter.getLatLng(getApplication(), strAddress) //add in factory
 
                     if (latLng == LatLng(0.0, 0.0)) {
                         //Still not found : won't show on the map
@@ -59,14 +69,20 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
                     filteredProperties.add(item)
                 }
             }
-            propertiesMutable.postValue(filteredProperties)
+
+        withContext(Dispatchers.Main) {
+            propertiesMutable.value = filteredProperties
         }
     }
 
 
     fun selectProperty(id: Int){
+        val property = propertiesMutable.value?.find { it.id == id } ?: return
 
-        val property = propertiesLiveData.value?.find { it.id == id }
-        if (property != null) inMemoRepo.propertySelectionMutable.value = property
+        val addressUi = AddressUi(property.address.city, property.address.street, property.address.streetNbr)
+        val uiProperty = PropertyUi(property.type, property.price, property.area, property.roomNbr,
+                property.description, addressUi, property.agent, property.isSold, id)
+
+         inMemoRepo.propertySelectionMutable.value = uiProperty
     }
 }

@@ -60,16 +60,12 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
     override fun onItemClick(propertyId: Int) {
         viewModel.selectProperty(propertyId)
 
-
         //Open details if portrait (handset)
         if (!resources.getBoolean(R.bool.is_landscape)) {
             //PORTRAIT
             startActivity(DetailsActivity.newIntent(this.requireContext()))
         }
     }
-
-
-
 
     companion object {
         fun newInstance() = ListFragment()

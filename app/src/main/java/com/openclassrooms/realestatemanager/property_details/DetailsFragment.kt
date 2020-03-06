@@ -11,13 +11,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Property
+import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.property_edit.EditActivity
 import com.openclassrooms.realestatemanager.property_map.MapsActivity
 
@@ -25,8 +25,8 @@ import com.openclassrooms.realestatemanager.property_map.MapsActivity
 class DetailsFragment : Fragment() {
 
     private lateinit var viewModel: DetailsViewModel
-    private var networkAvailable = false
 
+    private var networkAvailable = false
     private var hasSelection = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +43,9 @@ class DetailsFragment : Fragment() {
                 .get(DetailsViewModel::class.java)
 
         //Property
-        viewModel.propertySelection.observe(viewLifecycleOwner, Observer {
+        viewModel.propertyUi.observe(viewLifecycleOwner, Observer {
 
-            if (it.id == -1) {
+            if (it.id == -1) { //TODO: use wrapper in vm. (hasSelection being an observer ?)
                 //Nothing selected
                 hasSelection = false
                 //TODO: Empty View
@@ -80,7 +80,7 @@ class DetailsFragment : Fragment() {
                 }
     }
 
-    private fun completeUi(rootView: View, property: Property) {
+    private fun completeUi(rootView: View, property: PropertyUi) {
         //Description
         rootView.findViewById<TextView>(R.id.tv_property_description).text = property.description
         //Area
