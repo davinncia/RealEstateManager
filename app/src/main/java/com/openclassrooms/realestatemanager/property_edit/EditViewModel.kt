@@ -1,12 +1,14 @@
 package com.openclassrooms.realestatemanager.property_edit
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
@@ -70,6 +72,14 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             property.address.longitude = latLng.longitude
 
             propertyRepo.insert(property)
+        }
+    }
+
+    fun savePicture(uri: String) {
+        val pic = Picture(uri, selectedProperty.value!!.id)
+
+        viewModelScope.launch {
+            propertyRepo.insertPicture(pic)
         }
     }
 

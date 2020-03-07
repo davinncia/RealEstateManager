@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.repository
 import android.content.Context
 import com.openclassrooms.realestatemanager.dao.PropertyDao
 import com.openclassrooms.realestatemanager.db.PropertyRoomDatabase
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
 
 class PropertyRepository(context: Context) {
@@ -30,6 +31,11 @@ class PropertyRepository(context: Context) {
     suspend fun updateSaleStatus(propertyId: Int, isSold: Boolean, timeInMillis: Long) {
         propertyDao.changeSaleStatus(propertyId, isSold, timeInMillis)
     }
+
+    //TODO it's own repo
+    fun getPictures(propertyId: Int) = propertyDao.getAllPictures(propertyId)
+    suspend fun insertPicture(picture: Picture) = propertyDao.insertPicture(picture)
+
 
     companion object {
         //Singleton

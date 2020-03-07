@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.property_edit.EditActivity
@@ -27,7 +28,7 @@ class DetailsFragment : Fragment() {
     private lateinit var viewModel: DetailsViewModel
 
     private var networkAvailable = false
-    private var hasSelection = false
+    private var activeSelection = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,18 +43,26 @@ class DetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
                 .get(DetailsViewModel::class.java)
 
+        //Active selection
+        viewModel.activeSelection.observe(viewLifecycleOwner, Observer {
+            activeSelection = it
+        })
+
         //Property
         viewModel.propertyUi.observe(viewLifecycleOwner, Observer {
 
-            if (it.id == -1) { //TODO: use wrapper in vm. (hasSelection being an observer ?)
-                //Nothing selected
-                hasSelection = false
-                //TODO: Empty View
-            } else {
-                hasSelection = true
-                initPicturesRecyclerView(rootView, arrayListOf())
+            if (activeSelection) {
+                //initPicturesRecyclerView(rootView, arrayListOf())
                 completeUi(rootView, it)
+            } else {
+                //Nothing selected
+                //TODO: Empty View
             }
+        })
+
+        //Pictures
+        viewModel.allPictures.observe(viewLifecycleOwner, Observer { pictures ->
+            initPicturesRecyclerView(rootView, ArrayList(pictures.map { it.strUri }))
         })
 
         //Network
@@ -61,15 +70,13 @@ class DetailsFragment : Fragment() {
             networkAvailable = it
         })
 
-
         return rootView
     }
 
-    private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<Uri>) {
+    private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<String>) {
 
         if (uris.isEmpty()) {
-            val uri = Uri.parse(
-                    "android.resource://com.openclassrooms.realestatemanager/drawable/default_house")
+            val uri = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
             uris.add(uri)
         }
 
@@ -117,7 +124,7 @@ class DetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.item_details_menu_edit -> {
-                if (hasSelection) {
+                if (activeSelection) {
                     startActivity(EditActivity.newIntent(requireContext(), false))
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
@@ -125,7 +132,7 @@ class DetailsFragment : Fragment() {
                 true
             }
             R.id.item_details_menu_sale_status -> {
-                if (hasSelection) {
+                if (activeSelection) {
                     viewModel.changeSaleStatus()
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()

@@ -1,9 +1,11 @@
 package com.openclassrooms.realestatemanager.model
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.openclassrooms.realestatemanager.R
 
 
 @Entity(tableName = "property_table")
@@ -33,7 +35,6 @@ enum class PropertyType {
  */
 
 class PropertyType {
-
     companion object {
         const val HOUSE = "HOUSE"
         const val LOFT = "LOFT"

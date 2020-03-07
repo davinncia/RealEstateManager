@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.openclassrooms.realestatemanager.dao.PropertyDao
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
 
-@Database(entities = arrayOf(Property::class), version = 1, exportSchema = false)
-public abstract class PropertyRoomDatabase : RoomDatabase() {
+@Database(entities = [Property::class, Picture::class], version = 1, exportSchema = false)
+abstract class PropertyRoomDatabase : RoomDatabase() {
 
     abstract fun propertyDao(): PropertyDao
 
@@ -27,7 +28,7 @@ public abstract class PropertyRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,
                         PropertyRoomDatabase::class.java,
-                        "word_database"
+                        "property_database"
                 ).build()
                 INSTANCE = instance
                 return instance

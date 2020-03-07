@@ -1,22 +1,37 @@
 package com.openclassrooms.realestatemanager.property_edit
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model.Address
-import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
+import com.openclassrooms.realestatemanager.property_details.PicturesAdapter
+import com.openclassrooms.realestatemanager.property_map.MapsActivity
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EditActivity : AppCompatActivity() {
 
@@ -35,6 +50,9 @@ class EditActivity : AppCompatActivity() {
     private lateinit var streetView: EditText
     private lateinit var streetNbrView: EditText
     private lateinit var agentView: EditText
+    private lateinit var addImageView: ImageView //TODO: DEBUG
+
+    private lateinit var pictureAdapter: PicturesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +67,10 @@ class EditActivity : AppCompatActivity() {
         streetView = findViewById(R.id.et_edit_street)
         streetNbrView = findViewById(R.id.et_edit_street_nbr)
         agentView = findViewById(R.id.et_edit_agent_name)
+        addImageView = findViewById<ImageView>(R.id.iv_edit_add_picture).apply { setOnClickListener { checkStoragePermission() } }
 
         isNew = intent.getBooleanExtra(IS_NEW_KEY, true)
+        val pictureUris = arrayListOf<String>()
 
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
 
@@ -64,12 +84,18 @@ class EditActivity : AppCompatActivity() {
                 }
                 propertyId = it.id
                 isSold = it.isSold
+                //TODO: add pictureUris
                 completeEditTexts(it)
             })
         }
+        initRecyclerView(pictureUris)
     }
 
-    private fun completeEditTexts(property: PropertyUi){
+    //--------------------------------------------------------------------------------------//
+    //                                         U I
+    //--------------------------------------------------------------------------------------//
+
+    private fun completeEditTexts(property: PropertyUi) {
         priceView.setText(property.price.toString())
         areaView.setText(property.area.toString())
         roomsView.setText(property.roomNbr.toString())
@@ -78,6 +104,17 @@ class EditActivity : AppCompatActivity() {
         streetView.setText(property.address.street)
         streetNbrView.setText(property.address.streetNbr.toString())
         agentView.setText(property.agentName)
+    }
+
+    //RecyclerView
+    private fun initRecyclerView(uris: List<String>) {
+
+        pictureAdapter = PicturesAdapter(uris)
+
+        findViewById<RecyclerView>(R.id.recycler_view_edit).apply {
+            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = pictureAdapter
+        }
     }
 
     private fun checkInputsAndSave() {
@@ -102,7 +139,7 @@ class EditActivity : AppCompatActivity() {
 
         val inputs = arrayOf(type, strPrice, strArea, strRooms, description, city, street, strStreetNbr, agent)
 
-        if (inputs.any { it.isEmpty() }){
+        if (inputs.any { it.isEmpty() }) {
             Toast.makeText(this, getString(R.string.field_missing), Toast.LENGTH_SHORT).show()
         } else {
 
@@ -118,6 +155,92 @@ class EditActivity : AppCompatActivity() {
 
     }
 
+    //--------------------------------------------------------------------------------------//
+    //                                    P I C T U R E S
+    //--------------------------------------------------------------------------------------//
+    private fun launchImageIntents() {
+
+        val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+        //GALLERY INTENT
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        chooserIntent.putExtra(Intent.EXTRA_INTENT, galleryIntent)
+        //TAKE PICTURE
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
+
+        /*
+        //With File provider
+        // Create the File where the photo should go
+        val photoFile: File? = try {
+            createImageFile()
+        } catch (ex: IOException) {
+            null
+        }
+        // Continue only if the File was successfully created
+        photoFile?.also {
+            val photoURI: Uri = FileProvider.getUriForFile(
+                    this,
+                    "com.example.android.fileprovider",
+                    it
+            )
+            chooserIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        }
+
+         */
+
+        if (chooserIntent.resolveActivity(packageManager) != null) {
+            startActivityForResult(chooserIntent, REQUEST_IMAGE_CODE)
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CODE && resultCode == RESULT_OK) {
+            val uri: String
+
+            if (data?.data != null) {
+                //GALLERY
+                uri = data.data.toString()
+                Glide.with(this).load(uri).into(addImageView)
+            } else {
+                //CAMERA
+                val imageBitmap = data?.extras?.get("data") as Bitmap
+                //addImageView.setImageBitmap(imageBitmap)
+                val bytes = ByteArrayOutputStream()
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO
+                Glide.with(this).load(uri).into(addImageView)
+            }
+
+            //TODO: stock in db
+            viewModel.savePicture(uri)
+        }
+
+    }
+
+    /*
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+                "JPEG_${timeStamp}_", /* prefix */
+                ".jpg", /* suffix */
+                storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            //currentPhotoPath = absolutePath
+        }
+    }
+
+     */
+
+    //--------------------------------------------------------------------------------------//
+    //                                      M E N U
+    //--------------------------------------------------------------------------------------//
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.edit_menu, menu)
@@ -135,8 +258,41 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
+    //--------------------------------------------------------------------------------------//
+    //                                   P E R M I S S I O N
+    //--------------------------------------------------------------------------------------//
+    private fun checkStoragePermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            //Not granted yet
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    MapsActivity.LOCATION_REQUEST_CODE)
+        } else {
+            //OK
+            launchImageIntents()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            MapsActivity.LOCATION_REQUEST_CODE -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    //Not granted
+                } else {
+                    launchImageIntents()
+                }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------//
+    //                                   C O M P A N I O N
+    //--------------------------------------------------------------------------------------//
     companion object {
         private const val IS_NEW_KEY = "is_new_key"
+        private const val REQUEST_IMAGE_CODE = 1
 
         fun newIntent(context: Context, isNew: Boolean): Intent {
             val intent = Intent(context, EditActivity::class.java)

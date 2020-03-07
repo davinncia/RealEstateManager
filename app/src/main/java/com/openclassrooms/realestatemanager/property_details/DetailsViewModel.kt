@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import com.openclassrooms.realestatemanager.model.Address
+import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
@@ -19,23 +19,14 @@ class DetailsViewModel(application: Application, inMemoRepo: InMemoryRepository,
 
 
     private var propertySelectionMutable = inMemoRepo.propertySelectionMutable
-    val propertyUi: LiveData<PropertyUi> = propertySelectionMutable
-    /*Transformations.map(propertySelectionMutable) {
-        val addressUi = AddressUi(it.address.city, it.address.street, it.address.streetNbr)
-        PropertyUi(it.type, it.price, it.area, it.roomNbr, it.description, addressUi, it.agent, it.isSold)
+
+    val activeSelection: LiveData<Boolean> = Transformations.map(propertySelectionMutable) {
+        return@map it.id != -1
     }
-
-     */
-
     val networkAvailableLiveData: LiveData<Boolean> = networkRepo.isConnected
-
-    fun getStaticMapStringUrlGivenAddress(address: AddressUi, apiKey: String): String {
-
-        val streetUrl = address.street.replace(" ", "+")
-        val cityUrl = address.city.replace(" ", "+")
-        val urlAddress = "${address.streetNbr}+$streetUrl+$cityUrl"
-
-        return "https://maps.googleapis.com/maps/api/staticmap?size=300x300&maptype=roadmap%20&markers=color:red%7C$urlAddress&key=$apiKey"
+    val propertyUi: LiveData<PropertyUi> = propertySelectionMutable
+    val allPictures: LiveData<List<Picture>> = Transformations.switchMap(propertyUi) {
+        propertyRepo.getPictures(it.id)
     }
 
     fun changeSaleStatus() {
@@ -50,12 +41,15 @@ class DetailsViewModel(application: Application, inMemoRepo: InMemoryRepository,
             propertyRepo.updateSaleStatus(property.id, property.isSold, System.currentTimeMillis())
         }
     }
+
+    fun getStaticMapStringUrlGivenAddress(address: AddressUi, apiKey: String): String {
+
+        val streetUrl = address.street.replace(" ", "+")
+        val cityUrl = address.city.replace(" ", "+")
+        val urlAddress = "${address.streetNbr}+$streetUrl+$cityUrl"
+
+        return "https://maps.googleapis.com/maps/api/staticmap?size=300x300&maptype=roadmap%20&markers=color:red%7C$urlAddress&key=$apiKey"
+    }
+
 }
-
-/*when(it){
-            is Property -> it.isSold = !it.isSold
-            InMemoryRepository.PropertyWrapper.EmptyProperty ->
-        }
-
-         */
 

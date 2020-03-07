@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 
-class PicturesAdapter(private val pictureUris: List<Uri>) : RecyclerView.Adapter<PicturesAdapter.PicturesViewHolder>() {
+class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adapter<PicturesAdapter.PicturesViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicturesViewHolder {
@@ -29,7 +29,7 @@ class PicturesAdapter(private val pictureUris: List<Uri>) : RecyclerView.Adapter
 
     inner class PicturesViewHolder(private val imageView: ImageView) : RecyclerView.ViewHolder(imageView) {
 
-        fun bindView(uri: Uri) {
+        fun bindView(uri: String) {
             Glide.with(imageView.context).load(uri).into(imageView)
         }
 

@@ -1,5 +1,16 @@
 package com.openclassrooms.realestatemanager.model
 
 import android.net.Uri
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
-data class Picture (val description: String = "", val uri: Uri)
+@Entity(tableName = "picture_table")
+data class Picture (
+        @ColumnInfo(name = "uri") val strUri: String,
+        @ColumnInfo(name = "property_id") val propertyId: Int) {
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}

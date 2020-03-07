@@ -14,20 +14,11 @@ class InMemoryRepository {
     val propertySelectionMutable = MutableLiveData<PropertyUi>()
 
     init {
-
-        //TODO: rather use wrapper
         //Empty property with -1 as id by default
         val uiProperty = PropertyUi(PropertyType.HOUSE, 0F, 0F, 0, "",
                 AddressUi("", "", 0), "", false,
                 -1)
         propertySelectionMutable.value = uiProperty
-
-    }
-
-    sealed class PropertyWrapper {
-        data class Property(val address: String): PropertyWrapper()
-        object EmptyProperty: PropertyWrapper()
-
     }
 
     //Singleton
