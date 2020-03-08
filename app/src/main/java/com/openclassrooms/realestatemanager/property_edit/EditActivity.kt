@@ -5,35 +5,29 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
-import com.openclassrooms.realestatemanager.property_details.PicturesAdapter
 import com.openclassrooms.realestatemanager.property_map.MapsActivity
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
-class EditActivity : AppCompatActivity() {
+class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener {
 
     private lateinit var viewModel: EditViewModel
 
@@ -52,7 +46,7 @@ class EditActivity : AppCompatActivity() {
     private lateinit var agentView: EditText
     private lateinit var addImageView: ImageView //TODO: DEBUG
 
-    private lateinit var pictureAdapter: PicturesAdapter
+    private lateinit var pictureAdapter: PictureEditAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +63,9 @@ class EditActivity : AppCompatActivity() {
         agentView = findViewById(R.id.et_edit_agent_name)
         addImageView = findViewById<ImageView>(R.id.iv_edit_add_picture).apply { setOnClickListener { checkStoragePermission() } }
 
+        initRecyclerView()
+
         isNew = intent.getBooleanExtra(IS_NEW_KEY, true)
-        val pictureUris = arrayListOf<String>()
 
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
 
@@ -84,11 +79,15 @@ class EditActivity : AppCompatActivity() {
                 }
                 propertyId = it.id
                 isSold = it.isSold
-                //TODO: add pictureUris
                 completeEditTexts(it)
             })
+
+            //Get picture uris
+            viewModel.allPictures.observe(this, Observer { pictures ->
+                pictureAdapter.populateData(pictures.map { it.strUri })
+            })
+
         }
-        initRecyclerView(pictureUris)
     }
 
     //--------------------------------------------------------------------------------------//
@@ -107,13 +106,13 @@ class EditActivity : AppCompatActivity() {
     }
 
     //RecyclerView
-    private fun initRecyclerView(uris: List<String>) {
+    private fun initRecyclerView() {
 
-        pictureAdapter = PicturesAdapter(uris)
+        pictureAdapter = PictureEditAdapter(this)
 
         findViewById<RecyclerView>(R.id.recycler_view_edit).apply {
-            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = pictureAdapter
+            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -168,26 +167,6 @@ class EditActivity : AppCompatActivity() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
 
-        /*
-        //With File provider
-        // Create the File where the photo should go
-        val photoFile: File? = try {
-            createImageFile()
-        } catch (ex: IOException) {
-            null
-        }
-        // Continue only if the File was successfully created
-        photoFile?.also {
-            val photoURI: Uri = FileProvider.getUriForFile(
-                    this,
-                    "com.example.android.fileprovider",
-                    it
-            )
-            chooserIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-        }
-
-         */
-
         if (chooserIntent.resolveActivity(packageManager) != null) {
             startActivityForResult(chooserIntent, REQUEST_IMAGE_CODE)
         }
@@ -203,24 +182,46 @@ class EditActivity : AppCompatActivity() {
             if (data?.data != null) {
                 //GALLERY
                 uri = data.data.toString()
-                Glide.with(this).load(uri).into(addImageView)
+
             } else {
                 //CAMERA
                 val imageBitmap = data?.extras?.get("data") as Bitmap
-                //addImageView.setImageBitmap(imageBitmap)
                 val bytes = ByteArrayOutputStream()
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-                uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO
-                Glide.with(this).load(uri).into(addImageView)
+                uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO: deprecated
             }
 
-            //TODO: stock in db
+            //Stock in db
             viewModel.savePicture(uri)
         }
 
     }
 
+    private fun deletePicture(uri: String) {
+        //DB
+        viewModel.deletePictureFromDb(uri)
+    }
+    //TODO: Nino: remove from media store ?
     /*
+    // Remove a specific media item.
+    val resolver = applicationContext.contentResolver
+
+    // URI of the image to remove.
+    val imageUri = "..."
+
+    // WHERE clause.
+    val selection = "..."
+    val selectionArgs = "..."
+
+    // Perform the actual removal.
+    val numImagesRemoved = resolver.delete(
+            imageUri,
+            selection,
+            selectionArgs)
+
+     */
+
+    /* PRIVATE STORAGE
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -235,8 +236,8 @@ class EditActivity : AppCompatActivity() {
             //currentPhotoPath = absolutePath
         }
     }
-
      */
+
 
     //--------------------------------------------------------------------------------------//
     //                                      M E N U
@@ -259,7 +260,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     //--------------------------------------------------------------------------------------//
-    //                                   P E R M I S S I O N
+    //                                   P E R M I S S I O N S
     //--------------------------------------------------------------------------------------//
     private fun checkStoragePermission(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -299,5 +300,9 @@ class EditActivity : AppCompatActivity() {
             intent.putExtra(IS_NEW_KEY, isNew)
             return intent
         }
+    }
+
+    override fun onDeleteButtonClick(pictureUri: String) {
+        deletePicture(pictureUri)
     }
 }

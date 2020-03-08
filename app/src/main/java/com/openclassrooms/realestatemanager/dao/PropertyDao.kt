@@ -26,10 +26,4 @@ interface PropertyDao {
     @Query("UPDATE property_table SET is_sold = :isSold, selling_time = :timeInMillis WHERE id = :propertyId")
     suspend fun changeSaleStatus(propertyId: Int, isSold: Boolean, timeInMillis: Long)
 
-    //TODO: it's own Dao
-    @Query("SELECT * FROM picture_table WHERE property_id = :property_id")
-    fun getAllPictures(property_id: Int): LiveData<List<Picture>>
-
-    @Insert
-    suspend fun insertPicture(picture: Picture)
 }

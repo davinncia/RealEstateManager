@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 
+//TODO: List Adapter, property thumbnail
 class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
     private var uiProperties = ArrayList<PropertyUi>()
@@ -41,6 +42,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         private val cityView = itemView.findViewById<TextView>(R.id.tv_property_item_city)
         private val priceView = itemView.findViewById<TextView>(R.id.tv_property_item_price)
         private val soldBanner = itemView.findViewById<ImageView>(R.id.iv_sold)
+        private val imageView = itemView.findViewById<ImageView>(R.id.image_view_property_item)
 
         fun bind(uiProperty: PropertyUi){
             typeView.text = uiProperty.type

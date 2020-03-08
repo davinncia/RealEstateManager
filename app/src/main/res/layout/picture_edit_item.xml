@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_picture_edit_item"
+        android:layout_width="@dimen/picture_size"
+        android:layout_height="@dimen/picture_size"
+        android:scaleType="centerCrop"
+        android:layout_margin="@dimen/margin"
+        tools:src="@drawable/default_house">
+    </ImageView>
+
+    <ImageButton
+        android:id="@+id/ib_delete_picture_edit_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:src="@drawable/ic_delete"
+        android:backgroundTint="@android:color/transparent"
+        android:layout_gravity="end"/>
+
+</FrameLayout>

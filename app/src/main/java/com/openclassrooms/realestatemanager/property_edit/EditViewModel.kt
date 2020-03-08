@@ -1,10 +1,9 @@
 package com.openclassrooms.realestatemanager.property_edit
 
 import android.app.Application
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
@@ -22,6 +21,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     : AndroidViewModel(application) {
 
     val selectedProperty: LiveData<PropertyUi> = inMemoRepo.propertySelectionMutable
+    val allPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
+        propertyRepo.getPictures(it.id)
+    }
 
 
     fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
@@ -32,6 +34,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             update(uiProperty)
     }
 
+    //--------------------------------------------------------------------------------------//
+    //                          U P D A T E   O L D   P R O P E R T Y
+    //--------------------------------------------------------------------------------------//
     private fun update(uiProperty: PropertyUi) {
 
         viewModelScope.launch {
@@ -60,6 +65,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     }
 
 
+    //--------------------------------------------------------------------------------------//
+    //                               N E W     P R O P E R T Y
+    //--------------------------------------------------------------------------------------//
     private fun insert(uiProperty: PropertyUi) {
 
         val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
@@ -75,6 +83,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         }
     }
 
+    //--------------------------------------------------------------------------------------//
+    //                                     P I C T U R E S
+    //--------------------------------------------------------------------------------------//
     fun savePicture(uri: String) {
         val pic = Picture(uri, selectedProperty.value!!.id)
 
@@ -83,6 +94,18 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         }
     }
 
+    fun deletePictureFromDb(uri: String) {
+
+        viewModelScope.launch {
+            val pic = allPictures.value?.find { it.strUri == uri }
+            pic?.apply { propertyRepo.deletePicture(pic) }
+
+        }
+    }
+
+    //--------------------------------------------------------------------------------------//
+    //                                     L O C A T I O N
+    //--------------------------------------------------------------------------------------//
     private fun findLatLng(address: Address): LatLng {
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
         return addressConverter.getLatLng(getApplication(), strAddress)

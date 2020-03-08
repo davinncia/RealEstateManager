@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.openclassrooms.realestatemanager.dao.PictureDao
 import com.openclassrooms.realestatemanager.dao.PropertyDao
 import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
@@ -12,6 +13,7 @@ import com.openclassrooms.realestatemanager.model.Property
 abstract class PropertyRoomDatabase : RoomDatabase() {
 
     abstract fun propertyDao(): PropertyDao
+    abstract fun pictureDao(): PictureDao
 
     companion object {
         //Singleton
