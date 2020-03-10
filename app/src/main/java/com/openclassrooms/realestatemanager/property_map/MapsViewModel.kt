@@ -3,7 +3,7 @@ package com.openclassrooms.realestatemanager.property_map
 import android.app.Application
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
-import com.openclassrooms.realestatemanager.model.*
+import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyMarker
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
@@ -83,6 +83,6 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
         val uiProperty = PropertyUi(property.type, property.price, property.area, property.roomNbr,
                 property.description, addressUi, property.agent, property.isSold, id)
 
-         inMemoRepo.propertySelectionMutable.value = uiProperty
+         inMemoRepo.setPropertySelection(uiProperty)
     }
 }

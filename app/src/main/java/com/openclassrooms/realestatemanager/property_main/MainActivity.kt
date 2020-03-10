@@ -1,25 +1,18 @@
-package com.openclassrooms.realestatemanager
+package com.openclassrooms.realestatemanager.property_main
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
-import com.openclassrooms.realestatemanager.property_details.DetailsFragment
+import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.property_edit.EditActivity
-import com.openclassrooms.realestatemanager.property_list.ListFragment
-import kotlin.math.log
+import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val LIST_FRAG_TAG = "list_fragment"
-        const val DETAILS_FRAG_TAG = "details_fragment"
-    }
+    private val inMemoRepo = InMemoryRepository.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.item_main_menu_add -> {
-                startActivity(EditActivity.newIntent(this, true))
+                inMemoRepo.setPropertySelection(EmptyProperty)
+                startActivity(EditActivity.newIntent(this))
                 true
             }
             R.id.item_main_menu_search -> {
@@ -49,4 +43,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    companion object {
+        const val LIST_FRAG_TAG = "list_fragment"
+        const val DETAILS_FRAG_TAG = "details_fragment"
+    }
 }

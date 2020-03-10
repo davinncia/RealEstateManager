@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.property_details
 
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -16,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model.Picture
-import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.property_edit.EditActivity
 import com.openclassrooms.realestatemanager.property_map.MapsActivity
@@ -43,21 +40,37 @@ class DetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
                 .get(DetailsViewModel::class.java)
 
+        /*
         //Active selection
         viewModel.activeSelection.observe(viewLifecycleOwner, Observer {
             activeSelection = it
+            if (!activeSelection) {
+
+            }
         })
+
+         */
 
         //Property
         viewModel.propertyUi.observe(viewLifecycleOwner, Observer {
 
+            if (it == null) {
+                //TODO: Empty View
+            } else {
+                activeSelection = true
+                completeUi(rootView, it)
+            }
+
+            //it?.let { completeUi(rootView, it) }
+
+            /*
             if (activeSelection) {
                 //initPicturesRecyclerView(rootView, arrayListOf())
                 completeUi(rootView, it)
             } else {
                 //Nothing selected
-                //TODO: Empty View
             }
+             */
         })
 
         //Pictures
@@ -125,7 +138,7 @@ class DetailsFragment : Fragment() {
         return when(item.itemId) {
             R.id.item_details_menu_edit -> {
                 if (activeSelection) {
-                    startActivity(EditActivity.newIntent(requireContext(), false))
+                    startActivity(EditActivity.newIntent(requireContext()))
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
                 }

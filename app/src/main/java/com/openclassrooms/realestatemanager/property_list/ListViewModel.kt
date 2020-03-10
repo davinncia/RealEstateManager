@@ -25,19 +25,10 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
         return@map uiProperties
     }
 
-    //TODO: load thumbnail of first picture
-    /*
-    // Load thumbnail of a specific media item.
-    val thumbnail: Bitmap =
-            applicationContext.contentResolver.loadThumbnail(
-                    content-uri, Size(640, 480), null)
-
-     */
-
 
     fun selectProperty(id: Int) {
         val property = allProperties.value?.find { it.id == id }
-        inMemoRepo.propertySelectionMutable.value = property
+        property?.let {inMemoRepo.setPropertySelection(it) }
     }
 
 }

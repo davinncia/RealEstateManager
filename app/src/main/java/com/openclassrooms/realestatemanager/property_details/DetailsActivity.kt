@@ -2,16 +2,12 @@ package com.openclassrooms.realestatemanager.property_details
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.openclassrooms.realestatemanager.MainActivity
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.property_edit.EditActivity
+import com.openclassrooms.realestatemanager.property_main.MainActivity
 
 class DetailsActivity : AppCompatActivity() {
 

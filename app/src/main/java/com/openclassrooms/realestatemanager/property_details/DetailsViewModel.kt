@@ -13,31 +13,53 @@ import com.openclassrooms.realestatemanager.repository.NetworkRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import kotlinx.coroutines.launch
 
-class DetailsViewModel(application: Application, inMemoRepo: InMemoryRepository, networkRepo: NetworkRepository,
+class DetailsViewModel(application: Application, private val inMemoRepo: InMemoryRepository, networkRepo: NetworkRepository,
                        private val propertyRepo: PropertyRepository)
     : AndroidViewModel(application) {
 
-
-    private var propertySelectionMutable = inMemoRepo.propertySelectionMutable
-
-    val activeSelection: LiveData<Boolean> = Transformations.map(propertySelectionMutable) {
-        return@map it.id != -1
-    }
+    //NETWORK
     val networkAvailableLiveData: LiveData<Boolean> = networkRepo.isConnected
-    val propertyUi: LiveData<PropertyUi> = propertySelectionMutable
-    val allPictures: LiveData<List<Picture>> = Transformations.switchMap(propertyUi) {
-        propertyRepo.getPictures(it.id)
+
+    //CURRENT SELECTION
+    private val propertySelectionMutable = inMemoRepo.getPropertySelection()
+
+    /*
+    val activeSelection: LiveData<Boolean> = Transformations.map(propertySelectionMutable) {
+        return@map when (it) {
+            is EmptyProperty -> false
+            else -> true
+        }
     }
+
+    val propertyUi: LiveData<PropertyUi> = Transformations.map(activeSelection) {
+        return@map when (it) {
+            true -> propertySelectionMutable.value as PropertyUi
+            else -> null
+        }
+    }
+
+     */
+    val propertyUi: LiveData<PropertyUi> = Transformations.map(propertySelectionMutable) {
+        return@map when (it) {
+            is PropertyUi -> propertySelectionMutable.value as PropertyUi
+            else -> null //Empty property
+        }
+    }
+
+    //PICTURES
+    val allPictures: LiveData<List<Picture>> = Transformations.switchMap(propertyUi) {
+        it?.let { propertyRepo.getPictures(it.id) }
+    }
+
 
     fun changeSaleStatus() {
+        val property = propertyUi.value!! //Can't be null when this method is called
+
         //Notify observer
-        propertySelectionMutable.value = propertySelectionMutable.value?.also {
-            it.isSold = !it.isSold
-        }
+        inMemoRepo.setPropertySelection(property.also {it.isSold = !it.isSold })
 
         //Add in Db
         viewModelScope.launch {
-            val property = propertySelectionMutable.value!!
             propertyRepo.updateSaleStatus(property.id, property.isSold, System.currentTimeMillis())
         }
     }

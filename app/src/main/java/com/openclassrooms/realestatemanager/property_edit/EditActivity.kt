@@ -32,8 +32,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private lateinit var viewModel: EditViewModel
 
     private var isNew: Boolean = true
-    private var propertyId = -1
-    private var isSold: Boolean = false
+    private var id = -1
 
     private lateinit var spinner: Spinner
     private lateinit var priceView: EditText
@@ -65,29 +64,18 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         initRecyclerView()
 
-        isNew = intent.getBooleanExtra(IS_NEW_KEY, true)
-
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
-        viewModel.setAsNewProperty(isNew)
 
-        if (!isNew) {
+
+        viewModel.selectedProperty.observe(this, Observer {
             //Editing an already existing property
-            viewModel.selectedProperty.observe(this, Observer {
-                if (it.id == -1) {
-                    //Yet none is selected...
-                    Toast.makeText(this, getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-                propertyId = it.id
-                isSold = it.isSold
-                completeEditTexts(it)
-            })
+            isNew = false
+            id = it.id
+            completeEditTexts(it)
+        })
 
-        }
-
-        //Display added pics
+        //Display pics
         viewModel.allPictures.observe(this, Observer {
-            //pictureAdapter.addPicture(uris.last())
             pictureAdapter.populateData(it)
         })
 
@@ -148,7 +136,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
             val address = AddressUi(city, street, strStreetNbr.toInt())
 
             val property = PropertyUi(type, strPrice.toFloat(), strArea.toFloat(), strRooms.toInt(),
-                    description, address, agent, isSold, propertyId)
+                    description, address, agent, false, id)
 
             viewModel.saveInDb(property, isNew)
             Toast.makeText(this, getString(R.string.saving), Toast.LENGTH_SHORT).show()
@@ -185,6 +173,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
             if (data?.data != null) {
                 //GALLERY
                 uri = data.data.toString()
+                //TODO NINO: already present in MediaStore, save anyway ?
 
             } else {
                 //CAMERA
@@ -192,6 +181,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
                 val bytes = ByteArrayOutputStream()
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
                 uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO: deprecated
+                //TODO NINO: deprecated
             }
 
             //Pass it to the viewModel
@@ -265,7 +255,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     //--------------------------------------------------------------------------------------//
     //                                   P E R M I S S I O N S
     //--------------------------------------------------------------------------------------//
-    private fun checkStoragePermission(){
+    private fun checkStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             //Not granted yet
@@ -298,11 +288,15 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         private const val IS_NEW_KEY = "is_new_key"
         private const val REQUEST_IMAGE_CODE = 1
 
+        fun newIntent(context: Context) = Intent(context, EditActivity::class.java)
+        /*
         fun newIntent(context: Context, isNew: Boolean): Intent {
             val intent = Intent(context, EditActivity::class.java)
             intent.putExtra(IS_NEW_KEY, isNew)
             return intent
         }
+
+         */
     }
 
     override fun onDeleteButtonClick(pictureUri: String, position: Int) {

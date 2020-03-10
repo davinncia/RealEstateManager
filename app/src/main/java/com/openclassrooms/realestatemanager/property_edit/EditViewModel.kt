@@ -7,6 +7,7 @@ import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Picture
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
@@ -17,8 +18,17 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                     private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter)
     : AndroidViewModel(application) {
 
-    val selectedProperty = MutableLiveData<PropertyUi>()
+    //CURRENT SELECTION
+    private val isNew: LiveData<Boolean> = Transformations.map(inMemoRepo.getPropertySelection()) {
+        return@map when(it) {
+            is EmptyProperty -> true
+            else -> false
+        }
+    }
 
+    val selectedProperty = MediatorLiveData<PropertyUi>()
+
+    //PICTURES
     val allPictures = MediatorLiveData<List<String>>() //Combination of pics from db and the ones being added
     private val dbPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
         propertyRepo.getPictures(it.id)
@@ -26,14 +36,23 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     private val addedPictures = MutableLiveData<List<String>>()
 
     init {
+        selectedProperty.addSource(isNew) {isNew ->
+            if (!isNew) {
+                selectedProperty.value = inMemoRepo.getPropertySelection().value as PropertyUi
+            }
+        }
+
         allPictures.addSource(dbPictures) { mergePictureLists() }
         allPictures.addSource(addedPictures) { mergePictureLists() }
     }
 
-    fun setAsNewProperty(isNew: Boolean) {
-        if (isNew) inMemoRepo.deselectProperty()
-        selectedProperty.value = inMemoRepo.propertySelectionMutable.value
+    /*fun setAsNewProperty(isNew: Boolean) {
+        if (isNew) inMemoRepo.setPropertySelection(EmptyProperty)
+
+        selectedProperty.value = inMemoRepo.getPropertySelection().value as PropertyUi
     }
+
+     */
 
     fun addPicture(uri: String) {
         val pics = arrayListOf<String>()
@@ -88,7 +107,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             }
 
             //Updating new property
-            inMemoRepo.propertySelectionMutable.value = uiProperty
+            inMemoRepo.setPropertySelection(uiProperty)
             propertyRepo.update(updatedProperty)
 
             //Saving new pictures if any
@@ -137,8 +156,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
         val pic = Picture(uri, propertyId)
 
-        //TODO 1: thumbnail disappear when multiple pics (should work with all pictures ?)
-        //if (dbPictures.value == null || dbPictures.value?.size == 0) {
         if (allPictures.value!!.isNotEmpty() && uri == allPictures.value?.get(0)) {
             //1st -> save as thumbnail
             propertyRepo.updateThumbnail(uri, propertyId)
@@ -158,7 +175,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                         thumbnailUri = it[1]
                     }
                 }
-                propertyRepo.updateThumbnail(thumbnailUri, selectedProperty.value!!.id)
+                propertyRepo.updateThumbnail(thumbnailUri, selectedProperty.value!!.id)  //TODO NPE ?
             }
 
             val pic = dbPictures.value?.find { it.strUri == uri }
