@@ -1,11 +1,9 @@
 package com.openclassrooms.realestatemanager.model
 
-import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.openclassrooms.realestatemanager.R
 
 
 @Entity(tableName = "property_table")
@@ -15,13 +13,14 @@ data class Property(
         val area: Float,
         @ColumnInfo(name = "room_number") val roomNbr: Int,
         val description: String,
-        //val picturesUri: Array<Int>,
         @Embedded val address: Address, //This will store all Address fields in the same table
         //array POI,
         @ColumnInfo(name = "creation_time") var creationTime: Long,
         val agent: String,//val agent: Agent,
         @ColumnInfo(name = "is_sold") var isSold: Boolean = false,
-        @ColumnInfo(name = "selling_time") var sellingTime: Long = 0) {
+        @ColumnInfo(name = "selling_time") var sellingTime: Long = 0,
+        @ColumnInfo(name = "thumbnail_uri") var thumbnailUri: String =
+                "android.resource://com.openclassrooms.realestatemanager/drawable/default_house") {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

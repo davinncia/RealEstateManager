@@ -23,12 +23,18 @@ class PropertyRepository(context: Context) {
 
     suspend fun getProperty(id: Int): Property = propertyDao.getProperty(id)
 
+    suspend fun getLastId(): Int = propertyDao.getLastId()
+
     suspend fun insert(property: Property) {
         propertyDao.insertProperty(property)
     }
 
     suspend fun update(property: Property) {
         propertyDao.updateProperty(property)
+    }
+
+    suspend fun updateThumbnail(uri: String, propertyId: Int) {
+        propertyDao.updateThumbnail(uri, propertyId)
     }
 
     suspend fun updateSaleStatus(propertyId: Int, isSold: Boolean, timeInMillis: Long) {

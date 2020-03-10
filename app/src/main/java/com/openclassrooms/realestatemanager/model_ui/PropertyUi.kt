@@ -11,10 +11,11 @@ package com.openclassrooms.realestatemanager.model_ui
                 val area: Float,
                 val roomNbr: Int,
                 val description: String,
-                //val picturesUri: Array<Int>,
                 val address: AddressUi,
                 //array POI,
                 val agentName: String,
                 var isSold: Boolean,
                 var id: Int
-        )
+        ){
+                var thumbnailUri = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
+        }

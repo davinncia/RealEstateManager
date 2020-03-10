@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 
-//TODO: List Adapter, property thumbnail
+
 class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
     private var uiProperties = ArrayList<PropertyUi>()
@@ -48,6 +49,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
             typeView.text = uiProperty.type
             cityView.text = uiProperty.address.city
             priceView.text = "${uiProperty.price}$"
+            Glide.with(imageView.context).load(uiProperty.thumbnailUri).into(imageView)
             if (uiProperty.isSold) soldBanner.visibility = View.VISIBLE
             else soldBanner.visibility = View.INVISIBLE
         }

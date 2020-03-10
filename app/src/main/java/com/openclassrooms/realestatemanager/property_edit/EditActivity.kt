@@ -68,6 +68,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         isNew = intent.getBooleanExtra(IS_NEW_KEY, true)
 
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
+        viewModel.setAsNewProperty(isNew)
 
         if (!isNew) {
             //Editing an already existing property
@@ -82,12 +83,14 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
                 completeEditTexts(it)
             })
 
-            //Get picture uris
-            viewModel.allPictures.observe(this, Observer { pictures ->
-                pictureAdapter.populateData(pictures.map { it.strUri })
-            })
-
         }
+
+        //Display added pics
+        viewModel.allPictures.observe(this, Observer {
+            //pictureAdapter.addPicture(uris.last())
+            pictureAdapter.populateData(it)
+        })
+
     }
 
     //--------------------------------------------------------------------------------------//
@@ -191,15 +194,15 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
                 uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO: deprecated
             }
 
-            //Stock in db
-            viewModel.savePicture(uri)
+            //Pass it to the viewModel
+            viewModel.addPicture(uri)
         }
 
     }
 
-    private fun deletePicture(uri: String) {
+    private fun deletePicture(uri: String, position: Int) {
         //DB
-        viewModel.deletePictureFromDb(uri)
+        viewModel.deletePictureFromDb(uri, position)
     }
     //TODO: Nino: remove from media store ?
     /*
@@ -302,7 +305,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         }
     }
 
-    override fun onDeleteButtonClick(pictureUri: String) {
-        deletePicture(pictureUri)
+    override fun onDeleteButtonClick(pictureUri: String, position: Int) {
+        deletePicture(pictureUri, position)
     }
 }

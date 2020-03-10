@@ -19,6 +19,7 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
             val addressUi = AddressUi(item.address.city, item.address.street, item.address.streetNbr)
             val propertyUi = PropertyUi(item.type, item.price, item.area, item.roomNbr,
                     item.description, addressUi, item.agent, item.isSold, item.id)
+            propertyUi.thumbnailUri = item.thumbnailUri
             uiProperties.add(propertyUi)
         }
         return@map uiProperties

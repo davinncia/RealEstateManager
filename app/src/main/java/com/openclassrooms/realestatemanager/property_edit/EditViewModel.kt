@@ -1,10 +1,7 @@
 package com.openclassrooms.realestatemanager.property_edit
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Picture
@@ -20,11 +17,30 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                     private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter)
     : AndroidViewModel(application) {
 
-    val selectedProperty: LiveData<PropertyUi> = inMemoRepo.propertySelectionMutable
-    val allPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
+    val selectedProperty = MutableLiveData<PropertyUi>()
+
+    val allPictures = MediatorLiveData<List<String>>() //Combination of pics from db and the ones being added
+    private val dbPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
         propertyRepo.getPictures(it.id)
     }
+    private val addedPictures = MutableLiveData<List<String>>()
 
+    init {
+        allPictures.addSource(dbPictures) { mergePictureLists() }
+        allPictures.addSource(addedPictures) { mergePictureLists() }
+    }
+
+    fun setAsNewProperty(isNew: Boolean) {
+        if (isNew) inMemoRepo.deselectProperty()
+        selectedProperty.value = inMemoRepo.propertySelectionMutable.value
+    }
+
+    fun addPicture(uri: String) {
+        val pics = arrayListOf<String>()
+        addedPictures.value?.let { pics.addAll(it) }
+        pics.add(uri)
+        addedPictures.value = pics
+    }
 
     fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
 
@@ -34,8 +50,20 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             update(uiProperty)
     }
 
+    private fun mergePictureLists(){
+        val pics = arrayListOf<String>()
+
+        if (dbPictures.value != null) {
+            pics.addAll(dbPictures.value!!.map { it.strUri })
+        }
+        if (addedPictures.value != null) {
+            pics.addAll(addedPictures.value!!)
+        }
+        allPictures.value = pics
+    }
+
     //--------------------------------------------------------------------------------------//
-    //                          U P D A T E   O L D   P R O P E R T Y
+    //                                 O L D   P R O P E R T Y
     //--------------------------------------------------------------------------------------//
     private fun update(uiProperty: PropertyUi) {
 
@@ -49,6 +77,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                     uiProperty.description, address, oldProperty.creationTime, uiProperty.agentName,
                     oldProperty.isSold, oldProperty.sellingTime)
             updatedProperty.id = oldProperty.id
+            updatedProperty.thumbnailUri = oldProperty.thumbnailUri
 
             //Updating LatLng if address changed
             val oldAddress = AddressUi(oldProperty.address.city, oldProperty.address.street, oldProperty.address.streetNbr)
@@ -61,6 +90,14 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             //Updating new property
             inMemoRepo.propertySelectionMutable.value = uiProperty
             propertyRepo.update(updatedProperty)
+
+            //Saving new pictures if any
+            addedPictures.value?.let {
+                for (uri in it) {
+                    savePicture(uri, updatedProperty.id)
+                }
+            }
+
         }
     }
 
@@ -80,26 +117,52 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             property.address.longitude = latLng.longitude
 
             propertyRepo.insert(property)
+
+            //Pictures
+            //Get property Id for picture table
+            val id = propertyRepo.getLastId()
+            addedPictures.value?.let {
+                for (uri in it) {
+                    savePicture(uri, id)
+                }
+            }
+
         }
     }
 
     //--------------------------------------------------------------------------------------//
     //                                     P I C T U R E S
     //--------------------------------------------------------------------------------------//
-    fun savePicture(uri: String) {
-        val pic = Picture(uri, selectedProperty.value!!.id)
+    private suspend fun savePicture(uri: String, propertyId: Int) {
 
-        viewModelScope.launch {
-            propertyRepo.insertPicture(pic)
+        val pic = Picture(uri, propertyId)
+
+        //TODO 1: thumbnail disappear when multiple pics (should work with all pictures ?)
+        //if (dbPictures.value == null || dbPictures.value?.size == 0) {
+        if (allPictures.value!!.isNotEmpty() && uri == allPictures.value?.get(0)) {
+            //1st -> save as thumbnail
+            propertyRepo.updateThumbnail(uri, propertyId)
         }
+
+        propertyRepo.insertPicture(pic)
     }
 
-    fun deletePictureFromDb(uri: String) {
-
+    fun deletePictureFromDb(uri: String, position: Int) {
+        //Checking if it was the thumbnail
         viewModelScope.launch {
-            val pic = allPictures.value?.find { it.strUri == uri }
-            pic?.apply { propertyRepo.deletePicture(pic) }
+            if (position == 0) {
+                //Change thumbnail
+                var thumbnailUri = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
+                allPictures.value?.let {
+                    if (it.size > 1) {
+                        thumbnailUri = it[1]
+                    }
+                }
+                propertyRepo.updateThumbnail(thumbnailUri, selectedProperty.value!!.id)
+            }
 
+            val pic = dbPictures.value?.find { it.strUri == uri }
+            pic?.apply { propertyRepo.deletePicture(pic) }
         }
     }
 

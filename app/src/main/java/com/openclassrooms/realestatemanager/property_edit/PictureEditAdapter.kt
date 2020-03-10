@@ -11,7 +11,7 @@ import com.openclassrooms.realestatemanager.R
 
 class PictureEditAdapter(private val listener: DeleteButtonClickListener) : RecyclerView.Adapter<PictureEditAdapter.PictureEditViewHolder>() {
 
-    private var picUris = listOf<String>()
+    private var picUris = arrayListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureEditViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -28,10 +28,15 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
 
     }
 
-    //TODO: remove pic
+
     fun populateData(uris: List<String>) {
-        picUris = uris
+        picUris = ArrayList(uris)
         notifyDataSetChanged()
+    }
+
+    fun addPicture(uri: String) {
+        picUris.add(uri)
+        notifyItemInserted(picUris.lastIndex)
     }
 
     inner class PictureEditViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,7 +46,7 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
 
         init {
             deleteButton.setOnClickListener {
-                listener.onDeleteButtonClick(picUris[adapterPosition])
+                listener.onDeleteButtonClick(picUris[adapterPosition], adapterPosition)
             }
         }
 
@@ -52,6 +57,6 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
     }
 
     interface DeleteButtonClickListener {
-        fun onDeleteButtonClick(pictureUri: String)
+        fun onDeleteButtonClick(pictureUri: String, position: Int)
     }
 }
