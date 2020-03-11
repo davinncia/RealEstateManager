@@ -5,12 +5,10 @@ import android.location.Address
 import android.location.Geocoder
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
-class AddressConverter {
+class AddressConverter() {
 
     /**
      * Util function converting a string address into a LatLng object.

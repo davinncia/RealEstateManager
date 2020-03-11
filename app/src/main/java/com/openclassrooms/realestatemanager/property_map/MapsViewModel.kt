@@ -41,7 +41,7 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
         //Get data
         val properties = propertyRepo.allProperties.value ?: return
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) { //Better to inject dispatchers for testing
             checkExistingLatLng(properties)
         }
     }
