@@ -55,7 +55,7 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 if (item.address.latitude == 0.0 && item.address.longitude == 0.0) {
                     //No Position available
                     val strAddress = "${item.address.streetNbr} ${item.address.street} ${item.address.city}"
-                    val latLng = addressConverter.getLatLng(getApplication(), strAddress) //add in factory
+                    val latLng = addressConverter.getLatLng(getApplication(), strAddress)
 
                     if (latLng == LatLng(0.0, 0.0)) {
                         //Still not found : won't show on the map

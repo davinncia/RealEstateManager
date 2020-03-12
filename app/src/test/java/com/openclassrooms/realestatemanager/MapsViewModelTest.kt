@@ -13,7 +13,6 @@ import com.openclassrooms.realestatemanager.utils.AddressConverter
 import com.openclassrooms.realestatemanager.utils.MainCoroutineRule
 import com.openclassrooms.realestatemanager.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
@@ -28,7 +27,6 @@ import org.mockito.junit.MockitoJUnitRunner
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class MapsViewModelTest {
-    private val testDispatcher = TestCoroutineDispatcher()
 
     // Run tasks synchronously
     @Rule
@@ -60,7 +58,7 @@ class MapsViewModelTest {
     }
 
 
-    //Getting corresponding markers for each property with LatLng
+    //Getting corresponding markers for each property with valid LatLng
     @Test
     fun getMarkersForProperties() = mainCoroutineRule.runBlockingTest {
         //GIVEN
@@ -83,12 +81,11 @@ class MapsViewModelTest {
         Assert.assertTrue(markers.size == 2)
         Assert.assertTrue(markers[0].latLng == LatLng(1.0, 1.0))
         Assert.assertTrue(markers[1].latLng == LatLng(2.0, 2.0))
-
     }
 
     //Fetching lat lng if non existent
     @Test
-    fun checkIfLatLngIsFetchedWhenNonExistent() = mainCoroutineRule.runBlockingTest{
+    fun latLngIsFetchedWhenNonExistent() = mainCoroutineRule.runBlockingTest{
         //GIVEN
         val address = Address("", "", 0, 0.0, 0.0)
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
@@ -111,4 +108,26 @@ class MapsViewModelTest {
     }
 
     //property selection
+    @Test
+    fun ifNoLatLngFoundMarkerIsNotCreated() {
+        //GIVEN
+        val address = Address("", "", 0, 0.0, 0.0)
+        val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
+        val property = Property("HOUSE", 0F, 0F, 0, "",
+                address,1L, "")
+        val list = listOf(property)
+        val listLiveData = MutableLiveData(list)
+
+        val nullLatLng = LatLng(0.0, 0.0)
+
+        Mockito.`when`(propertyRepo.allProperties).thenReturn(listLiveData)
+        Mockito.`when`(addressConverter.getLatLng(application, strAddress)).thenReturn(nullLatLng)
+        viewModel = MapsViewModel(application, InMemoryRepository.getInstance(), propertyRepo, addressConverter)
+
+        //WHEN
+        val markers = viewModel.markersLiveData.getOrAwaitValue()
+
+        //THEN
+        Assert.assertTrue(markers.isEmpty())
+    }
 }

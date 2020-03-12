@@ -10,12 +10,14 @@ import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
+import com.openclassrooms.realestatemanager.repository.NotificationRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
 import kotlinx.coroutines.launch
 
 class EditViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
-                    private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter)
+                    private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter,
+                    private val notifRepo: NotificationRepository)
     : AndroidViewModel(application) {
 
     //CURRENT SELECTION
@@ -46,14 +48,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         allPictures.addSource(addedPictures) { mergePictureLists() }
     }
 
-    /*fun setAsNewProperty(isNew: Boolean) {
-        if (isNew) inMemoRepo.setPropertySelection(EmptyProperty)
-
-        selectedProperty.value = inMemoRepo.getPropertySelection().value as PropertyUi
-    }
-
-     */
-
     fun addPicture(uri: String) {
         val pics = arrayListOf<String>()
         addedPictures.value?.let { pics.addAll(it) }
@@ -63,8 +57,10 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
     fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
 
-        if (isNew)
+        if (isNew) {
             insert(uiProperty)
+            notifRepo.sendNewPropertyNotif(getApplication())
+        }
         else
             update(uiProperty)
     }
@@ -130,6 +126,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         val property = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr, uiProperty.description,
                 address, System.currentTimeMillis(), uiProperty.agentName, uiProperty.isSold)
 
+
         viewModelScope.launch {
             val latLng = findLatLng(property.address)
             property.address.latitude = latLng.latitude
@@ -146,6 +143,10 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 }
             }
 
+            uiProperty.let {
+                it.id = id
+                inMemoRepo.setPropertySelection(it)
+            }
         }
     }
 
@@ -190,4 +191,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
         return addressConverter.getLatLng(getApplication(), strAddress)
     }
+
+
 }
