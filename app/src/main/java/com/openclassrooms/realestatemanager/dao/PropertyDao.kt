@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.dao
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -15,6 +16,9 @@ interface PropertyDao {
 
     @Query("SELECT * FROM property_table WHERE id = :id")
     suspend fun getProperty(id: Int): Property
+
+    @Query("SELECT * FROM property_table WHERE id = :propertyId")
+    fun getPropertyWithCursor(propertyId: Long): Cursor
 
     @Query("SELECT id FROM property_table ORDER BY id DESC LIMIT 1")
     suspend fun getLastId(): Int

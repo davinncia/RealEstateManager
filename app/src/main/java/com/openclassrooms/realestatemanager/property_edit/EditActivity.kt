@@ -1,11 +1,15 @@
 package com.openclassrooms.realestatemanager.property_edit
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +20,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +30,10 @@ import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.property_map.MapsActivity
-import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener {
 
@@ -46,6 +54,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private lateinit var addImageView: ImageView //TODO: DEBUG
 
     private lateinit var pictureAdapter: PictureEditAdapter
+
+    private var cameraPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +88,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         viewModel.allPictures.observe(this, Observer {
             pictureAdapter.populateData(it)
         })
+
+
 
     }
 
@@ -151,12 +163,36 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private fun launchImageIntents() {
 
         val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+
         //GALLERY INTENT
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         chooserIntent.putExtra(Intent.EXTRA_INTENT, galleryIntent)
+
         //TAKE PICTURE
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
+        // Ensure that there's a camera activity to handle the intent
+
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            var photoFile: File? = null
+            try {
+                photoFile = createImageFile()
+            } catch (ex: IOException) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                val photoURI = FileProvider.getUriForFile (this,
+                "com.openclassrooms.realestatemanager.fileprovider", photoFile)
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                // Save a file: path for use with ACTION_VIEW intents
+                cameraPhotoPath = photoFile.absolutePath
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
+            }
+        }
+
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
 
         if (chooserIntent.resolveActivity(packageManager) != null) {
             startActivityForResult(chooserIntent, REQUEST_IMAGE_CODE)
@@ -173,48 +209,55 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
             if (data?.data != null) {
                 //GALLERY
                 uri = data.data.toString()
-                //TODO NINO: already present in MediaStore, save anyway ?
 
             } else {
                 //CAMERA
-                val imageBitmap = data?.extras?.get("data") as Bitmap
-                val bytes = ByteArrayOutputStream()
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-                uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)//TODO: deprecated
-                //TODO NINO: deprecated
+                //val imageBitmap = data?.extras?.get("data") as Bitmap
+                //val bytes = ByteArrayOutputStream()
+                //imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                //uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)
+
+                //uri = saveImageInMediaStore(imageBitmap)?.toString()
+
+                uri = cameraPhotoPath!!
             }
 
             //Pass it to the viewModel
+            //uri?.let { viewModel.addPicture(it) }
             viewModel.addPicture(uri)
         }
 
     }
 
-    private fun deletePicture(uri: String, position: Int) {
-        //DB
-        viewModel.deletePictureFromDb(uri, position)
+    private fun saveImageInMediaStore(pic: Bitmap): Uri? {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, timeStamp)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "RealEstate")
+            }
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            put(MediaStore.Images.Media.IS_PENDING, 1)
+        }
+
+        val resolver = applicationContext.contentResolver
+        //ALWAYS NULL...
+        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+        uri?.let {
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                pic.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                outputStream.close()
+            }
+
+            values.clear()
+            values.put(MediaStore.Images.Media.IS_PENDING, 0)
+            resolver.update(uri, values, null, null)
+        }
+        return uri
     }
-    //TODO: Nino: remove from media store ?
-    /*
-    // Remove a specific media item.
-    val resolver = applicationContext.contentResolver
 
-    // URI of the image to remove.
-    val imageUri = "..."
-
-    // WHERE clause.
-    val selection = "..."
-    val selectionArgs = "..."
-
-    // Perform the actual removal.
-    val numImagesRemoved = resolver.delete(
-            imageUri,
-            selection,
-            selectionArgs)
-
-     */
-
-    /* PRIVATE STORAGE
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -224,12 +267,12 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
                 "JPEG_${timeStamp}_", /* prefix */
                 ".jpg", /* suffix */
                 storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            //currentPhotoPath = absolutePath
-        }
+        )
     }
-     */
+
+    override fun onDeleteButtonClick(pictureUri: String, position: Int) {
+        viewModel.deletePictureFromDb(pictureUri, position)
+    }
 
 
     //--------------------------------------------------------------------------------------//
@@ -285,21 +328,9 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     //                                   C O M P A N I O N
     //--------------------------------------------------------------------------------------//
     companion object {
-        private const val IS_NEW_KEY = "is_new_key"
         private const val REQUEST_IMAGE_CODE = 1
 
         fun newIntent(context: Context) = Intent(context, EditActivity::class.java)
-        /*
-        fun newIntent(context: Context, isNew: Boolean): Intent {
-            val intent = Intent(context, EditActivity::class.java)
-            intent.putExtra(IS_NEW_KEY, isNew)
-            return intent
-        }
-
-         */
     }
 
-    override fun onDeleteButtonClick(pictureUri: String, position: Int) {
-        deletePicture(pictureUri, position)
-    }
 }
