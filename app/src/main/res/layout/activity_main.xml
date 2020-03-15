@@ -3,13 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.openclassrooms.realestatemanager.property_main.MainActivity"
     android:gravity="center">
+
+    <include
+        android:id="@+id/layout_search_bar_main"
+        layout="@layout/search_bar"
+        android:visibility="gone"
+        />
 
 
     <fragment
         android:name="com.openclassrooms.realestatemanager.property_list.ListFragment"
-        android:id="@+id/fragment_list_main_landscape"
+        android:id="@+id/fragment_list_main"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>
 

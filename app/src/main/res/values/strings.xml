@@ -20,6 +20,7 @@
     <string name="select_a_property">Please select a property to edit.</string>
     <string name="change_sale_status">Change sale status</string>
     <string name="school">School</string>
+    <string name="text_in_description">Text in description</string>
 
     <string-array name="property_types">
         <item>HOUSE</item>

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +28,6 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
                               savedInstanceState: Bundle?): View? {
         Log.d("debuglog", "List fragment created")
 
-
         rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
         initRecyclerView(rootView)
@@ -35,7 +35,7 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
         viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
                 .get(ListViewModel::class.java)
 
-        viewModel.allProperties.observe(viewLifecycleOwner, Observer {
+        viewModel.properties.observe(viewLifecycleOwner, Observer {
             //TODO: empty list view
             propertyAdapter.populateList(ArrayList(it))
         })
@@ -64,6 +64,14 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
             //PORTRAIT
             startActivity(DetailsActivity.newIntent(this.requireContext()))
         }
+    }
+
+    fun filterByDescription(text: CharSequence) {
+        viewModel.filterPropertyByDescription(text)
+    }
+
+    fun setSearchCriterion() {
+        Toast.makeText(this.context, "Criterion", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

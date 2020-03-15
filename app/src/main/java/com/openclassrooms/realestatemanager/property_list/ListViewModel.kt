@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.property_list
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import com.openclassrooms.realestatemanager.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.model_ui.PropertyUi
@@ -12,7 +13,9 @@ import com.openclassrooms.realestatemanager.repository.PropertyRepository
 class ListViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
                     propertyRepo: PropertyRepository) : AndroidViewModel(application) {
 
-    val allProperties: LiveData<List<PropertyUi>> = Transformations.map(propertyRepo.allProperties) {
+    val properties = MediatorLiveData<List<PropertyUi>>()
+
+    private val dbProperties: LiveData<List<PropertyUi>> = Transformations.map(propertyRepo.allProperties) {
 
         val uiProperties = arrayListOf<PropertyUi>()
         for (item in it){
@@ -25,9 +28,26 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
         return@map uiProperties
     }
 
+    init {
+        properties.addSource(dbProperties) {
+            properties.value = it
+        }
+        //Ad source criteria
+    }
+
+
+    //Only for description, add address.. ?
+    fun filterPropertyByDescription(text: CharSequence) {
+        //val filteredList = properties.value ?: return
+        dbProperties.value?.let { dbList ->
+            properties.value = dbList.filter { it.description.contains(text, true) }
+        }
+    }
+
+
 
     fun selectProperty(id: Int) {
-        val property = allProperties.value?.find { it.id == id }
+        val property = dbProperties.value?.find { it.id == id }
         property?.let {inMemoRepo.setPropertySelection(it) }
     }
 

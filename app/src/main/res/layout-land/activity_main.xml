@@ -1,28 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="horizontal"
-    tools:context="com.openclassrooms.realestatemanager.property_main.MainActivity"
-    android:gravity="center">
+    tools:context="com.openclassrooms.realestatemanager.property_main.MainActivity">
 
+        <include
+            android:id="@+id/layout_search_bar_main"
+            layout="@layout/search_bar"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <fragment
+            android:id="@+id/fragment_list_main"
             android:name="com.openclassrooms.realestatemanager.property_list.ListFragment"
-            android:id="@+id/fragment_list_main_landscape"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_search_bar_main" />
 
         <fragment
-            android:name="com.openclassrooms.realestatemanager.property_details.DetailsFragment"
             android:id="@+id/fragment_details_main_landscape"
+            android:name="com.openclassrooms.realestatemanager.property_details.DetailsFragment"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"/>
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment_list_main"
+            app:layout_constraintTop_toBottomOf="@+id/layout_search_bar_main" />
+        />
 
-    <!--
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.3" />
+
+        <!--
        <FrameLayout
            android:id="@+id/place_holder_fragment_list"
            android:layout_width="0dp"
@@ -37,4 +59,4 @@
 
 -->
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
