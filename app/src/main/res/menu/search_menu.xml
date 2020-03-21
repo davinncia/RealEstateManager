@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_edit_menu_save"
-        android:title="@string/save"
+        android:id="@+id/item_search_menu_confirm"
+        android:title="@string/apply"
         app:showAsAction="always"
         />
 </menu>

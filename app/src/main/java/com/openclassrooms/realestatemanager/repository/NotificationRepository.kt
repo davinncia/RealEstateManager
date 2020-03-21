@@ -10,7 +10,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.property_details.DetailsActivity
+import com.openclassrooms.realestatemanager.view.details.DetailsActivity
 
 class NotificationRepository {
 

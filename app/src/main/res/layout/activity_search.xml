@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" 
+    android:layout_height="match_parent" android:layout_width="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.search.SearchActivity">
+
+    <TextView
+        android:id="@+id/tv_price_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PRICE RANGE"
+        style="@style/TextViewTitleSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- MIN PRICE -->
+    <TextView
+        android:id="@+id/tv_min_price_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:text="min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price_title_search"
+        />
+
+    <TextView
+        android:id="@+id/tv_min_price_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_min_price_title_search" />
+
+    <SeekBar
+        android:id="@+id/seekBar_min_price_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="0"
+        android:padding="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_min_price_title_search" />
+
+    <!-- MAX PRICE -->
+    <TextView
+        android:id="@+id/tv_max_price_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:text="max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_min_price_search"
+        />
+
+    <TextView
+        android:id="@+id/tv_max_price_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="10"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar_min_price_search"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_max_price_title_search" />
+
+    <SeekBar
+        android:id="@+id/seekBar_max_price_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="10"
+        android:padding="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_max_price_search"
+        app:layout_constraintTop_toBottomOf="@+id/tv_max_price_title_search"
+        />
+
+    <!-- AREA -->
+    <TextView
+        android:id="@+id/tv_area_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="LIVING SURFACE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar_max_price_search" />
+
+    <!-- MIN AREA -->
+    <TextView
+        android:id="@+id/tv_min_area_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:text="min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_area_title_search"
+        />
+
+    <TextView
+        android:id="@+id/tv_min_area_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_min_area_title_search" />
+
+    <SeekBar
+        android:id="@+id/seekBar_min_area_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="0"
+        android:padding="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_min_area_title_search" />
+
+    <!-- MAX AREA -->
+    <TextView
+        android:id="@+id/tv_max_area_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:text="max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_min_area_search"
+        />
+
+    <TextView
+        android:id="@+id/tv_max_area_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="10"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar_min_area_search"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_max_area_title_search" />
+
+    <SeekBar
+        android:id="@+id/seekBar_max_area_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="10"
+        android:padding="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_max_area_search"
+        app:layout_constraintTop_toBottomOf="@+id/tv_max_area_title_search"
+        />
+
+    <!-- CITY -->
+    <TextView
+        android:id="@+id/tv_city_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="CITY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar_max_area_search" />
+
+    <EditText
+        android:id="@+id/et_city_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="20"
+        android:gravity="center"
+        android:layout_margin="@dimen/margin"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_city_title_search"/>
+
+
+
+    <!-- CREATION DATE -->
+    <TextView
+        android:id="@+id/tv_sale_date_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="FROM PERIOD"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_city_search" />
+
+    <DatePicker
+        android:id="@+id/date_picker_search"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sale_date_title_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- SOLD -->
+    <TextView
+        android:id="@+id/tv_sold_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="SHOW SOLD PROPERTIES"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_picker_search" />
+
+    <CheckBox
+        android:id="@+id/checkbox_is_sold_yes_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_margin="@dimen/margin"
+        android:text="YES"
+        android:onClick="onCheckBoxClicked"
+        app:layout_constraintTop_toBottomOf="@id/tv_sold_title_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/checkbox_is_sold_no_search"
+        />
+
+    <CheckBox
+        android:id="@+id/checkbox_is_sold_no_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_margin="@dimen/margin"
+        android:onClick="onCheckBoxClicked"
+        app:layout_constraintTop_toBottomOf="@id/tv_sold_title_search"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_is_sold_yes_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="NO"
+        />
+
+    <!-- PICTURES -->
+
+    <TextView
+        android:id="@+id/tv_pictures_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="MINIMUN PICTURE NUMBER"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_is_sold_yes_search" />
+
+    <TextView
+        android:id="@+id/tv_min_pictures_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding"
+        android:text="min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pictures_title_search"
+        />
+
+    <TextView
+        android:id="@+id/tv_min_pictures_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_min_pictures_title_search" />
+
+    <SeekBar
+        android:id="@+id/seekBar_min_pictures_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="0"
+        android:padding="@dimen/padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_min_pictures_title_search" />
+
+
+    <!-- POI -->
+    <TextView
+        android:id="@+id/tv_poi_title_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="POINTS OF INTEREST NEARBY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar_min_pictures_search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_poi_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_poi_title_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

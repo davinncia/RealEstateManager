@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.model_ui
+package com.openclassrooms.realestatemanager.view.model_ui
 
 sealed class PropertyWrapper
 

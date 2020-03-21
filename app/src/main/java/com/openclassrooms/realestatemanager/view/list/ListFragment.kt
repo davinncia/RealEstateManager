@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_list
+package com.openclassrooms.realestatemanager.view.list
 
 
 import android.os.Bundle
@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.property_details.DetailsActivity
+import com.openclassrooms.realestatemanager.model.Criteria
+import com.openclassrooms.realestatemanager.view.details.DetailsActivity
 
 
 class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
@@ -68,6 +69,11 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
     fun filterByDescription(text: CharSequence) {
         viewModel.filterPropertyByDescription(text)
+    }
+
+    fun passSearchCriteria(criteria: Criteria) {
+        Toast.makeText(this.context, criteria.city, Toast.LENGTH_SHORT).show()
+        viewModel.advancedSearch(criteria)
     }
 
     fun setSearchCriterion() {

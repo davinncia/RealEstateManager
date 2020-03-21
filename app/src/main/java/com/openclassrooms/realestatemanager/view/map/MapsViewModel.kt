@@ -1,15 +1,15 @@
-package com.openclassrooms.realestatemanager.property_map
+package com.openclassrooms.realestatemanager.view.map
 
 import android.app.Application
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Property
-import com.openclassrooms.realestatemanager.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.model_ui.PropertyMarker
-import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
+import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyMarker
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

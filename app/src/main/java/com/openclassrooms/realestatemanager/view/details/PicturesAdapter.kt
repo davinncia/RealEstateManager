@@ -1,6 +1,5 @@
-package com.openclassrooms.realestatemanager.property_details
+package com.openclassrooms.realestatemanager.view.details
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView

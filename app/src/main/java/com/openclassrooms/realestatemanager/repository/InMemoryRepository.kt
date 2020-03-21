@@ -2,8 +2,8 @@ package com.openclassrooms.realestatemanager.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.openclassrooms.realestatemanager.model_ui.EmptyProperty
-import com.openclassrooms.realestatemanager.model_ui.PropertyWrapper
+import com.openclassrooms.realestatemanager.view.model_ui.EmptyProperty
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyWrapper
 
 
 class InMemoryRepository {

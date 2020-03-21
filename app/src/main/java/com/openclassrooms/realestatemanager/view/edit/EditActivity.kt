@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_edit
+package com.openclassrooms.realestatemanager.view.edit
 
 import android.Manifest
 import android.content.ContentValues
@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -27,15 +26,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.model_ui.PropertyUi
-import com.openclassrooms.realestatemanager.property_map.MapsActivity
+import com.openclassrooms.realestatemanager.view.map.MapsActivity
+import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
+import com.openclassrooms.realestatemanager.view.search.PoiAdapter
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener {
+class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener, PoiAdapter.OnPoiCLickListener {
 
     private lateinit var viewModel: EditViewModel
 
@@ -54,6 +55,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private lateinit var addImageView: ImageView //TODO: DEBUG
 
     private lateinit var pictureAdapter: PictureEditAdapter
+    private lateinit var poiAdapter: PoiAdapter
 
     private var cameraPhotoPath: String? = null
 
@@ -72,7 +74,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         agentView = findViewById(R.id.et_edit_agent_name)
         addImageView = findViewById<ImageView>(R.id.iv_edit_add_picture).apply { setOnClickListener { checkStoragePermission() } }
 
-        initRecyclerView()
+        initPoiRecyclerView()
+        initPictureRecyclerView()
 
         viewModel = ViewModelProvider(this, ViewModelFactory(this.application)).get(EditViewModel::class.java)
 
@@ -89,6 +92,10 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
             pictureAdapter.populateData(it)
         })
 
+        //Display poi
+        viewModel.allPoi.observe(this, Observer {
+            poiAdapter.populateData(it)
+        })
 
 
     }
@@ -108,8 +115,22 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         agentView.setText(property.agentName)
     }
 
-    //RecyclerView
-    private fun initRecyclerView() {
+    //RecyclerViews
+    private fun  initPoiRecyclerView() {
+
+        poiAdapter = PoiAdapter(this)
+
+        findViewById<RecyclerView>(R.id.recycler_view_poi_edit).apply {
+            adapter = poiAdapter
+            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    override fun onPoiClicked(poi: PoiUi) {
+        viewModel.handlePoiSelection(poi)
+    }
+
+    private fun initPictureRecyclerView() {
 
         pictureAdapter = PictureEditAdapter(this)
 
@@ -234,9 +255,9 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, timeStamp)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "RealEstate")
-            }
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //    put(MediaStore.Images.Media.RELATIVE_PATH, "RealEstate")
+            //}
             put(MediaStore.Images.Media.MIME_TYPE, "image/png")
             put(MediaStore.Images.Media.IS_PENDING, 1)
         }

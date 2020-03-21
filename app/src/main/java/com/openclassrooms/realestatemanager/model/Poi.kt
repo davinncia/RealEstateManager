@@ -1,20 +1,11 @@
 package com.openclassrooms.realestatemanager.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "poi_table")
 data class Poi(
-        val id: Int,
-        val name: String,
-        val iconResourceId: Int
-) {
-
-    companion object {
-        //TODO: stock strings in db on creation
-        const val SCHOOL = "School"
-        const val PARK = "Park"
-        const val GROCERY_STORE = "Grocery store"
-        const val TRAIN_STATION = "Train station"
-    }
-
-}
+        @PrimaryKey val name: String,
+        @ColumnInfo(name = "icon_ressource_id") val iconResourceId: Int
+)

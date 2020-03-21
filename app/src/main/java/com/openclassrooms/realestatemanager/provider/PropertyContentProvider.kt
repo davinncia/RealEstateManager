@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.provider
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import com.openclassrooms.realestatemanager.db.PropertyRoomDatabase
@@ -25,12 +24,12 @@ class PropertyContentProvider : ContentProvider() {
 
     //TODO NINO: smart cast for context impossible ?
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
-        if (context != null) {
-            val propertyId = ContentUris.parseId(uri)
-            val cursor: Cursor? = PropertyRoomDatabase.getDatabase(context as Context).propertyDao().getPropertyWithCursor(propertyId)
-            cursor?.setNotificationUri((context as Context).contentResolver, uri)
-            return cursor
-        }
+
+            context?.let {  val propertyId = ContentUris.parseId(uri)
+                val cursor: Cursor? = PropertyRoomDatabase.getDatabase(it).propertyDao().getPropertyWithCursor(propertyId)
+                cursor?.setNotificationUri((it).contentResolver, uri)
+                return cursor
+            }
         throw IllegalArgumentException("Failed to query row for uri $uri")
     }
 

@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_details
+package com.openclassrooms.realestatemanager.view.details
 
 
 import android.os.Bundle
@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model_ui.PropertyUi
-import com.openclassrooms.realestatemanager.property_edit.EditActivity
-import com.openclassrooms.realestatemanager.property_map.MapsActivity
+import com.openclassrooms.realestatemanager.view.edit.EditActivity
+import com.openclassrooms.realestatemanager.view.map.MapsActivity
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 
 
 class DetailsFragment : Fragment() {

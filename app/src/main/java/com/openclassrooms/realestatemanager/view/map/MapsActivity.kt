@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_map
+package com.openclassrooms.realestatemanager.view.map
 
 import android.Manifest
 import android.content.Context
@@ -18,8 +18,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import com.openclassrooms.realestatemanager.model_ui.PropertyMarker
-import com.openclassrooms.realestatemanager.property_details.DetailsActivity
+import com.openclassrooms.realestatemanager.view.details.DetailsActivity
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyMarker
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 

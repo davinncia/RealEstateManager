@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_list
+package com.openclassrooms.realestatemanager.view.list
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.model_ui.PropertyUi
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 
 
 class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {

@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_details
+package com.openclassrooms.realestatemanager.view.details
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.property_main.MainActivity
+import com.openclassrooms.realestatemanager.view.main.MainActivity
 
 class DetailsActivity : AppCompatActivity() {
 

@@ -5,6 +5,10 @@
     <dimen name="text_large">26sp</dimen>
     <dimen name="text_small">16sp</dimen>
     <dimen name="margin">8dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
     <dimen name="padding">8dp</dimen>
+    <dimen name="padding_big">16dp</dimen>
+    <dimen name="description_height">250dp</dimen>
+
 
 </resources>

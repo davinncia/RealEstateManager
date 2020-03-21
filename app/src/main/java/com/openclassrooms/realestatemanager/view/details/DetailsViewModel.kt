@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.property_details
+package com.openclassrooms.realestatemanager.view.details
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,11 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.realestatemanager.model.Picture
-import com.openclassrooms.realestatemanager.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.NetworkRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
+import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
+import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(application: Application, private val inMemoRepo: InMemoryRepository, networkRepo: NetworkRepository,

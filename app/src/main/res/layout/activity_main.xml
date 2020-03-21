@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.openclassrooms.realestatemanager.property_main.MainActivity"
+    tools:context=".view.main.MainActivity"
     android:gravity="center">
 
     <include
@@ -15,7 +15,7 @@
 
 
     <fragment
-        android:name="com.openclassrooms.realestatemanager.property_list.ListFragment"
+        android:name="com.openclassrooms.realestatemanager.view.list.ListFragment"
         android:id="@+id/fragment_list_main"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>

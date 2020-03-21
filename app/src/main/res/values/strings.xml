@@ -19,8 +19,8 @@
     <string name="edit">Edit</string>
     <string name="select_a_property">Please select a property to edit.</string>
     <string name="change_sale_status">Change sale status</string>
-    <string name="school">School</string>
     <string name="text_in_description">Text in description</string>
+    <string name="apply">APPLY</string>
 
     <string-array name="property_types">
         <item>HOUSE</item>
@@ -29,5 +29,21 @@
         <item>CASTLE</item>
         <item>LOFT</item>
     </string-array>
+
+    <string-array name="poi_list">
+        <item>DOCTOR</item>
+        <item>PARK</item>
+        <item>GROCERY STORE</item>
+        <item>SCHOOL</item>
+        <item>TRAIN STATION</item>
+    </string-array>
+
+    <!-- POI -->
+    <string name="doctor">Doctor</string>
+    <string name="park">Park</string>
+    <string name="grocery">Grocery store</string>
+    <string name="school">School</string>
+    <string name="station">Train station</string>
+
 
 </resources>

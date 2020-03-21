@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
 import com.openclassrooms.realestatemanager.model.Property
-import com.openclassrooms.realestatemanager.property_map.MapsViewModel
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
 import com.openclassrooms.realestatemanager.utils.MainCoroutineRule
 import com.openclassrooms.realestatemanager.utils.getOrAwaitValue
+import com.openclassrooms.realestatemanager.view.map.MapsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
