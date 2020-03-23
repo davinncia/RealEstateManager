@@ -44,6 +44,12 @@
     <string name="grocery">Grocery store</string>
     <string name="school">School</string>
     <string name="station">Train station</string>
+    <string name="amount">AMOUNT</string>
+    <string name="duration">DURATION</string>
+    <string name="loan_simulator">Loan simulator</string>
+    <string name="dollard_currency">$</string>
+    <string name="years">years</string>
+    <string name="month">/month</string>
 
 
 </resources>

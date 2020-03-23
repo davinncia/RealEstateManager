@@ -64,6 +64,8 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
         }
     }
 
+    fun getPropertyPriceStr(): String = (propertySelectionMutable.value as PropertyUi).price.toString()
+
     fun getStaticMapStringUrlGivenAddress(address: AddressUi, apiKey: String): String {
 
         val streetUrl = address.street.replace(" ", "+")

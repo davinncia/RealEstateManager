@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.view.edit.EditActivity
+import com.openclassrooms.realestatemanager.view.loan.LoanActivity
 import com.openclassrooms.realestatemanager.view.map.MapsActivity
 import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 
@@ -135,21 +136,22 @@ class DetailsFragment : Fragment() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        if (!activeSelection) {
+            Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
+            return super.onOptionsItemSelected(item)
+        }
+
+        return when (item.itemId) {
             R.id.item_details_menu_edit -> {
-                if (activeSelection) {
-                    startActivity(EditActivity.newIntent(requireContext()))
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
-                }
+                startActivity(EditActivity.newIntent(requireContext()))
                 true
             }
             R.id.item_details_menu_sale_status -> {
-                if (activeSelection) {
-                    viewModel.changeSaleStatus()
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.select_a_property), Toast.LENGTH_SHORT).show()
-                }
+                viewModel.changeSaleStatus()
+                true
+            }
+            R.id.item_details_menu_loan -> {
+                startActivity(LoanActivity.newIntent(this.requireContext(), viewModel.getPropertyPriceStr()))
                 true
             }
             else -> return super.onOptionsItemSelected(item)

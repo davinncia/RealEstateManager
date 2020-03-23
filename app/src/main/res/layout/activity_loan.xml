@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.loan.LoanActivity">
+
+    <TextView
+        android:id="@+id/tv_amount_title_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="@string/amount"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_amount_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="100 000"
+        app:layout_constraintEnd_toStartOf="@id/tv_amount_currency_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_amount_title_loan"/>
+
+    <TextView
+        android:id="@+id/tv_amount_currency_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding"
+        android:paddingStart="@dimen/padding"
+        android:text="@string/dollard_currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_amount_title_loan"
+         />
+
+    <SeekBar
+        android:id="@+id/seekbar_amount_loan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="9"
+        android:progress="10"
+        app:layout_constraintTop_toBottomOf="@id/tv_amount_title_loan"/>
+
+    <TextView
+        android:id="@+id/tv_duration_title_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitleSearch"
+        android:text="@string/duration"
+        app:layout_constraintTop_toBottomOf="@id/seekbar_amount_loan"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_duration_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="10"
+        app:layout_constraintEnd_toStartOf="@id/tv_duration_unit_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_duration_title_loan"/>
+
+    <TextView
+        android:id="@+id/tv_duration_unit_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding"
+        android:paddingStart="@dimen/padding"
+        android:text="@string/years"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_duration_title_loan"
+        />
+
+    <SeekBar
+        android:id="@+id/seekbar_duration_loan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="19"
+        android:progress="10"
+        app:layout_constraintTop_toBottomOf="@id/tv_duration_title_loan"/>
+
+    <TextView
+        android:id="@+id/tv_monthly_due_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_big"
+        android:textSize="@dimen/text_large"
+        android:textColor="@color/colorAccent"
+        tools:text="500"
+        app:layout_constraintTop_toBottomOf="@id/seekbar_duration_loan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_monthly_due_unit_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:text="@string/month"
+        app:layout_constraintBottom_toBottomOf="@id/tv_monthly_due_loan"
+        app:layout_constraintTop_toTopOf="@id/tv_monthly_due_loan"
+        app:layout_constraintStart_toEndOf="@id/tv_monthly_due_loan"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
