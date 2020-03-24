@@ -7,27 +7,49 @@ import java.math.BigDecimal
 
 class LoanViewModel : ViewModel() {
 
-    //TODO work with BigDec
     val initialAmount = MutableLiveData<BigDecimal>()
     val amount = MutableLiveData<BigDecimal>()
-    val duration = MutableLiveData(BigDecimal.TEN) //Starting with 10 years
+    val duration = MutableLiveData(BigDecimal.TEN) //Years
+    val loanRate = MutableLiveData(BigDecimal(0.01))
     val monthlyDue = MediatorLiveData<BigDecimal>()
+    val bankFee = MutableLiveData<BigDecimal>()
+
+    //val isEuro = MutableLiveData<Boolean>(false)
 
     init {
+       // amount.addSource(isEuro) {
+       //     if (it) amount.value = Utils.convertDollarToEuro(amount.value!!)
+       //     else amount.value = Utils.convertEuroToDollar(amount.value!!)
+       // }
+
         monthlyDue.addSource(amount) {
             computeMonthlyDue()
         }
         monthlyDue.addSource(duration) {
+            computeLoanRate(it.toInt())
             computeMonthlyDue()
         }
     }
 
-    private fun computeMonthlyDue() {
-        monthlyDue.value = (amount.value!! / (duration.value!! * 12.toBigDecimal()))
+    private fun computeLoanRate(years: Int) {
+        var rate = 0.006
+
+        if (years >= 5) {
+            for (i in 6..years) {
+                rate += 0.0004
+            }
+        }
+        loanRate.value = rate.toBigDecimal()
     }
-    /*private fun computeMonthlyDue() {
-        monthlyDue.value = (amount.value!!.div(duration.value!! * 12.toBigDecimal()))
-    }*/
+
+    private fun computeMonthlyDue() {
+        val totalInsurance = (amount.value!! * BigDecimal(0.0034)) * duration.value!!
+        val totalInterest = (amount.value!! * loanRate.value!!) * duration.value!!
+        val totalAmount = amount.value!! + totalInterest + totalInsurance
+
+        monthlyDue.value = (totalAmount / (duration.value!! * 12.toBigDecimal()))
+        bankFee.value = totalInsurance + totalInterest
+    }
 
     fun adjustAmount(progress: Int) {
         val ratio = (progress.toDouble() / 10).toBigDecimal()
@@ -39,4 +61,8 @@ class LoanViewModel : ViewModel() {
     fun adjustDuration(progress: Int) {
         duration.value = progress.toBigDecimal()
     }
+
+    //fun setCurrency(euro: Boolean) {
+    //    isEuro.value = euro
+    //}
 }

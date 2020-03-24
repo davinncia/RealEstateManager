@@ -10,7 +10,7 @@
         android:id="@+id/tv_amount_title_loan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="@string/amount"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -46,7 +46,7 @@
         android:id="@+id/tv_duration_title_loan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="@string/duration"
         app:layout_constraintTop_toBottomOf="@id/seekbar_amount_loan"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -78,6 +78,68 @@
         android:progress="10"
         app:layout_constraintTop_toBottomOf="@id/tv_duration_title_loan"/>
 
+    <!-- INTEREST RATE -->
+    <TextView
+        android:id="@+id/tv_rate_title_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitle"
+        android:text="@string/interest_rate"
+        app:layout_constraintTop_toBottomOf="@id/seekbar_duration_loan"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_rate_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1.7"
+        app:layout_constraintEnd_toStartOf="@id/tv_rate_unit_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_rate_title_loan"
+        />
+
+    <TextView
+        android:id="@+id/tv_rate_unit_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding"
+        android:paddingStart="@dimen/padding"
+        android:text="%"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_rate_title_loan"
+        tools:ignore="HardcodedText" />
+
+    <!-- INSURANCE RATE -->
+    <TextView
+        android:id="@+id/tv_insurance_title_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitle"
+        android:text="@string/insurance_rate"
+        app:layout_constraintTop_toBottomOf="@id/tv_rate_title_loan"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_insurance_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="3.4"
+        app:layout_constraintEnd_toStartOf="@id/tv_insurance_unit_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_insurance_title_loan"
+        />
+
+    <TextView
+        android:id="@+id/tv_insurance_unit_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding"
+        android:paddingStart="@dimen/padding"
+        android:text="%"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_insurance_title_loan"
+        tools:ignore="HardcodedText" />
+
+
+    <!-- MONTHLY DUE -->
     <TextView
         android:id="@+id/tv_monthly_due_loan"
         android:layout_width="wrap_content"
@@ -86,7 +148,8 @@
         android:textSize="@dimen/text_large"
         android:textColor="@color/colorAccent"
         tools:text="500"
-        app:layout_constraintTop_toBottomOf="@id/seekbar_duration_loan"
+        app:layout_constraintTop_toBottomOf="@id/tv_insurance_title_loan"
+        app:layout_constraintBottom_toTopOf="@id/tv_bank_fees_title_loan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -96,10 +159,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorAccent"
-        android:text="@string/month"
+        android:text="@string/currency_per_month"
         app:layout_constraintBottom_toBottomOf="@id/tv_monthly_due_loan"
         app:layout_constraintTop_toTopOf="@id/tv_monthly_due_loan"
         app:layout_constraintStart_toEndOf="@id/tv_monthly_due_loan"
+        />
+
+    <!-- BANK FEES -->
+    <TextView
+        android:id="@+id/tv_bank_fees_title_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextViewTitle"
+        android:paddingBottom="@dimen/padding_big"
+        android:text="@string/total_bank_fees"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_bank_fees_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="3.4"
+        android:layout_marginStart="@dimen/margin"
+        app:layout_constraintStart_toEndOf="@id/tv_bank_fees_title_loan"
+        app:layout_constraintTop_toTopOf="@id/tv_bank_fees_title_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bank_fees_title_loan"
+        />
+
+    <TextView
+        android:id="@+id/tv_bank_fee_currency_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding"
+        android:paddingStart="@dimen/padding"
+        android:text="@string/dollard_currency"
+        app:layout_constraintStart_toEndOf="@id/tv_bank_fees_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bank_fees_loan"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,13 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
+import java.math.BigDecimal
 
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var viewModel: LoanViewModel
-    private val amountView by bind<TextView>(R.id.tv_amount_loan)
-    private val durationView by bind<TextView>(R.id.tv_duration_title_loan)
-    private val monthlyDueView by bind<TextView>(R.id.tv_monthly_due_loan)
+//    var isEuro = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,16 +38,32 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         //Observing data
         //val nf = NumberFormat.getNumberInstance(Locale.getDefault())
         viewModel.amount.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_amount_loan).text = String.format("%,d", it.toInt())
+            findViewById<TextView>(R.id.tv_amount_loan).text = decimalToString(it)
         })
 
         viewModel.duration.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_duration_loan).text = "$it"
+            findViewById<TextView>(R.id.tv_duration_loan).text = decimalToString(it)
         })
 
-        viewModel.monthlyDue.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_monthly_due_loan).text = "$it"
+        viewModel.loanRate.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_rate_loan).text = decimalToString(it * BigDecimal(100))
         })
+
+        val insuranceRate = 0.34
+        findViewById<TextView>(R.id.tv_insurance_loan).text = "$insuranceRate"
+
+        viewModel.monthlyDue.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_monthly_due_loan).text = decimalToString(it)
+        })
+
+        viewModel.bankFee.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_bank_fees_loan).text = decimalToString(it)
+        })
+
+        //CURRENCY
+//        viewModel.isEuro.observe(this, Observer {
+//            isEuro = it
+//        })
     }
 
     //--------------------------------------------------------------------------------------------//
@@ -69,16 +84,51 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         }
     }
 
-
-    //--------------------------------------------------------------------------------------------//
-    //                                   C O M P A N I O N S
-    //--------------------------------------------------------------------------------------------//
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
     }
 
+    //--------------------------------------------------------------------------------------------//
+    //                                            M E N U
+    //--------------------------------------------------------------------------------------------//
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.advanced_search_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_default_currency_menu -> {
+                if (isEuro) {
+                    item.setIcon(R.drawable.ic_euro)
+                } else {
+                    item.setIcon(R.drawable.ic_dollard)
+                }
+                changeCurrency(!isEuro)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun changeCurrency(euro: Boolean) {
+        viewModel.setCurrency(euro)
+        
+        if (euro) {
+            findViewById<TextView>(R.id.tv_amount_currency_loan).text = resources.getString(R.string.euro_currency)
+        } else {
+            findViewById<TextView>(R.id.tv_amount_currency_loan).text = resources.getString(R.string.dollard_currency)
+
+        }
+    }
+
+     */
+
+    //--------------------------------------------------------------------------------------------//
+    //                                   C O M P A N I O N S
+    //--------------------------------------------------------------------------------------------//
     companion object {
         const val EXTRA_PRICE = "price"
 
@@ -92,5 +142,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     private fun <T: View> Activity.bind(@IdRes res: Int) : Lazy<T> {
         return lazy { findViewById<T>(res) }
     }
+
+    private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec)
 
 }

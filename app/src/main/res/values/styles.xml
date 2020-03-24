@@ -8,10 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextViewTitleSearch" >
+    <style name="TextViewTitle" >
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_medium</item>
         <item name="android:paddingStart">@dimen/padding</item>
         <item name="android:paddingTop">@dimen/padding_big</item>
+    </style>
+
+    <style name="TextViewValue" >
+        <item name="android:textSize">@dimen/text_medium</item>
     </style>
 
     <style name="EditTextInputEdit" >

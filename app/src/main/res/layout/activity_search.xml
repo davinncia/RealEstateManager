@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="PRICE RANGE"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,7 +92,7 @@
         android:id="@+id/tv_area_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="LIVING SURFACE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seekBar_max_price_search" />
@@ -170,7 +170,7 @@
         android:id="@+id/tv_city_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="CITY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seekBar_max_area_search" />
@@ -194,7 +194,7 @@
         android:id="@+id/tv_sale_date_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="FROM PERIOD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_city_search" />
@@ -214,7 +214,7 @@
         android:id="@+id/tv_sold_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="SHOW SOLD PROPERTIES"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_picker_search" />
@@ -251,7 +251,7 @@
         android:id="@+id/tv_pictures_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="MINIMUN PICTURE NUMBER"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_is_sold_yes_search" />
@@ -294,7 +294,7 @@
         android:id="@+id/tv_poi_title_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewTitleSearch"
+        style="@style/TextViewTitle"
         android:text="POINTS OF INTEREST NEARBY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seekBar_min_pictures_search" />

@@ -3,11 +3,10 @@ package com.openclassrooms.realestatemanager.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 
 import androidx.annotation.VisibleForTesting;
 
-import java.text.DateFormat;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -24,13 +23,13 @@ public class Utils {
      * @param dollars
      * @return
      */
-    //See bigdecimal
-    public static int convertDollarToEuro(int dollars){
-        return (int) Math.round(dollars * 0.90);
+    //Use of BigDecimal for better accuracy
+    public static BigDecimal convertDollarToEuro(BigDecimal dollars){
+        return dollars.multiply(BigDecimal.valueOf(0.90));
     }
 
-    public static int convertEuroToDollar(int euros){
-        return (int) Math.round(euros * 1.11);
+    public static BigDecimal convertEuroToDollar(BigDecimal euros){
+        return euros.multiply(BigDecimal.valueOf(1.10));
     }
 
     /**
