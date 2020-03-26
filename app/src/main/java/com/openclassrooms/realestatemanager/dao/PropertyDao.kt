@@ -37,7 +37,6 @@ interface PropertyDao {
         AND city LIKE :city 
         AND creation_time >= :minCreationEpoch 
         AND is_sold IN (:isSold)""")
-
     suspend fun advancedSearch(
             minPrice: Int, maxPrice: Int,
             minArea: Int, maxArea: Int,

@@ -53,7 +53,7 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
 
 
     fun changeSaleStatus() {
-        val property = propertyUi.value!! //Can't be null when this method is called
+        val property = propertyUi.value!! //TODO NPE !!
 
         //Notify observer
         inMemoRepo.setPropertySelection(property.also {it.isSold = !it.isSold })

@@ -52,7 +52,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private lateinit var streetView: EditText
     private lateinit var streetNbrView: EditText
     private lateinit var agentView: EditText
-    private lateinit var addImageView: ImageView //TODO: DEBUG
+    private lateinit var addImageView: ImageView
 
     private lateinit var pictureAdapter: PictureEditAdapter
     private lateinit var poiAdapter: PoiAdapter
@@ -168,7 +168,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
             val address = AddressUi(city, street, strStreetNbr.toInt())
 
-            val property = PropertyUi(type, strPrice.toFloat(), strArea.toFloat(), strRooms.toInt(),
+            val property = PropertyUi(type, strPrice.toInt(), strArea.toFloat(), strRooms.toInt(),
                     description, address, agent, false, id)
 
             viewModel.saveInDb(property, isNew)

@@ -16,7 +16,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
     private var uiProperties = ArrayList<PropertyUi>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.property_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_property, parent, false)
         return PropertyViewHolder(view)
     }
 
@@ -48,7 +48,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         fun bind(uiProperty: PropertyUi){
             typeView.text = uiProperty.type
             cityView.text = uiProperty.address.city
-            priceView.text = "${uiProperty.price}$"
+            priceView.text = String.format("%,d", uiProperty.price) + "$"
             Glide.with(imageView.context).load(uiProperty.thumbnailUri).into(imageView)
             if (uiProperty.isSold) soldBanner.visibility = View.VISIBLE
             else soldBanner.visibility = View.INVISIBLE

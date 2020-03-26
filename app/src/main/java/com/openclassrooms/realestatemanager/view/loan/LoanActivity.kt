@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import java.math.BigDecimal
+import kotlin.math.roundToInt
 
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
@@ -38,11 +39,11 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         //Observing data
         //val nf = NumberFormat.getNumberInstance(Locale.getDefault())
         viewModel.amount.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_amount_loan).text = decimalToString(it)
+            findViewById<TextView>(R.id.tv_amount_loan).text = decimalToIntString(it)
         })
 
         viewModel.duration.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_duration_loan).text = decimalToString(it)
+            findViewById<TextView>(R.id.tv_duration_loan).text = decimalToIntString(it)
         })
 
         viewModel.loanRate.observe(this, Observer {
@@ -144,5 +145,6 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     }
 
     private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec)
+    private fun decimalToIntString(dec: BigDecimal): String = String.format("%,d", dec.toDouble().roundToInt())
 
 }

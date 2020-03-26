@@ -20,9 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.loan.LoanActivity"></activity>
-        <activity android:name=".view.search.Search2Activity" />
         <activity android:name=".view.search.SearchActivity" />
-        <activity android:name=".view.edit.EditActivity" />
+        <activity android:name=".view.edit.EditActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

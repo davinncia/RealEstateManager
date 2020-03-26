@@ -4,17 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding"
+    android:paddingStart="@dimen/padding"
+    android:paddingEnd="@dimen/padding"
     >
 
     <EditText
         android:id="@+id/et_edit_agent_name"
         style="@style/EditTextInputEdit"
         android:hint="Agent name"
+        app:layout_constraintBottom_toTopOf="@id/et_edit_city"
         app:layout_constraintEnd_toStartOf="@+id/spinner_edit_type"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_city"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner_edit_type"
@@ -24,8 +25,8 @@
         android:entries="@array/property_types"
         app:layout_constraintEnd_toStartOf="@id/et_edit_room_nbr"
         app:layout_constraintStart_toEndOf="@id/et_edit_agent_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_city"/>
+        app:layout_constraintTop_toTopOf="@id/et_edit_agent_name"
+        app:layout_constraintBottom_toBottomOf="@id/et_edit_agent_name"/>
 
     <EditText
         android:id="@+id/et_edit_room_nbr"
@@ -34,8 +35,8 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/spinner_edit_type"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_city"/>
+        app:layout_constraintTop_toTopOf="@id/et_edit_agent_name"
+        app:layout_constraintBottom_toBottomOf="@id/et_edit_agent_name"/>
 
     <EditText
         android:id="@+id/et_edit_city"
@@ -43,19 +44,21 @@
         android:hint="City"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/et_edit_street"
         app:layout_constraintTop_toBottomOf="@id/et_edit_agent_name"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_price"/>
+        app:layout_constraintBottom_toTopOf="@id/et_edit_price"
+        app:layout_constraintEnd_toStartOf="@id/et_edit_street"/>
 
     <EditText
         android:id="@+id/et_edit_street"
         style="@style/EditTextInputEdit"
         android:hint="Street"
         android:inputType="text"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
         app:layout_constraintStart_toEndOf="@id/et_edit_city"
         app:layout_constraintEnd_toStartOf="@id/et_edit_street_nbr"
-        app:layout_constraintTop_toBottomOf="@id/et_edit_agent_name"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_price"/>
+        app:layout_constraintTop_toTopOf="@id/et_edit_city"
+        app:layout_constraintBottom_toBottomOf="@id/et_edit_city"/>
 
     <EditText
         android:id="@+id/et_edit_street_nbr"
@@ -65,8 +68,8 @@
         android:gravity="center"
         app:layout_constraintStart_toEndOf="@id/et_edit_street"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_edit_agent_name"
-        app:layout_constraintBottom_toTopOf="@id/et_edit_price"/>
+        app:layout_constraintTop_toTopOf="@id/et_edit_city"
+        app:layout_constraintBottom_toBottomOf="@id/et_edit_city"/>
 
     <EditText
         android:id="@+id/et_edit_price"
@@ -98,8 +101,8 @@
         android:inputType="numberDecimal"
         app:layout_constraintStart_toEndOf="@id/tv_edit_currency"
         app:layout_constraintEnd_toStartOf="@id/tv_edit_area_unit"
-        app:layout_constraintTop_toBottomOf="@id/et_edit_city"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="@id/et_edit_price"
+        app:layout_constraintTop_toTopOf="@id/et_edit_price"/>
 
     <TextView
         android:id="@+id/tv_edit_area_unit"

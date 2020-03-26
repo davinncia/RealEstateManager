@@ -12,7 +12,7 @@ class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adap
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicturesViewHolder {
         val imageView = LayoutInflater.from(parent.context).inflate(
-                R.layout.picture_item, parent, false) as ImageView
+                R.layout.item_picture, parent, false) as ImageView
         return PicturesViewHolder(imageView)
     }
 

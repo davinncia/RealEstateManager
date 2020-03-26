@@ -12,7 +12,7 @@
         android:text="@string/pictures"
         android:textSize="@dimen/text_medium"
         android:textStyle="bold"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/margin"
          />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -28,7 +28,7 @@
         android:text="@string/description"
         android:textSize="@dimen/text_medium"
         android:textStyle="bold"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/margin"
         />
 
     <TextView
@@ -36,8 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="ablabalbalbalbalbalbalbalablablablablablablablabalb balalblabalb balbalba balbalbla balbalba balbalabl balbala balblablbalbalbalbla"
+        android:maxHeight="@dimen/description_height"
         android:textSize="@dimen/text_small"
-        android:maxLength="1000"
         android:paddingStart="@dimen/padding"
         android:paddingEnd="@dimen/padding"
         />

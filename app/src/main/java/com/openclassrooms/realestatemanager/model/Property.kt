@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "property_table")
 data class Property(
         val type: String = "HOUSE",
-        val price: Float, //TODO: Int is enough
+        val price: Int,
         val area: Float,
         @ColumnInfo(name = "room_number") val roomNbr: Int,
         val description: String,

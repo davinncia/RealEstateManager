@@ -20,7 +20,6 @@ import com.openclassrooms.realestatemanager.model.Criteria
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 import java.util.*
 
-//TODO NINO: Search activity
 class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var viewModel: SearchViewModel

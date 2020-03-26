@@ -8,7 +8,7 @@ import android.net.Uri
 import com.openclassrooms.realestatemanager.db.PropertyRoomDatabase
 import com.openclassrooms.realestatemanager.model.Property
 
-//TODO NINO: My content provider
+
 class PropertyContentProvider : ContentProvider() {
 
     companion object {
@@ -22,7 +22,7 @@ class PropertyContentProvider : ContentProvider() {
         throw IllegalStateException("RealEstateManager is read only.")
     }
 
-    //TODO NINO: smart cast for context impossible ?
+
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
 
             context?.let {  val propertyId = ContentUris.parseId(uri)

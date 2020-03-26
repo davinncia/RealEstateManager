@@ -42,7 +42,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
     //POI
     val allPoi = MediatorLiveData<List<PoiUi>>()
-    //TODO: get saved poi
     private val savedPoi = Transformations.switchMap(selectedProperty) { property ->
         Transformations.map(propertyRepo.getPoiList(property.id)) { poiList ->
             poiList.map { it.poiName }

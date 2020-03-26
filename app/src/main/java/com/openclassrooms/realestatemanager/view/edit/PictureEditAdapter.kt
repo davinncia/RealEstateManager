@@ -15,7 +15,7 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureEditViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
-                R.layout.picture_edit_item, parent, false)
+                R.layout.item_picture_edit, parent, false)
         return PictureEditViewHolder(itemView)
     }
 

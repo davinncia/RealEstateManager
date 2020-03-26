@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- MONTHLY DUE -->
+    <TextView
+        android:id="@+id/tv_monthly_due_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_big"
+        android:textSize="@dimen/text_large"
+        android:textColor="@color/colorAccent"
+        tools:text="500"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_bank_fees_title_loan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_monthly_due_unit_loan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:text="@string/currency_per_month"
+        app:layout_constraintBottom_toBottomOf="@id/tv_monthly_due_loan"
+        app:layout_constraintTop_toTopOf="@id/tv_monthly_due_loan"
+        app:layout_constraintStart_toEndOf="@id/tv_monthly_due_loan"
+        />
+
+    <!-- BANK FEES -->
+    <TextView
+        android:id="@+id/tv_bank_fees_title_loan"
+        style="@style/TextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_big"
+        android:text="@string/total_bank_fees"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_bank_fees_loan"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_bank_fees_loan"
+        style="@style/TextViewNumbersLoan"
+        tools:text="3.4"
+        android:layout_marginStart="@dimen/margin"
+        app:layout_constraintEnd_toEndOf="@id/tv_bank_fee_currency_loan"
+        app:layout_constraintStart_toEndOf="@id/tv_bank_fees_title_loan"
+        app:layout_constraintTop_toTopOf="@id/tv_bank_fees_title_loan"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bank_fees_title_loan"
+        />
+
+    <TextView
+        android:id="@+id/tv_bank_fee_currency_loan"
+        style="@style/TextViewNumbersLoan"
+        android:paddingStart="@dimen/padding"
+        android:paddingEnd="@dimen/padding"
+        android:text="@string/dollard_currency"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bank_fees_loan"
+        app:layout_constraintStart_toEndOf="@id/tv_bank_fees_loan" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

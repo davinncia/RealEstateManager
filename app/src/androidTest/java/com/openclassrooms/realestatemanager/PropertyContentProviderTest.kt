@@ -20,7 +20,7 @@ class PropertyContentProviderTest {
     // DATA SET FOR TEST
     private val propertyID = 1
     private val nonExistingPropertyId = -1
-    private val property = Property("HOUSE", 100000F, 30F, 2, "Cool flat.",
+    private val property = Property("HOUSE", 100000, 30F, 2, "Cool flat.",
             Address("NY", "street", 10), 0, "Phil")
 
 

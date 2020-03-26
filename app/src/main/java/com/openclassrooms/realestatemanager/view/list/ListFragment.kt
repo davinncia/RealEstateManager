@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -37,8 +38,10 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
                 .get(ListViewModel::class.java)
 
         viewModel.properties.observe(viewLifecycleOwner, Observer {
-            //TODO: empty list view
-            propertyAdapter.populateList(ArrayList(it))
+            if (it.isEmpty())
+                rootView.findViewById<LinearLayout>(R.id.list_empty_view).visibility = View.VISIBLE
+            else
+                propertyAdapter.populateList(ArrayList(it))
         })
 
         return rootView
