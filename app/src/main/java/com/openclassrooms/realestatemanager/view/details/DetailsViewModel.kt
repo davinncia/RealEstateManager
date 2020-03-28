@@ -23,22 +23,6 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
     //CURRENT SELECTION
     private val propertySelectionMutable = inMemoRepo.getPropertySelection()
 
-    /*
-    val activeSelection: LiveData<Boolean> = Transformations.map(propertySelectionMutable) {
-        return@map when (it) {
-            is EmptyProperty -> false
-            else -> true
-        }
-    }
-
-    val propertyUi: LiveData<PropertyUi> = Transformations.map(activeSelection) {
-        return@map when (it) {
-            true -> propertySelectionMutable.value as PropertyUi
-            else -> null
-        }
-    }
-
-     */
     val propertyUi: LiveData<PropertyUi> = Transformations.map(propertySelectionMutable) {
         return@map when (it) {
             is PropertyUi -> propertySelectionMutable.value as PropertyUi
@@ -53,7 +37,7 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
 
 
     fun changeSaleStatus() {
-        val property = propertyUi.value!! //TODO NPE !!
+        val property = propertyUi.value ?: return
 
         //Notify observer
         inMemoRepo.setPropertySelection(property.also {it.isSold = !it.isSold })

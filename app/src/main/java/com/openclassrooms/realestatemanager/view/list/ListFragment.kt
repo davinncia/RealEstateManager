@@ -40,8 +40,10 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
         viewModel.properties.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty())
                 rootView.findViewById<LinearLayout>(R.id.list_empty_view).visibility = View.VISIBLE
-            else
+            else {
+                rootView.findViewById<LinearLayout>(R.id.list_empty_view).visibility = View.GONE
                 propertyAdapter.populateList(ArrayList(it))
+            }
         })
 
         return rootView

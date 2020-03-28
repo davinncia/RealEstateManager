@@ -37,7 +37,6 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         viewModel.duration.value = 10.toBigDecimal()
 
         //Observing data
-        //val nf = NumberFormat.getNumberInstance(Locale.getDefault())
         viewModel.amount.observe(this, Observer {
             findViewById<TextView>(R.id.tv_amount_loan).text = decimalToIntString(it)
         })
@@ -144,7 +143,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         return lazy { findViewById<T>(res) }
     }
 
-    private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec)
+    private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec) //TODO: to vm
     private fun decimalToIntString(dec: BigDecimal): String = String.format("%,d", dec.toDouble().roundToInt())
 
 }

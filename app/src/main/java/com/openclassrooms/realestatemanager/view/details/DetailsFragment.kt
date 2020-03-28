@@ -41,37 +41,16 @@ class DetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
                 .get(DetailsViewModel::class.java)
 
-        /*
-        //Active selection
-        viewModel.activeSelection.observe(viewLifecycleOwner, Observer {
-            activeSelection = it
-            if (!activeSelection) {
-
-            }
-        })
-
-         */
-
         //Property
         viewModel.propertyUi.observe(viewLifecycleOwner, Observer {
-
             if (it == null) {
-                //TODO: Empty View
+                //No selection
+                rootView.visibility = View.INVISIBLE
             } else {
+                rootView.visibility = View.VISIBLE
                 activeSelection = true
                 completeUi(rootView, it)
             }
-
-            //it?.let { completeUi(rootView, it) }
-
-            /*
-            if (activeSelection) {
-                //initPicturesRecyclerView(rootView, arrayListOf())
-                completeUi(rootView, it)
-            } else {
-                //Nothing selected
-            }
-             */
         })
 
         //Pictures

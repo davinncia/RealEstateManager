@@ -16,12 +16,8 @@ class LoanViewModel : ViewModel() {
 
     //val isEuro = MutableLiveData<Boolean>(false)
 
-    init {
-       // amount.addSource(isEuro) {
-       //     if (it) amount.value = Utils.convertDollarToEuro(amount.value!!)
-       //     else amount.value = Utils.convertEuroToDollar(amount.value!!)
-       // }
 
+    init {
         monthlyDue.addSource(amount) {
             computeMonthlyDue()
         }

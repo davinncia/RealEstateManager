@@ -30,7 +30,7 @@ class PropertyContentProviderTest {
         contentResolver = InstrumentationRegistry.getInstrumentation().context.contentResolver
     }
 
-    //TODO ProviderTest: Run on test db ?
+    //ProviderTest: Run on test db
 /*
     @Test
     fun getPropertyWhenNoPropertyInserted() { //It's actually going on real db, so not empty !

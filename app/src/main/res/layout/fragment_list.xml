@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Let's add your first estate !"
+            android:text="@string/no_estate_found"
             android:textSize="@dimen/text_medium"
             android:textColor="@color/colorPrimaryLight"
             android:padding="@dimen/padding_big"

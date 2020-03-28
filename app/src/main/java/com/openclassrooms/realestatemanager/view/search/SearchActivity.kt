@@ -71,19 +71,19 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         minPicsSeekBar.setOnSeekBarChangeListener(this)
 
         minPriceView.text = "0"
-        maxPriceView.text = (10 * 100_000).toString()
+        maxPriceView.text = (10 * 100_000).formattedString() //TODO: max or more
         minAreaView.text = "0"
-        maxAreaView.text = (10 * 1_000).toString()
+        maxAreaView.text = (10 * 1_000).formattedString() //TODO: max or more
     }
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         seekBar?: return
 
         when (seekBar.id) {
-            minPriceSeekBar.id -> minPriceView.text = (seekBar.progress * 100_000).toString()
-            maxPriceSeekBar.id -> maxPriceView.text = (seekBar.progress * 100_000).toString()
-            minAreaSeekBar.id -> minAreaView.text = (seekBar.progress * 1_000).toString()
-            maxAreaSeekBar.id -> maxAreaView.text = (seekBar.progress * 1_000).toString()
-            minPicsSeekBar.id -> minPicsView.text = (seekBar.progress).toString()
+            minPriceSeekBar.id -> minPriceView.text = (seekBar.progress * 100_000).formattedString()
+            maxPriceSeekBar.id -> maxPriceView.text = (seekBar.progress * 100_000).formattedString()
+            minAreaSeekBar.id -> minAreaView.text = (seekBar.progress * 1_000).formattedString()
+            maxAreaSeekBar.id -> maxAreaView.text = (seekBar.progress * 1_000).formattedString()
+            minPicsSeekBar.id -> minPicsView.text = (seekBar.progress).formattedString()
         }
     }
 
@@ -160,10 +160,10 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         val minPicsNbr = minPicsView.text.toString()
 
         val criteria = Criteria(
-                minPrice.toInt(), maxPrice.toInt(),
+                minPrice.ridOfSpaces(), maxPrice.ridOfSpaces(),
                 city,
                 arrayListOf(soldCheckBox.isChecked, !onSaleCheckBox.isChecked),
-                minArea.toInt(), maxArea.toInt(),
+                minArea.ridOfSpaces(), maxArea.ridOfSpaces(),
                 date, 0,
                 minPicsNbr.toInt(),
                 viewModel.getSelectedPoi())
@@ -208,6 +208,12 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     private fun <T : View> Activity.bind(@IdRes res : Int) : Lazy<T> {
         return lazy { findViewById<T>(res) }
     }
+
+    //Remove spaces before converting to Int
+    private fun String.ridOfSpaces(): Int = this.replace("\\s".toRegex(), "").toInt()
+
+    //Return a thousands separated String
+    private fun Int.formattedString(): String = String.format("%,d", this)
 
 
 }

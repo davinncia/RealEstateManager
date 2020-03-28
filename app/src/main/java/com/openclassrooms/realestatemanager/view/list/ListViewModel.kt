@@ -25,16 +25,6 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
         properties.addSource(dbProperties) {
             properties.value = it
         }
-        //Ad source criteria
-    }
-
-
-    //Only for description, add address.. ?
-    fun filterPropertyByDescription(text: CharSequence) {
-        //val filteredList = properties.value ?: return
-        dbProperties.value?.let { dbList ->
-            properties.value = dbList.filter { it.description.contains(text, true) }
-        }
     }
 
     private fun mapPropertiesForUi(properties: List<Property>): List<PropertyUi> {
@@ -47,6 +37,14 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
             uiProperties.add(propertyUi)
         }
         return uiProperties
+    }
+
+
+    fun filterPropertyByDescription(text: CharSequence) {
+        //val filteredList = properties.value ?: return
+        dbProperties.value?.let { dbList ->
+            properties.value = dbList.filter { it.description.contains(text, true) }
+        }
     }
 
     fun selectProperty(id: Int) {
@@ -105,24 +103,5 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 properties.value = mapPropertiesForUi(filteredProperties)
             }
         }
-
-        /*
-        properties.addSource(propertyRepo.advancedSearch(criteria.city, criteria.minCreationTime, criteria.isSold)) {
-            properties.value = mapPropertiesForUi(it)
-        }
-
-        //Check if other tables request needed
-        if (criteria.minPictureNbr > 0) {
-            Log.d("debuglog", "Let's count pics !")
-            properties.addSource(MutableLiveData(10)) {
-
-            }
-        }
-
-         */
-
-
     }
-
-
 }

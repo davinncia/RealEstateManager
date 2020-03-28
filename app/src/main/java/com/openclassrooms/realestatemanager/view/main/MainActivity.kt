@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
 
         //SEARCH BAR
         val searchEditText: TextView = findViewById(R.id.et_search_bar)
-        searchEditText.text = "" //TODO: Emptying last search
         searchEditText.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

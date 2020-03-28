@@ -75,8 +75,6 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             }
 
         }
-
-
     }
 
     fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
@@ -210,7 +208,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                         thumbnailUri = it[1]
                     }
                 }
-                propertyRepo.updateThumbnail(thumbnailUri, selectedProperty.value!!.id)  //TODO NPE ?
+                propertyRepo.updateThumbnail(thumbnailUri, selectedProperty.value!!.id)
             }
 
             val pic = dbPictures.value?.find { it.strUri == uri }

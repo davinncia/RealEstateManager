@@ -55,6 +55,7 @@
     <string name="insurance_rate">INSURANCE RATE</string>
     <string name="total_bank_fees">Total bank fees: </string>
     <string name="change_currency">Change currency</string>
+    <string name="no_estate_found">No estate found</string>
 
 
 </resources>

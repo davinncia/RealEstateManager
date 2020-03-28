@@ -28,7 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class MapsViewModelTest {
 
-    // Run tasks synchronously
+    //Run tasks synchronously
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -52,8 +52,7 @@ class MapsViewModelTest {
     fun setUp() {
 
         MockitoAnnotations.initMocks(this)
-        // Initialize the ViewModel after the [MainCoroutineRule] is applied so that it has the
-        // right test dispatcher.
+        // Initialize the ViewModel after the [MainCoroutineRule] is applied so that it has the right test dispatcher.
 
     }
 
@@ -62,10 +61,10 @@ class MapsViewModelTest {
     @Test
     fun getMarkersForProperties() = mainCoroutineRule.runBlockingTest {
         //GIVEN
-        val property1 = Property("HOUSE", 0F, 0F, 0, "",
+        val property1 = Property("HOUSE", 0, 0F, 0, "",
                 Address("", "", 0, 1.0, 1.0),
                 1L, "")
-        val property2 = Property("HOUSE", 0F, 0F, 0, "",
+        val property2 = Property("HOUSE", 0, 0F, 0, "",
                 Address("", "", 0, 2.0, 2.0),
                 1L, "")
         val list = listOf(property1, property2)
@@ -89,7 +88,7 @@ class MapsViewModelTest {
         //GIVEN
         val address = Address("", "", 0, 0.0, 0.0)
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
-        val property = Property("HOUSE", 0F, 0F, 0, "",
+        val property = Property("HOUSE", 0, 0F, 0, "",
                 address,1L, "")
         val list = listOf(property)
         val listLiveData = MutableLiveData(list)
@@ -107,13 +106,13 @@ class MapsViewModelTest {
         Assert.assertTrue(markers[0].latLng == newLatLng)
     }
 
-    //property selection
+
     @Test
     fun ifNoLatLngFoundMarkerIsNotCreated() {
         //GIVEN
         val address = Address("", "", 0, 0.0, 0.0)
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
-        val property = Property("HOUSE", 0F, 0F, 0, "",
+        val property = Property("HOUSE", 0, 0F, 0, "",
                 address,1L, "")
         val list = listOf(property)
         val listLiveData = MutableLiveData(list)
