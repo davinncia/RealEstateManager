@@ -25,7 +25,7 @@ class NetworkRepositoryTest {
         val networkRepo = NetworkRepository.getInstance(context)
         //WHEN Phone network activated
         //THEN
-        Assert.assertTrue(LiveDataTestUtils.getOrAwaitValue(networkRepo.isConnected))
+        Assert.assertTrue(networkRepo.isConnected.getOrAwaitValue())
     }
 
 }
