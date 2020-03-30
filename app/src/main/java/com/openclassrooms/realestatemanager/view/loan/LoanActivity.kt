@@ -31,33 +31,35 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         viewModel = ViewModelProvider(this, ViewModelFactory(application)).get(LoanViewModel::class.java)
         //Initial data
         intent.extras?.getString(EXTRA_PRICE)?.let {
-            viewModel.initialAmount.value = it.toBigDecimal()
-            viewModel.amount.value = it.toBigDecimal()
+            //viewModel.initialAmount.value = it.toBigDecimal()
+            //viewModel.amount.value = it.toBigDecimal()
+            viewModel.setInitialAmount(it.toInt())
         }
-        viewModel.duration.value = 10.toBigDecimal()
+        viewModel.setDuration(10)
 
         //Observing data
-        viewModel.amount.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_amount_loan).text = decimalToIntString(it)
+        viewModel.amountStr.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_amount_loan).text = it//decimalToIntString(it)
         })
 
-        viewModel.duration.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_duration_loan).text = decimalToIntString(it)
+        viewModel.durationStr.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_duration_loan).text = it //decimalToIntString(it)
         })
 
-        viewModel.loanRate.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_rate_loan).text = decimalToString(it * BigDecimal(100))
+        viewModel.loanPercentStr.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_rate_loan).text = it
+            //findViewById<TextView>(R.id.tv_rate_loan).text = decimalToString(it * BigDecimal(100))
         })
 
         val insuranceRate = 0.34
         findViewById<TextView>(R.id.tv_insurance_loan).text = "$insuranceRate"
 
-        viewModel.monthlyDue.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_monthly_due_loan).text = decimalToString(it)
+        viewModel.monthlyDueStr.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_monthly_due_loan).text = it//decimalToString(it)
         })
 
-        viewModel.bankFee.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_bank_fees_loan).text = decimalToString(it)
+        viewModel.bankFeeStr.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_bank_fees_loan).text = it//decimalToString(it)
         })
 
         //CURRENCY

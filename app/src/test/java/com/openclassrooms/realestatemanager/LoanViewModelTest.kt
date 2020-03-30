@@ -9,7 +9,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.math.BigDecimal
 
 @RunWith(JUnit4::class)
 class LoanViewModelTest {
@@ -20,14 +19,66 @@ class LoanViewModelTest {
 
     private lateinit var viewModel: LoanViewModel
 
-    private val initialAmount = BigDecimal(100_000)
-    private val duration = BigDecimal(10)
+    private val initialAmount = 100_000
+    private val duration = 10
 
     @Before
     fun setUp() {
         viewModel = LoanViewModel()
     }
 
+    //Loan rate
+    @Test
+    fun loanRateForTenYearsIsAccurate() {
+        //GIVEN
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(duration)
+        //WHEN
+        val rate = awaitValue(viewModel.loanPercentStr)
+        //THEN
+        Assert.assertEquals(0.008, viewModel.loanRate.toDouble(), 0.001)
+        Assert.assertEquals("0,80", rate!!)
+    }
+
+    @Test
+    fun loanRateForTwentyYearsIsAccurate() {
+        //GIVEN
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(20)
+        //WHEN
+        val rate = awaitValue(viewModel.loanPercentStr)
+        //THEN
+        Assert.assertEquals(0.012, viewModel.loanRate.toDouble(), 0.001)
+        Assert.assertEquals("1,20", rate!!)
+    }
+
+    //Monthly due
+    @Test
+    fun monthlyDueIsAccurate() {
+        //GIVEN
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(duration)
+        //WHEN
+        val monthlyDue = awaitValue(viewModel.monthlyDueStr)
+        //THEN
+        Assert.assertEquals(928.33, viewModel.monthlyDue.toDouble(), 0.01)
+        Assert.assertEquals("928,33", monthlyDue!!)
+    }
+
+    //Bank fee
+    @Test
+    fun bankFeesAreAccurate() {
+        //GIVEN
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(duration)
+        //WHEN
+        val fees = awaitValue(viewModel.bankFeeStr)
+        //THEN
+        Assert.assertEquals(11_400.00, viewModel.bankFee.toDouble(), 0.01)
+        Assert.assertEquals("11 400,00", fees!!)
+    }
+
+    /*
     //Loan rate
     @Test
     fun loanRateForTenYearsIsAccurate() {
@@ -81,4 +132,6 @@ class LoanViewModelTest {
         //THEN
         Assert.assertEquals(11_400.00, fees!!.toDouble(), 0.01)
     }
+
+     */
 }
