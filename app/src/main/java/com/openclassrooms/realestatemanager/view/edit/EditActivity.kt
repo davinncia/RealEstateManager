@@ -1,14 +1,11 @@
 package com.openclassrooms.realestatemanager.view.edit
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
@@ -19,60 +16,51 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
+import com.openclassrooms.realestatemanager.utils.bind
 import com.openclassrooms.realestatemanager.view.map.MapsActivity
 import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.view.search.PoiAdapter
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener, PoiAdapter.OnPoiCLickListener {
 
+
+    //DATA
     private lateinit var viewModel: EditViewModel
 
     private var isNew: Boolean = true
     private var id = -1
 
-    private lateinit var spinner: Spinner
-    private lateinit var priceView: EditText
-    private lateinit var areaView: EditText
-    private lateinit var roomsView: EditText
-    private lateinit var descriptionView: EditText
-    private lateinit var cityView: EditText
-    private lateinit var streetView: EditText
-    private lateinit var streetNbrView: EditText
-    private lateinit var agentView: EditText
-    private lateinit var addImageView: ImageView
+    //VIEW
+    private val spinner by bind<Spinner>(R.id.spinner_edit_type)
+    private val priceView by bind<EditText>(R.id.et_edit_price)
+    private val areaView by bind<EditText>(R.id.et_edit_area)
+    private val roomsView by bind<EditText>(R.id.et_edit_room_nbr)
+    private val descriptionView by bind<EditText>(R.id.et_edit_description)
+    private val cityView by bind<EditText>(R.id.et_edit_city)
+    private val streetView by bind<EditText>(R.id.et_edit_street)
+    private val streetNbrView by bind<EditText>(R.id.et_edit_street_nbr)
+    private val agentView by bind<EditText>(R.id.et_edit_agent_name)
+    private val addImageView by bind<ImageView>(R.id.iv_edit_add_picture)
 
     private lateinit var pictureAdapter: PictureEditAdapter
     private lateinit var poiAdapter: PoiAdapter
-
-    private var cameraPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        spinner = findViewById(R.id.spinner_edit_type)
-        priceView = findViewById(R.id.et_edit_price)
-        areaView = findViewById(R.id.et_edit_area)
-        roomsView = findViewById(R.id.et_edit_room_nbr)
-        descriptionView = findViewById(R.id.et_edit_description)
-        cityView = findViewById(R.id.et_edit_city)
-        streetView = findViewById(R.id.et_edit_street)
-        streetNbrView = findViewById(R.id.et_edit_street_nbr)
-        agentView = findViewById(R.id.et_edit_agent_name)
-        addImageView = findViewById<ImageView>(R.id.iv_edit_add_picture).apply { setOnClickListener { checkStoragePermission() } }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.property_infos)
+
+        addImageView.setOnClickListener { checkStoragePermission() }
 
         initPoiRecyclerView()
         initPictureRecyclerView()
@@ -97,7 +85,6 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
             poiAdapter.populateData(it)
         })
 
-
     }
 
     //--------------------------------------------------------------------------------------//
@@ -116,13 +103,14 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     }
 
     //RecyclerViews
-    private fun  initPoiRecyclerView() {
+    private fun initPoiRecyclerView() {
 
         poiAdapter = PoiAdapter(this)
 
         findViewById<RecyclerView>(R.id.recycler_view_poi_edit).apply {
             adapter = poiAdapter
-            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                    this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -136,7 +124,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         findViewById<RecyclerView>(R.id.recycler_view_edit).apply {
             adapter = pictureAdapter
-            layoutManager = LinearLayoutManager(this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                    this@EditActivity, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -190,30 +179,12 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         galleryIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         chooserIntent.putExtra(Intent.EXTRA_INTENT, galleryIntent)
 
-        //TAKE PICTURE
+        //CAMERA INTENT
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Ensure that there's a camera activity to handle the intent
-
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = createImageFile()
-            } catch (ex: IOException) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                val photoURI = FileProvider.getUriForFile (this,
-                "com.openclassrooms.realestatemanager.fileprovider", photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                // Save a file: path for use with ACTION_VIEW intents
-                cameraPhotoPath = photoFile.absolutePath
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
-            }
+        if (takePictureIntent.resolveActivity(packageManager) != null) {
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
         }
-
-        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
 
         if (chooserIntent.resolveActivity(packageManager) != null) {
             startActivityForResult(chooserIntent, REQUEST_IMAGE_CODE)
@@ -225,76 +196,25 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CODE && resultCode == RESULT_OK) {
-            val uri: String
+            val uri: String? =
+                    if (data?.data != null) {
+                        //GALLERY
+                        data.data.toString()
 
-            if (data?.data != null) {
-                //GALLERY
-                uri = data.data.toString()
-
-            } else {
-                //CAMERA
-                //val imageBitmap = data?.extras?.get("data") as Bitmap
-                //val bytes = ByteArrayOutputStream()
-                //imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-                //uri = MediaStore.Images.Media.insertImage(contentResolver, imageBitmap, "Title", null)
-
-                //uri = saveImageInMediaStore(imageBitmap)?.toString()
-
-                uri = cameraPhotoPath!!
-            }
+                    } else {
+                        //CAMERA
+                        val imageBitmap = data?.extras?.get("data") as Bitmap
+                        viewModel.saveImageInMediaStore(imageBitmap)?.toString()
+                    }
 
             //Pass it to the viewModel
-            //uri?.let { viewModel.addPicture(it) }
-            viewModel.addPicture(uri)
+            uri?.let { viewModel.addPicture(it) }
         }
-
-    }
-
-    private fun saveImageInMediaStore(pic: Bitmap): Uri? {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, timeStamp)
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            //    put(MediaStore.Images.Media.RELATIVE_PATH, "RealEstate")
-            //}
-            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-            put(MediaStore.Images.Media.IS_PENDING, 1)
-        }
-
-        val resolver = applicationContext.contentResolver
-        //ALWAYS NULL...
-        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
-        uri?.let {
-            resolver.openOutputStream(uri)?.use { outputStream ->
-                pic.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.close()
-            }
-
-            values.clear()
-            values.put(MediaStore.Images.Media.IS_PENDING, 0)
-            resolver.update(uri, values, null, null)
-        }
-        return uri
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-                "JPEG_${timeStamp}_", /* prefix */
-                ".jpg", /* suffix */
-                storageDir /* directory */
-        )
     }
 
     override fun onDeleteButtonClick(pictureUri: String, position: Int) {
         viewModel.deletePictureFromDb(pictureUri, position)
     }
-
 
     //--------------------------------------------------------------------------------------//
     //                                      M E N U

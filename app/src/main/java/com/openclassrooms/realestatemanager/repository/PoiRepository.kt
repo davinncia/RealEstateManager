@@ -28,6 +28,5 @@ class PoiRepository(context: Context) {
             }
             return INSTANCE!!
         }
-
     }
 }

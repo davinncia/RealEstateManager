@@ -31,8 +31,6 @@ class NetworkRepository(context: Context) {
             super.onUnavailable()
             isConnected.postValue(false)
         }
-
-
     }
 
     init {
@@ -42,7 +40,8 @@ class NetworkRepository(context: Context) {
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
     }
 
-    //companion object : SingletonHolder<NetworkRepository, Context>(::NetworkRepository)
+
+
     companion object {
         private var INSTANCE: NetworkRepository? = null
 

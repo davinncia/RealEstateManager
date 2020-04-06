@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.view.details
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.openclassrooms.realestatemanager.R
@@ -14,7 +13,6 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        Log.d("debuglog", "Details Activity created")
 
         if (resources.getBoolean(R.bool.is_landscape)) {
             //BACK TO LANDSCAPE
@@ -24,7 +22,6 @@ class DetailsActivity : AppCompatActivity() {
             //PORTRAIT
             openDetailsFragment()
         }
-
     }
 
     private fun openDetailsFragment() {

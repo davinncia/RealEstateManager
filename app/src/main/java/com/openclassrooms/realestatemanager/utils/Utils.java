@@ -20,8 +20,8 @@ public class Utils {
     /**
      * Conversion d'un prix d'un bien immobilier (Dollars vers Euros)
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @param dollars
-     * @return
+     * @param dollars amount to convert
+     * @return amount in euro
      */
     //Use of BigDecimal for better accuracy
     public static BigDecimal convertDollarToEuro(BigDecimal dollars){
@@ -35,8 +35,9 @@ public class Utils {
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @return
+     * @return date in format: 31/01/2020
      */
+    @SuppressWarnings("unused")
     public static String getTodayDate(){
         Date date = new Date();
         return formatTodayDate(date);
@@ -51,10 +52,11 @@ public class Utils {
     /**
      * Vérification de la connexion réseau
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @param context
-     * @return
+     * @param context current state of application
+     * @return boolean activeNetwork
      */
     //This method will be replaced by a networkRepository, exposing a LiveData for dynamic updates
+    @SuppressWarnings("unused")
     public static Boolean isInternetAvailable(Context context){
         //WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         //return wifi.isWifiEnabled();

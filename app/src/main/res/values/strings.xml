@@ -46,7 +46,7 @@
     <string name="change_sale_status">Change sale status</string>
     <string name="text_in_description">Text in description</string>
     <string name="apply">APPLY</string>
-    <string name="loan_simulator">Loan simulator</string>
+    <string name="loan_simulator">Loan Simulator</string>
     <string name="dollard_currency">$</string>
     <string name="euro_currency">€</string>
     <string name="years">years</string>
@@ -56,6 +56,8 @@
     <string name="total_bank_fees">Total bank fees: </string>
     <string name="change_currency">Change currency</string>
     <string name="no_estate_found">No estate found</string>
+    <string name="property_infos">Property Infos</string>
+    <string name="advanced_search">Advanced Search</string>
 
 
 </resources>

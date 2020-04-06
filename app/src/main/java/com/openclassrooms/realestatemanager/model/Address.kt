@@ -7,8 +7,4 @@ data class Address(
         val street: String,
         @ColumnInfo(name = "street_number") val streetNbr: Int,
         var latitude: Double = 0.0,
-        var longitude: Double = 0.0) {
-
-
-
-}
+        var longitude: Double = 0.0)

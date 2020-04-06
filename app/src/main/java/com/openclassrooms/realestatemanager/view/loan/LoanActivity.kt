@@ -1,22 +1,19 @@
 package com.openclassrooms.realestatemanager.view.loan
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
-import java.math.BigDecimal
-import kotlin.math.roundToInt
 
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
+
+    //TODO: finish euro conversion functionality
 
     private lateinit var viewModel: LoanViewModel
 //    var isEuro = false
@@ -24,42 +21,40 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loan)
-        actionBar?.title = getString(R.string.loan_simulator)
+        supportActionBar?.title = getString(R.string.loan_simulator)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSeekBars()
 
         viewModel = ViewModelProvider(this, ViewModelFactory(application)).get(LoanViewModel::class.java)
         //Initial data
         intent.extras?.getString(EXTRA_PRICE)?.let {
-            //viewModel.initialAmount.value = it.toBigDecimal()
-            //viewModel.amount.value = it.toBigDecimal()
             viewModel.setInitialAmount(it.toInt())
         }
         viewModel.setDuration(10)
 
         //Observing data
         viewModel.amountStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_amount_loan).text = it//decimalToIntString(it)
+            findViewById<TextView>(R.id.tv_amount_loan).text = it
         })
 
         viewModel.durationStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_duration_loan).text = it //decimalToIntString(it)
+            findViewById<TextView>(R.id.tv_duration_loan).text = it
         })
 
         viewModel.loanPercentStr.observe(this, Observer {
             findViewById<TextView>(R.id.tv_rate_loan).text = it
-            //findViewById<TextView>(R.id.tv_rate_loan).text = decimalToString(it * BigDecimal(100))
         })
 
         val insuranceRate = 0.34
         findViewById<TextView>(R.id.tv_insurance_loan).text = "$insuranceRate"
 
         viewModel.monthlyDueStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_monthly_due_loan).text = it//decimalToString(it)
+            findViewById<TextView>(R.id.tv_monthly_due_loan).text = it
         })
 
         viewModel.bankFeeStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_bank_fees_loan).text = it//decimalToString(it)
+            findViewById<TextView>(R.id.tv_bank_fees_loan).text = it
         })
 
         //CURRENCY
@@ -129,7 +124,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
      */
 
     //--------------------------------------------------------------------------------------------//
-    //                                   C O M P A N I O N S
+    //                                   C O M P A N I O N
     //--------------------------------------------------------------------------------------------//
     companion object {
         const val EXTRA_PRICE = "price"
@@ -141,11 +136,5 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         }
     }
 
-    private fun <T: View> Activity.bind(@IdRes res: Int) : Lazy<T> {
-        return lazy { findViewById<T>(res) }
-    }
-
-    private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec) //TODO: to vm
-    private fun decimalToIntString(dec: BigDecimal): String = String.format("%,d", dec.toDouble().roundToInt())
 
 }

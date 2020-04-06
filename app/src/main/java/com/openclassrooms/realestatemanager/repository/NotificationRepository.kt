@@ -46,7 +46,6 @@ class NotificationRepository {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.default_house)
                 .setContentTitle("New property created !")
-                //.setContentText("Hello World!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_VIBRATE) //Allow heads-up
                 // Set the intent that will fire when the user taps the notification

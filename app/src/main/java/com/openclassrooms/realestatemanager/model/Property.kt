@@ -16,7 +16,7 @@ data class Property(
         @Embedded val address: Address, //This will store all Address fields in the same table
         //array POI,
         @ColumnInfo(name = "creation_time") var creationTime: Long,
-        val agent: String,//val agent: Agent,
+        val agent: String,
         @ColumnInfo(name = "is_sold") var isSold: Boolean = false,
         @ColumnInfo(name = "selling_time") var sellingTime: Long = 0,
         @ColumnInfo(name = "thumbnail_uri") var thumbnailUri: String =
@@ -24,21 +24,4 @@ data class Property(
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-}
-
-/*
-enum class PropertyType {
-    FLAT, LOFT, HOUSE, CASTLE, MANOR
-}
-
- */
-
-class PropertyType {
-    companion object {
-        const val HOUSE = "HOUSE"
-        const val LOFT = "LOFT"
-        const val FLAT = "FLAT"
-        const val CASTLE = "CASTLE"
-        const val MANOR = "MANOR"
-    }
 }

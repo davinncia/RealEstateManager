@@ -21,6 +21,7 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
         return@map mapPropertiesForUi(it)
     }
 
+
     init {
         properties.addSource(dbProperties) {
             properties.value = it
@@ -41,7 +42,6 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
 
     fun filterPropertyByDescription(text: CharSequence) {
-        //val filteredList = properties.value ?: return
         dbProperties.value?.let { dbList ->
             properties.value = dbList.filter { it.description.contains(text, true) }
         }
@@ -55,15 +55,9 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
     //--------------------------------------------------------------------------------------------//
     //                                A D V A N C E D     S E A R C H
     //--------------------------------------------------------------------------------------------//
-    //All criteria which can be done in property_table is always checked.
-    //In case of other table request (pics, poi), only when needed
-
     fun advancedSearch(crtr: Criteria) {
         //String fields standardization
-        crtr.city.apply {
-            trim()
-            //Lower case ?
-        }
+        crtr.city.trim()
         if (crtr.city.isEmpty()) crtr.city = "%"
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -103,5 +97,9 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 properties.value = mapPropertiesForUi(filteredProperties)
             }
         }
+    }
+
+    fun endAdvancedSearch() {
+        properties.value = dbProperties.value
     }
 }

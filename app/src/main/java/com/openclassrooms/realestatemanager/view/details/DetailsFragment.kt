@@ -1,8 +1,8 @@
 package com.openclassrooms.realestatemanager.view.details
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,7 +30,6 @@ class DetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d("debuglog", "Details fragment created")
         setHasOptionsMenu(true)
 
         val rootView = inflater.inflate(R.layout.fragment_details, container, false)
@@ -80,6 +79,7 @@ class DetailsFragment : Fragment() {
                 }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun completeUi(rootView: View, property: PropertyUi) {
         //Description
         rootView.findViewById<TextView>(R.id.tv_property_description).text = property.description
@@ -97,7 +97,6 @@ class DetailsFragment : Fragment() {
     }
 
     private fun launchGoogleMaps() {
-
         //Check internet connection
         if (networkAvailable) {
             //Start map activity

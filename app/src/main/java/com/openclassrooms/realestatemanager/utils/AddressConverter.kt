@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import java.io.IOException
 
 
-class AddressConverter() {
+class AddressConverter {
 
     /**
      * Util function converting a string address into a LatLng object.

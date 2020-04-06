@@ -5,14 +5,12 @@ sealed class PropertyWrapper
 object EmptyProperty : PropertyWrapper()
 
 data class PropertyUi (
-
         val type: String = "HOUSE",
         val price: Int,
         val area: Float,
         val roomNbr: Int,
         val description: String,
         val address: AddressUi,
-        //array POI,
         val agentName: String,
         var isSold: Boolean,
         var id: Int

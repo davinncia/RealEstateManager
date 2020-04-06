@@ -2,12 +2,10 @@ package com.openclassrooms.realestatemanager.view.list
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,14 +19,13 @@ import com.openclassrooms.realestatemanager.view.details.DetailsActivity
 
 class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
-    private lateinit var propertyAdapter: PropertyAdapter
     private lateinit var viewModel: ListViewModel
 
+    private lateinit var propertyAdapter: PropertyAdapter
     private lateinit var rootView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.d("debuglog", "List fragment created")
 
         rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
@@ -64,7 +61,6 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
     override fun onItemClick(propertyId: Int) {
         viewModel.selectProperty(propertyId)
-
         //Open details if portrait (handset)
         if (!resources.getBoolean(R.bool.is_landscape)) {
             //PORTRAIT
@@ -77,15 +73,11 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
     }
 
     fun passSearchCriteria(criteria: Criteria) {
-        Toast.makeText(this.context, criteria.city, Toast.LENGTH_SHORT).show()
         viewModel.advancedSearch(criteria)
     }
 
-    fun setSearchCriterion() {
-        Toast.makeText(this.context, "Criterion", Toast.LENGTH_SHORT).show()
+    fun endSearch() {
+        viewModel.endAdvancedSearch()
     }
 
-    companion object {
-        fun newInstance() = ListFragment()
-    }
 }

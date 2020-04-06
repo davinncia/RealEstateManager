@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.view.list
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         private val soldBanner = itemView.findViewById<ImageView>(R.id.iv_sold)
         private val imageView = itemView.findViewById<ImageView>(R.id.image_view_property_item)
 
+        @SuppressLint("SetTextI18n")
         fun bind(uiProperty: PropertyUi){
             typeView.text = uiProperty.type
             cityView.text = uiProperty.address.city

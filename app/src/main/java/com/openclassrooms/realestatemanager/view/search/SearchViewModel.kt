@@ -26,29 +26,4 @@ class SearchViewModel(application: Application, poiRepo: PoiRepository) : Androi
 
     fun getSelectedPoi(): List<String> = allPoi.value?.filter { it.isSelected }?.map { it.name } ?: listOf()
 
-/*
-    val allPoi = Transformations.map(poiRepo.allPoi()) { allPoi ->
-        allPoi.map { PoiUi(it.name, it.iconResourceId, false) }
-    }
-
-    val selectedPoi = arrayListOf<String>()
-
-    fun handlePoiSelection(poi: PoiUi) {
-        allPoi.value?.let { list ->
-            list[list.indexOf(poi)].isSelected = !list[list.indexOf(poi)].isSelected
-        }
-    }
-
- */
-
-/*
-    fun handlePoiSelection(poi: PoiUi) {
-        if (poi.isSelected)
-            selectedPoi.add(poi.name)
-        else
-            selectedPoi.remove(poi.name)
-    }
-
- */
-
 }

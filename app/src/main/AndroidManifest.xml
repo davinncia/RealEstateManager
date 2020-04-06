@@ -19,9 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.loan.LoanActivity"></activity>
-        <activity android:name=".view.search.SearchActivity" />
+        <activity android:name=".view.loan.LoanActivity"
+            android:parentActivityName="com.openclassrooms.realestatemanager.view.main.MainActivity"
+            />
+        <activity android:name=".view.search.SearchActivity"
+            android:parentActivityName="com.openclassrooms.realestatemanager.view.main.MainActivity"/>
         <activity android:name=".view.edit.EditActivity"
+            android:parentActivityName="com.openclassrooms.realestatemanager.view.main.MainActivity"
             android:windowSoftInputMode="adjustPan"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

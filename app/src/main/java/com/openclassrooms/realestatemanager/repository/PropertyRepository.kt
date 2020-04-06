@@ -77,6 +77,9 @@ class PropertyRepository(context: Context) {
     suspend fun deleteAllPoiForProperty(propertyId: Int) =
             poiDao.deleteAllPoiForProperty(propertyId)
 
+
+
+
     companion object {
         //Singleton
         private var INSTANCE: PropertyRepository? = null

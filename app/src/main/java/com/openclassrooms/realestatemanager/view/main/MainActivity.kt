@@ -44,32 +44,35 @@ class MainActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.iv_advanced_search).setOnClickListener {
             startActivityForResult(SearchActivity.newIntent(this), SearchActivity.CRITERIA_RC)
         }
+
+        findViewById<ImageView>(R.id.iv_quit_advanced_search).setOnClickListener {
+            listFragment?.endSearch()
+            it.visibility = View.GONE
+        }
     }
 
     //-------------------------------------------------------------------------------------------//
     //                                        S E A R C H
     //-------------------------------------------------------------------------------------------//
-    private fun passSearchToListFragment(text: CharSequence) {
-        listFragment?.filterByDescription(text)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == SearchActivity.CRITERIA_RC && resultCode == Activity.RESULT_OK) {
             //Criteria returning
+            findViewById<ImageView>(R.id.iv_quit_advanced_search).visibility = View.VISIBLE
             val criteria = data?.getParcelableExtra<Criteria>(SearchActivity.CRITERIA_EXTRA)
             criteria?.let { listFragment?.passSearchCriteria(it) }
-
         }
     }
 
+    private fun passSearchToListFragment(text: CharSequence) {
+        listFragment?.filterByDescription(text)
+    }
     //-------------------------------------------------------------------------------------------//
     //                                         M E N U
     //-------------------------------------------------------------------------------------------//
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        //menu?.clear()
         inflater.inflate(R.menu.main_menu, menu)
         return true
     }
@@ -92,7 +95,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val LIST_FRAG_TAG = "list_fragment"
         const val DETAILS_FRAG_TAG = "details_fragment"
     }
 }

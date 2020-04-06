@@ -28,15 +28,9 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
 
     }
 
-
     fun populateData(uris: List<String>) {
         picUris = ArrayList(uris)
         notifyDataSetChanged()
-    }
-
-    fun addPicture(uri: String) {
-        picUris.add(uri)
-        notifyItemInserted(picUris.lastIndex)
     }
 
     inner class PictureEditViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

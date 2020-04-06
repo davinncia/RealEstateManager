@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.model.Criteria
+import com.openclassrooms.realestatemanager.utils.bind
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 import java.util.*
 
@@ -46,6 +45,8 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        supportActionBar?.title = getString(R.string.advanced_search)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSeekBars()
         datePicker.updateDate(2000, 0, 1)
@@ -57,8 +58,6 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
             poiAdapter.populateData(it)
         })
     }
-
-
 
     //-------------------------------------------------------------------------------------------//
     //                                    S E E K B A R S
@@ -75,6 +74,7 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         minAreaView.text = "0"
         maxAreaView.text = (10 * 1_000).formattedString() //TODO: max or more
     }
+
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         seekBar?: return
 
@@ -91,13 +91,12 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
-
     //-------------------------------------------------------------------------------------------//
     //                                 D A T E    P I C K E R
     //-------------------------------------------------------------------------------------------//
     private fun getEpochFromDatePicker(): Long {
         var epoch = 0L
-        Log.d("debuglog", "YEAR: ${datePicker.year}, MONTH: ${datePicker.month}, DAY: ${datePicker.dayOfMonth}")
+
         if (datePicker.year != 2000 || datePicker.month != 0 || datePicker.dayOfMonth != 1) {
             //User has set a date
             val calendar = Calendar.getInstance()
@@ -134,7 +133,7 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     //                                         P O I
     //-------------------------------------------------------------------------------------------//
     private fun initPoiRecyclerView() {
-        //val poiList = resources.getStringArray(R.array.poi_list)
+
         poiAdapter = PoiAdapter(object : PoiAdapter.OnPoiCLickListener {
             override fun onPoiClicked(poi: PoiUi) {
                 viewModel.handlePoiSelection(poi)
@@ -142,7 +141,8 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         })
 
         findViewById<RecyclerView>(R.id.recycler_view_poi_search).apply {
-            layoutManager = LinearLayoutManager(this@SearchActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                    this@SearchActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = poiAdapter
         }
     }
@@ -203,10 +203,6 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         const val CRITERIA_RC = 101
 
         fun newIntent(context: Context): Intent = Intent(context, SearchActivity::class.java)
-    }
-
-    private fun <T : View> Activity.bind(@IdRes res : Int) : Lazy<T> {
-        return lazy { findViewById<T>(res) }
     }
 
     //Remove spaces before converting to Int

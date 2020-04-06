@@ -41,6 +41,7 @@ class PoiAdapter(private val listener: OnPoiCLickListener)
             }
         }
 
+        @Suppress("DEPRECATION")
         fun bind(poi: PoiUi) {
             poiTextView.text = poi.name
             iconView.setImageResource(poi.iconResourceId)

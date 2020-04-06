@@ -40,6 +40,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     }
 
 
+    //--------------------------------------------------------------------------------------//
+    //                                  M A P   S T U F F
+    //--------------------------------------------------------------------------------------//
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -61,7 +64,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
 
 
     private fun placeMarkers(propertyMarkers: List<PropertyMarker>) {
-
         for (marker in propertyMarkers){
             mMap.addMarker(MarkerOptions()
                     .position(marker.latLng)

@@ -20,10 +20,8 @@ class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: PicturesViewHolder, position: Int) {
 
-
         val currentItem = pictureUris[position]
         holder.bindView(currentItem)
-
     }
 
     inner class PicturesViewHolder(private val imageView: ImageView) : RecyclerView.ViewHolder(imageView) {
@@ -31,7 +29,6 @@ class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adap
         fun bindView(uri: String) {
             Glide.with(imageView.context).load(uri).into(imageView)
         }
-
     }
 
 

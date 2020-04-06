@@ -1,6 +1,10 @@
 package com.openclassrooms.realestatemanager.view.edit
 
 import android.app.Application
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.openclassrooms.realestatemanager.model.Address
@@ -17,10 +21,12 @@ import com.openclassrooms.realestatemanager.view.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EditViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
                     private val propertyRepo: PropertyRepository, private val addressConverter: AddressConverter,
-                    private val poiRepo: PoiRepository, private val notifRepo: NotificationRepository)
+                    poiRepo: PoiRepository, private val notifRepo: NotificationRepository)
     : AndroidViewModel(application) {
 
     //CURRENT SELECTION
@@ -117,7 +123,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             //Saving new pictures if any
             addedPictures.value?.let {
                 for (uri in it) {
-                    savePicture(uri, updatedProperty.id)
+                    savePictureInDb(uri, updatedProperty.id)
                 }
             }
 
@@ -149,7 +155,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             val id = propertyRepo.getLastId()
             addedPictures.value?.let {
                 for (uri in it) {
-                    savePicture(uri, id)
+                    savePictureInDb(uri, id)
                 }
             }
 
@@ -178,7 +184,8 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         allPictures.value = pics
     }
 
-    private suspend fun savePicture(uri: String, propertyId: Int) {
+    //DATABASE
+    private suspend fun savePictureInDb(uri: String, propertyId: Int) {
 
         val pic = Picture(uri, propertyId)
 
@@ -214,6 +221,30 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             val pic = dbPictures.value?.find { it.strUri == uri }
             pic?.apply { propertyRepo.deletePicture(pic) }
         }
+    }
+
+    //MEDIA STORE
+    fun saveImageInMediaStore(pic: Bitmap): Uri? {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, timeStamp)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        }
+
+        val resolver = getApplication<Application>().contentResolver
+
+        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+        uri?.let {
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                pic.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                outputStream.close()
+            }
+            values.clear()
+            resolver.update(uri, values, null, null)
+        }
+        return uri
     }
 
     //--------------------------------------------------------------------------------------//

@@ -10,10 +10,6 @@ class InMemoryRepository {
 
     private val propertySelectionMutable = MutableLiveData<PropertyWrapper>()
 
-    //val emptyProperty = PropertyUi(PropertyType.HOUSE, 0F, 0F, 0, "",
-    //        AddressUi("", "", 0), "", false,
-    //        -1)
-
     init {
         //Empty property by default
         propertySelectionMutable.value = EmptyProperty
