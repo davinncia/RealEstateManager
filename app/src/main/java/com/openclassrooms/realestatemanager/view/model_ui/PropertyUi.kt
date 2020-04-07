@@ -4,6 +4,7 @@ sealed class PropertyWrapper
 
 object EmptyProperty : PropertyWrapper()
 
+// TODO LUCAS N'utilise que des val dans tes models
 data class PropertyUi (
         val type: String = "HOUSE",
         val price: Int,

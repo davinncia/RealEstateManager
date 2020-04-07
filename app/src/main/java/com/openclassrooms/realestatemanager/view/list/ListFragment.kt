@@ -22,6 +22,7 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
     private lateinit var viewModel: ListViewModel
 
     private lateinit var propertyAdapter: PropertyAdapter
+    // TODO LUCAS Non nécessaire en Property
     private lateinit var rootView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

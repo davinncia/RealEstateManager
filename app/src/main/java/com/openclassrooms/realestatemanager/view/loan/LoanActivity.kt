@@ -17,6 +17,7 @@ import com.openclassrooms.realestatemanager.di.ViewModelFactory
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var viewModel: LoanViewModel
+    // TODO LUCAS Côté Viewmodel !
     private var isEuro = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +105,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
                 } else {
                     item.setIcon(R.drawable.ic_euro)
                 }
+                // TODO LUCAS A faire côté ViewModel (et à tester)
                 changeCurrency(!isEuro)
                 true
             }
@@ -116,12 +118,14 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         viewModel.setCurrency(euro)
         findViewById<SeekBar>(R.id.seekbar_amount_loan).progress = 10
 
+        // TODO LUCAS A faire côté ViewModel (et à tester)
         val currencyStr =
                 if (euro) resources.getString(R.string.euro_currency)
                  else resources.getString(R.string.dollard_currency)
 
         findViewById<TextView>(R.id.tv_amount_currency_loan).text = currencyStr
         findViewById<TextView>(R.id.tv_bank_fee_currency_loan).text = currencyStr
+        // TODO LUCAS A faire côté ViewModel (et à tester)
         findViewById<TextView>(R.id.tv_monthly_due_unit_loan).text =
                 "$currencyStr ${resources.getString(R.string.per_month)}"
 

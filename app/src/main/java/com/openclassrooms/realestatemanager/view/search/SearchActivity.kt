@@ -49,6 +49,7 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSeekBars()
+        // TODO LUCAS A faire côté ViewModel
         datePicker.updateDate(2000, 0, 1)
         initPoiRecyclerView()
 
@@ -69,6 +70,7 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         maxAreaSeekBar.setOnSeekBarChangeListener(this)
         minPicsSeekBar.setOnSeekBarChangeListener(this)
 
+        // TODO LUCAS A faire côté ViewModel
         minPriceView.text = "0"
         maxPriceView.text = (10 * 100_000).formattedString() //TODO: max or more
         minAreaView.text = "0"
@@ -79,6 +81,7 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         seekBar?: return
 
         when (seekBar.id) {
+            // TODO LUCAS A faire côté ViewModel
             minPriceSeekBar.id -> minPriceView.text = (seekBar.progress * 100_000).formattedString()
             maxPriceSeekBar.id -> maxPriceView.text = (seekBar.progress * 100_000).formattedString()
             minAreaSeekBar.id -> minAreaView.text = (seekBar.progress * 1_000).formattedString()

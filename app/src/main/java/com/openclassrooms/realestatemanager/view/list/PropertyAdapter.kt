@@ -14,6 +14,7 @@ import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 
 class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
+    // TODO LUCAS Utilise toujours des listes plutôt que des arraylist
     private var uiProperties = ArrayList<PropertyUi>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {

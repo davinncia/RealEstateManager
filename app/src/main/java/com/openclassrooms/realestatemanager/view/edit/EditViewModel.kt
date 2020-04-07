@@ -30,6 +30,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     : AndroidViewModel(application) {
 
     //CURRENT SELECTION
+    // TODO LUCAS Pas besoin d'une LiveData ici je pense, tu peux utiliser une simple property mutable
     private val isNew: LiveData<Boolean> = Transformations.map(inMemoRepo.getPropertySelection()) {
         return@map when (it) {
             is EmptyProperty -> true
@@ -44,10 +45,12 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     private val dbPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
         propertyRepo.getPictures(it.id)
     }
+    // TODO LUCAS Non nécessaire : tu observes déjà les pictures liées à ton id de property
     private val addedPictures = MutableLiveData<List<String>>()
 
     //POI
     val allPoi = MediatorLiveData<List<PoiUi>>()
+    // TODO LUCAS Pas besoin, utilise ton allPoi uniquement pour simplifier le code
     private val savedPoi = Transformations.switchMap(selectedProperty) { property ->
         Transformations.map(propertyRepo.getPoiList(property.id)) { poiList ->
             poiList.map { it.poiName }
@@ -102,6 +105,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
             //Modify fields
             val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
+            // TODO LUCAS Tu peux utiliser oldProperty.copy() ici !
             val updatedProperty = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr,
                     uiProperty.description, address, oldProperty.creationTime, uiProperty.agentName,
                     oldProperty.isSold, oldProperty.sellingTime)
@@ -277,6 +281,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         viewModelScope.launch {
             propertyRepo.deleteAllPoiForProperty(id)
         }
+        // TODO LUCAS Attention ici tu peux avoir une race condition avec ton delete précédent
         savePoiForProperty(id)
     }
 
