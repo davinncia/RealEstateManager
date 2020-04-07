@@ -13,27 +13,26 @@ class UtilsTest {
     fun dollarConvector_ReturnCorrect_Euro_value(){
         //GIVEN
         val d1 = BigDecimal.valueOf(23.32)
-        val d2 = BigDecimal.valueOf(10034.66)
+        val d2 = BigDecimal.valueOf(10034.69)
         //WHEN
         val e1 = Utils.convertDollarToEuro(d1)
         val e2 = Utils.convertDollarToEuro(d2)
         //THEN
-        Assert.assertEquals(BigDecimal.valueOf(20.988), e1)
-        Assert.assertEquals(BigDecimal.valueOf(9031.194), e2)
+        Assert.assertEquals(BigDecimal.valueOf(21.61), e1)
+        Assert.assertEquals(BigDecimal.valueOf(9299.13), e2)
     }
 
     @Test
     fun euroConvector_ReturnCorrect_Dollar_value(){
         //GIVEN
-        val euros = arrayOf(21, 10, 81, 9031)
         val e1 = BigDecimal.valueOf(98638.98)
         val e2 = BigDecimal.valueOf(8790.86)
         //WHEN
         val d1 = Utils.convertEuroToDollar(e1)
         val d2 = Utils.convertEuroToDollar(e2)
         //THEN
-        Assert.assertEquals(BigDecimal.valueOf(108502.878), d1)
-        Assert.assertEquals(BigDecimal.valueOf(9669.946), d2)
+        Assert.assertEquals(BigDecimal.valueOf(106441.323318), d1)
+        Assert.assertEquals(BigDecimal.valueOf(9486.217026), d2)
     }
 
     @Test

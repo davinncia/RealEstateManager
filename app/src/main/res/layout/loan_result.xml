@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorAccent"
-        android:text="@string/currency_per_month"
+        android:text="@string/dollars_per_month"
         app:layout_constraintBottom_toBottomOf="@id/tv_monthly_due_loan"
         app:layout_constraintTop_toTopOf="@id/tv_monthly_due_loan"
         app:layout_constraintStart_toEndOf="@id/tv_monthly_due_loan"

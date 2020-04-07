@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.view.loan
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.openclassrooms.realestatemanager.utils.Utils
 import java.math.BigDecimal
 import kotlin.math.roundToInt
 
@@ -21,6 +22,9 @@ class LoanViewModel : ViewModel() {
     private var loanRate = BigDecimal(0)
     private var monthlyDue = BigDecimal(0)
     private var bankFee = BigDecimal(0)
+
+    val isEuro = MutableLiveData<Boolean>(false)
+
 
     fun setInitialAmount(price: Int) {
         initialAmount = BigDecimal(price)
@@ -75,9 +79,15 @@ class LoanViewModel : ViewModel() {
     private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec)
     private fun decimalToIntString(dec: BigDecimal): String = String.format("%,d", dec.toDouble().roundToInt())
 
-    //val isEuro = MutableLiveData<Boolean>(false)
 
-    //fun setCurrency(euro: Boolean) {
-    //    isEuro.value = euro
-    //}
+    fun setCurrency(euro: Boolean) {
+        isEuro.value = euro
+
+        if (euro)
+            setInitialAmount(Utils.convertDollarToEuro(initialAmount).toInt())
+         else
+            setInitialAmount(Utils.convertEuroToDollar(initialAmount).toInt())
+
+        setDuration(duration.toInt()) //Update values
+    }
 }

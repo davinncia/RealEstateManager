@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import androidx.annotation.VisibleForTesting;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,11 +26,11 @@ public class Utils {
      */
     //Use of BigDecimal for better accuracy
     public static BigDecimal convertDollarToEuro(BigDecimal dollars){
-        return dollars.multiply(BigDecimal.valueOf(0.90));
+        return dollars.divide(BigDecimal.valueOf(1.0791), RoundingMode.HALF_EVEN);
     }
 
     public static BigDecimal convertEuroToDollar(BigDecimal euros){
-        return euros.multiply(BigDecimal.valueOf(1.10));
+        return euros.multiply(BigDecimal.valueOf(1.0791));
     }
 
     /**

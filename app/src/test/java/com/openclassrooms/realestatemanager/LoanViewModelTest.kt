@@ -36,7 +36,7 @@ class LoanViewModelTest {
         //WHEN
         val rate = awaitValue(viewModel.loanPercentStr)
         //THEN
-        Assert.assertEquals(0.008, viewModel.loanRate.toDouble(), 0.001)
+        //Assert.assertEquals(0.008, viewModel.loanRate.toDouble(), 0.001)
         Assert.assertEquals("0,80", rate!!)
     }
 
@@ -48,7 +48,7 @@ class LoanViewModelTest {
         //WHEN
         val rate = awaitValue(viewModel.loanPercentStr)
         //THEN
-        Assert.assertEquals(0.012, viewModel.loanRate.toDouble(), 0.001)
+        //Assert.assertEquals(0.012, viewModel.loanRate.toDouble(), 0.001)
         Assert.assertEquals("1,20", rate!!)
     }
 
@@ -61,7 +61,7 @@ class LoanViewModelTest {
         //WHEN
         val monthlyDue = awaitValue(viewModel.monthlyDueStr)
         //THEN
-        Assert.assertEquals(928.33, viewModel.monthlyDue.toDouble(), 0.01)
+        //Assert.assertEquals(928.33, viewModel.monthlyDue.toDouble(), 0.01)
         Assert.assertEquals("928,33", monthlyDue!!)
     }
 
@@ -74,7 +74,7 @@ class LoanViewModelTest {
         //WHEN
         val fees = awaitValue(viewModel.bankFeeStr)
         //THEN
-        Assert.assertEquals(11_400.00, viewModel.bankFee.toDouble(), 0.01)
+        //Assert.assertEquals(11_400.00, viewModel.bankFee.toDouble(), 0.01)
         Assert.assertEquals("11 400,00", fees!!)
     }
 
@@ -134,4 +134,5 @@ class LoanViewModelTest {
     }
 
      */
+
 }

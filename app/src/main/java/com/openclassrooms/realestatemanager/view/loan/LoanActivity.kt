@@ -1,8 +1,11 @@
 package com.openclassrooms.realestatemanager.view.loan
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,10 +16,8 @@ import com.openclassrooms.realestatemanager.di.ViewModelFactory
 
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
-    //TODO: finish euro conversion functionality
-
     private lateinit var viewModel: LoanViewModel
-//    var isEuro = false
+    private var isEuro = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +59,9 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         })
 
         //CURRENCY
-//        viewModel.isEuro.observe(this, Observer {
-//            isEuro = it
-//        })
+        viewModel.isEuro.observe(this, Observer {
+            isEuro = it
+        })
     }
 
     //--------------------------------------------------------------------------------------------//
@@ -90,7 +91,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     //--------------------------------------------------------------------------------------------//
     //                                            M E N U
     //--------------------------------------------------------------------------------------------//
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.advanced_search_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
@@ -99,9 +100,9 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         return when (item.itemId) {
             R.id.item_default_currency_menu -> {
                 if (isEuro) {
-                    item.setIcon(R.drawable.ic_euro)
-                } else {
                     item.setIcon(R.drawable.ic_dollard)
+                } else {
+                    item.setIcon(R.drawable.ic_euro)
                 }
                 changeCurrency(!isEuro)
                 true
@@ -110,18 +111,22 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun changeCurrency(euro: Boolean) {
         viewModel.setCurrency(euro)
-        
-        if (euro) {
-            findViewById<TextView>(R.id.tv_amount_currency_loan).text = resources.getString(R.string.euro_currency)
-        } else {
-            findViewById<TextView>(R.id.tv_amount_currency_loan).text = resources.getString(R.string.dollard_currency)
+        findViewById<SeekBar>(R.id.seekbar_amount_loan).progress = 10
 
-        }
+        val currencyStr =
+                if (euro) resources.getString(R.string.euro_currency)
+                 else resources.getString(R.string.dollard_currency)
+
+        findViewById<TextView>(R.id.tv_amount_currency_loan).text = currencyStr
+        findViewById<TextView>(R.id.tv_bank_fee_currency_loan).text = currencyStr
+        findViewById<TextView>(R.id.tv_monthly_due_unit_loan).text =
+                "$currencyStr ${resources.getString(R.string.per_month)}"
+
     }
 
-     */
 
     //--------------------------------------------------------------------------------------------//
     //                                   C O M P A N I O N
@@ -135,6 +140,5 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
             return intent
         }
     }
-
 
 }
