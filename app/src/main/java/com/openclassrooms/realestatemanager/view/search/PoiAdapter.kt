@@ -12,6 +12,7 @@ import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 class PoiAdapter(private val listener: OnPoiCLickListener)
     : RecyclerView.Adapter<PoiAdapter.PoiViewHolder>() {
 
+    // TODO LUCAS T'embête pas et fait un petit listOf() ici au lieux de faire une 'List?'
     private var poiList: List<PoiUi>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoiViewHolder {

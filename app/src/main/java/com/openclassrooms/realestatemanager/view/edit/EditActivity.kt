@@ -35,6 +35,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     //DATA
     private lateinit var viewModel: EditViewModel
 
+    // TODO LUCAS A "stocker" côté ViewModel
     private var isNew: Boolean = true
     private var id = -1
 
@@ -50,6 +51,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private val agentView by bind<EditText>(R.id.et_edit_agent_name)
     private val addImageView by bind<ImageView>(R.id.iv_edit_add_picture)
 
+    // TODO LUCAS Utilise le minimum de property, tu peux utiliser uniquement des variables locales
+    //  pour les adapters (tu les passes en paramètres de function)
     private lateinit var pictureAdapter: PictureEditAdapter
     private lateinit var poiAdapter: PoiAdapter
 
@@ -151,12 +154,15 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         val inputs = arrayOf(type, strPrice, strArea, strRooms, description, city, street, strStreetNbr, agent)
 
+        // TODO LUCAS Tu peux utiliser isBlank() pour éviter les petits rigolos qui mettent des espaces :p
         if (inputs.any { it.isEmpty() }) {
             Toast.makeText(this, getString(R.string.field_missing), Toast.LENGTH_SHORT).show()
         } else {
 
+            // TODO LUCAS A faire côté ViewModel (balance juste des Strings à ton ViewModel c'est son rôle de parser)
             val address = AddressUi(city, street, strStreetNbr.toInt())
 
+            // TODO LUCAS A faire côté ViewModel (balance juste des Strings à ton ViewModel c'est son rôle de parser)
             val property = PropertyUi(type, strPrice.toInt(), strArea.toFloat(), strRooms.toInt(),
                     description, address, agent, false, id)
 
@@ -196,6 +202,8 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CODE && resultCode == RESULT_OK) {
+            // TODO LUCAS A faire côté ViewModel (balance juste le data au ViewModel, il se débrouille)
+            //  viewModel.addPicture(data)
             val uri: String? =
                     if (data?.data != null) {
                         //GALLERY

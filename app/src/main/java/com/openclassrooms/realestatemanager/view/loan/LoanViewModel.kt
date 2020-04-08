@@ -9,6 +9,8 @@ import kotlin.math.roundToInt
 class LoanViewModel : ViewModel() {
 
     //LiveData exposed
+    // TODO LUCAS Expose plutôt une seule LiveData avec tous les champs,
+    //  t'inquiète c'est optimisé côté vue, elle se met pas à jour si pas besoin !
     val amountStr = MutableLiveData<String>()
     val durationStr = MutableLiveData<String>()
     val loanPercentStr = MutableLiveData<String>()

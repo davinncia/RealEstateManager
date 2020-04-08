@@ -18,6 +18,39 @@ class ViewModelFactory(private val application: Application): ViewModelProvider.
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
+        // TODO LUCAS Tu peux mettre le 'return' avant le 'when' (pareil avec le 'as T')
+        /*  return when {
+                modelClass.isAssignableFrom(DetailsViewModel::class.java) -> {
+                    DetailsViewModel(application, InMemoryRepository.getInstance(),
+                            NetworkRepository.getInstance(application),
+                            PropertyRepository.getInstance(application))
+                }
+                modelClass.isAssignableFrom(ListViewModel::class.java) -> {
+                    ListViewModel(application,
+                            InMemoryRepository.getInstance(),
+                            PropertyRepository.getInstance(application))
+                }
+                modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                    MapsViewModel(application, InMemoryRepository.getInstance(),
+                            PropertyRepository.getInstance(application), AddressConverter())
+                }
+                modelClass.isAssignableFrom(EditViewModel::class.java) -> {
+                    EditViewModel(application,
+                            InMemoryRepository.getInstance(),
+                            PropertyRepository.getInstance(application),
+                            AddressConverter(),
+                            PoiRepository.getInstance(application),
+                            NotificationRepository())
+                }
+                modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
+                    SearchViewModel(application, PoiRepository.getInstance(application))
+                }
+                modelClass.isAssignableFrom(LoanViewModel::class.java) -> {
+                    LoanViewModel()
+                }
+                else -> throw IllegalArgumentException("Unknown ViewModel class")
+                } as T
+        */
         when {
             modelClass.isAssignableFrom(DetailsViewModel::class.java) -> {
                 return DetailsViewModel(application, InMemoryRepository.getInstance(),

@@ -23,6 +23,7 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
     //CURRENT SELECTION
     private val propertySelectionMutable = inMemoRepo.getPropertySelection()
 
+    // TODO LUCAS Mapping un peu léger, on peut voir dans la vue du taff de concaténation de string et autres, ça devrait être fait ici
     val propertyUi: LiveData<PropertyUi> = Transformations.map(propertySelectionMutable) {
         return@map when (it) {
             is PropertyUi -> propertySelectionMutable.value as PropertyUi
@@ -40,6 +41,8 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
         val property = propertyUi.value ?: return
 
         //Notify observer
+        // TODO LUCAS Utilise un objet "technique" plutôt que le modèle de vue
+        //  + utilise plutôt un .copy() avec des val
         inMemoRepo.setPropertySelection(property.also {it.isSold = !it.isSold })
 
         //Add in Db
@@ -48,8 +51,11 @@ class DetailsViewModel(application: Application, private val inMemoRepo: InMemor
         }
     }
 
+    // TODO LUCAS Utilise plutôt une méthode "onLoanButtonClicked()" ici, qui va exposer un
+    //  SingleLiveEvent "showLoanActivity(Int)"
     fun getPropertyPriceStr(): String = (propertySelectionMutable.value as PropertyUi).price.toString()
 
+    // TODO LUCAS A faire dans ton mapping de UiModel
     fun getStaticMapStringUrlGivenAddress(address: AddressUi, apiKey: String): String {
 
         val streetUrl = address.street.replace(" ", "+")

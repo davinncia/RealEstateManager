@@ -54,7 +54,12 @@ class DetailsFragment : Fragment() {
 
         //Pictures
         viewModel.allPictures.observe(viewLifecycleOwner, Observer { pictures ->
-            initPicturesRecyclerView(rootView, ArrayList(pictures.map { it.strUri }))
+            initPicturesRecyclerView(
+                rootView,
+                // TODO LUCAS ne pas faire côté vue
+                ArrayList(pictures.map { it.strUri }
+                )
+            )
         })
 
         //Network
@@ -67,6 +72,7 @@ class DetailsFragment : Fragment() {
 
     private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<String>) {
 
+        // TODO LUCAS Ne pas faire côté vue (pas testé)
         if (uris.isEmpty()) {
             val uri = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
             uris.add(uri)
@@ -74,20 +80,28 @@ class DetailsFragment : Fragment() {
 
         rootView.findViewById<RecyclerView>(R.id.recycler_view_property_pictures)
                 .apply {
+                    // TODO LUCAS L'adapter est recréé à chaque changement de photo,
+                    //  bind ton adapter à la création de la vue et change son contenu dynamiquement
                     adapter = PicturesAdapter(uris)
+                    // TODO LUCAS Pareil le layout manager ne devrait pas changer (pas besoin et ça coute cher en CPU)
                     layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                 }
     }
 
     @SuppressLint("SetTextI18n")
     private fun completeUi(rootView: View, property: PropertyUi) {
+        // TODO LUCAS Ne cherche tes views qu'une seule fois à la création de ton fragments,
+        //  là tu recherches tes vues à chaque changement !
         //Description
         rootView.findViewById<TextView>(R.id.tv_property_description).text = property.description
+        // TODO LUCAS Mapping à faire côté viewmodel
         //Area
         rootView.findViewById<TextView>(R.id.tv_area_data).text = "${property.area}m2"
+        // TODO LUCAS Mapping à faire côté viewmodel
         //Rooms
         rootView.findViewById<TextView>(R.id.tv_rooms_data).text = property.roomNbr.toString()
         //Location
+        // TODO LUCAS Mapping à faire côté viewmodel
         rootView.findViewById<TextView>(R.id.tv_location_data).text =
                 "${property.address.city}\n${property.address.streetNbr} ${property.address.street}"
         //Static map

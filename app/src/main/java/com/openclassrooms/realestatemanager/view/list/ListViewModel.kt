@@ -99,6 +99,8 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
         }
     }
 
+    // TODO LUCAS Utilise plutôt addSource / removeSource, là c'est du "oneshot",
+    //  si dbProperties change plus tard (mise à jour des données, etc), la liste ne sera pas à jour
     fun endAdvancedSearch() {
         properties.value = dbProperties.value
     }

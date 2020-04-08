@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 
+// TODO LUCAS Utiliser un ListAdapter<T, VH> est un axe d'amélioration
 class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adapter<PicturesAdapter.PicturesViewHolder>() {
 
 
