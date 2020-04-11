@@ -28,7 +28,7 @@
         style="@style/TextViewNumbersLoan"
         android:paddingEnd="@dimen/padding"
         android:paddingStart="@dimen/padding"
-        android:text="@string/dollard_currency"
+        android:text="@string/dollar_currency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tv_amount_title_loan"
         />

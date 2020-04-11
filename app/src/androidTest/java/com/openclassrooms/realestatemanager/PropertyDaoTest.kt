@@ -22,7 +22,6 @@ class PropertyDaoTest {
     private lateinit var propertyDao: PropertyDao
     private lateinit var db: PropertyRoomDatabase
 
-
     //DUMMY
     private val p1 = Property("HOUSE", 100_000, 100F, 1, "One",
             Address("city1", "", 1, 1.0, 1.0), 1L, "")

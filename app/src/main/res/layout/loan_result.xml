@@ -61,7 +61,7 @@
         style="@style/TextViewNumbersLoan"
         android:paddingStart="@dimen/padding"
         android:paddingEnd="@dimen/padding"
-        android:text="@string/dollard_currency"
+        android:text="@string/dollar_currency"
         app:layout_constraintBottom_toBottomOf="@id/tv_bank_fees_loan"
         app:layout_constraintStart_toEndOf="@id/tv_bank_fees_loan" />
 

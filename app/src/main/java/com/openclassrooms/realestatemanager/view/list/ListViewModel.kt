@@ -1,13 +1,14 @@
 package com.openclassrooms.realestatemanager.view.list
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.openclassrooms.realestatemanager.model.Criteria
 import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
-import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,26 +16,29 @@ import kotlinx.coroutines.withContext
 class ListViewModel(application: Application, private val inMemoRepo: InMemoryRepository,
                     private val propertyRepo: PropertyRepository) : AndroidViewModel(application) {
 
-    val properties = MediatorLiveData<List<PropertyUi>>()
+    //Entity
+    private val dbProperties = propertyRepo.allProperties
 
-    private val dbProperties: LiveData<List<PropertyUi>> = Transformations.map(propertyRepo.allProperties) {
+    //UI
+    private val allUiProperties = Transformations.map(propertyRepo.allProperties) {
         return@map mapPropertiesForUi(it)
     }
+    val uiProperties = MediatorLiveData<List<PropertyItemUi>>() //Filtered on search
 
 
     init {
-        properties.addSource(dbProperties) {
-            properties.value = it
+        uiProperties.addSource(allUiProperties) {
+            uiProperties.value = it
         }
     }
 
-    private fun mapPropertiesForUi(properties: List<Property>): List<PropertyUi> {
-        val uiProperties = arrayListOf<PropertyUi>()
+    private fun mapPropertiesForUi(properties: List<Property>): List<PropertyItemUi> {
+        val uiProperties = arrayListOf<PropertyItemUi>()
         for (item in properties) {
-            val addressUi = AddressUi(item.address.city, item.address.street, item.address.streetNbr)
-            val propertyUi = PropertyUi(item.type, item.price, item.area, item.roomNbr,
-                    item.description, addressUi, item.agent, item.isSold, item.id)
-            propertyUi.thumbnailUri = item.thumbnailUri
+            val propertyUi = PropertyItemUi(
+                                    item.id, item.description, item.type,
+                                    String.format("%,d", item.price) + "$",
+                                    item.address.city, item.isSold, item.thumbnailUri)
             uiProperties.add(propertyUi)
         }
         return uiProperties
@@ -42,9 +46,10 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
 
     fun filterPropertyByDescription(text: CharSequence) {
-        dbProperties.value?.let { dbList ->
-            properties.value = dbList.filter { it.description.contains(text, true) }
+        allUiProperties.value?.let { dbList ->
+            uiProperties.value = dbList.filter { it.description.contains(text, true) }
         }
+
     }
 
     fun selectProperty(id: Int) {
@@ -94,14 +99,22 @@ class ListViewModel(application: Application, private val inMemoRepo: InMemoryRe
             }
 
             withContext(Dispatchers.Main) {
-                properties.value = mapPropertiesForUi(filteredProperties)
+                uiProperties.value = mapPropertiesForUi(filteredProperties)
             }
         }
     }
 
-    // TODO LUCAS Utilise plutôt addSource / removeSource, là c'est du "oneshot",
-    //  si dbProperties change plus tard (mise à jour des données, etc), la liste ne sera pas à jour
     fun endAdvancedSearch() {
-        properties.value = dbProperties.value
+        uiProperties.value = allUiProperties.value
     }
+
+    data class PropertyItemUi(
+            val id: Int,
+            val description: String,
+            val type: String = "HOUSE",
+            val price: String,
+            val city: String,
+            var isSold: Boolean,
+            var thumbnailUri: String = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
+    )
 }

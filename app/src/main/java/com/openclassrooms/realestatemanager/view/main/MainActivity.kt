@@ -16,7 +16,6 @@ import com.openclassrooms.realestatemanager.model.Criteria
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.view.edit.EditActivity
 import com.openclassrooms.realestatemanager.view.list.ListFragment
-import com.openclassrooms.realestatemanager.view.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.view.search.SearchActivity
 
 class MainActivity : AppCompatActivity() {
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.item_main_menu_add -> {
-                inMemoRepo.setPropertySelection(EmptyProperty)
+                inMemoRepo.setPropertySelection(null)
                 startActivity(EditActivity.newIntent(this))
                 true
             }

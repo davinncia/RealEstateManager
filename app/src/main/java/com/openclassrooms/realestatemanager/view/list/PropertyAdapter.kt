@@ -9,13 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
+import com.openclassrooms.realestatemanager.view.list.ListViewModel.PropertyItemUi
 
 
 class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
-    // TODO LUCAS Utilise toujours des listes plutôt que des arraylist
-    private var uiProperties = ArrayList<PropertyUi>()
+    private var uiProperties = listOf<PropertyItemUi>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_property, parent, false)
@@ -24,12 +23,11 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
 
     override fun getItemCount() = uiProperties.size
 
-
     override fun onBindViewHolder(holder: PropertyViewHolder, position: Int) {
         holder.bind(uiProperties[position])
     }
 
-    fun populateList(data: ArrayList<PropertyUi>){
+    fun populateList(data: List<PropertyItemUi>){
         this.uiProperties = data
         notifyDataSetChanged()
     }
@@ -48,10 +46,10 @@ class PropertyAdapter(val clickListener: OnItemClickListener) : RecyclerView.Ada
         private val imageView = itemView.findViewById<ImageView>(R.id.image_view_property_item)
 
         @SuppressLint("SetTextI18n")
-        fun bind(uiProperty: PropertyUi){
+        fun bind(uiProperty: PropertyItemUi){
             typeView.text = uiProperty.type
-            cityView.text = uiProperty.address.city
-            priceView.text = String.format("%,d", uiProperty.price) + "$"
+            cityView.text = uiProperty.city
+            priceView.text = uiProperty.price
             Glide.with(imageView.context).load(uiProperty.thumbnailUri).into(imageView)
             if (uiProperty.isSold) soldBanner.visibility = View.VISIBLE
             else soldBanner.visibility = View.INVISIBLE

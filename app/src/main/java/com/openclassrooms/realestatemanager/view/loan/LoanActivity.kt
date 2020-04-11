@@ -17,8 +17,6 @@ import com.openclassrooms.realestatemanager.di.ViewModelFactory
 class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var viewModel: LoanViewModel
-    // TODO LUCAS Côté Viewmodel !
-    private var isEuro = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,39 +28,21 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
         viewModel = ViewModelProvider(this, ViewModelFactory(application)).get(LoanViewModel::class.java)
         //Initial data
-        intent.extras?.getString(EXTRA_PRICE)?.let {
-            viewModel.setInitialAmount(it.toInt())
+        intent.extras?.getInt(EXTRA_PRICE)?.let {
+            viewModel.setInitialAmount(it)
         }
         viewModel.setDuration(10)
 
-        //Observing data
-        viewModel.amountStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_amount_loan).text = it
+
+        viewModel.loanInfo.observe(this, Observer {
+            findViewById<TextView>(R.id.tv_amount_loan).text = it.amount
+            findViewById<TextView>(R.id.tv_duration_loan).text = it.duration
+            findViewById<TextView>(R.id.tv_rate_loan).text = it.interest
+            findViewById<TextView>(R.id.tv_insurance_loan).text = it.insuranceRate
+            findViewById<TextView>(R.id.tv_monthly_due_loan).text = it.monthlyDue
+            findViewById<TextView>(R.id.tv_bank_fees_loan).text = it.bankFee
         })
 
-        viewModel.durationStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_duration_loan).text = it
-        })
-
-        viewModel.loanPercentStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_rate_loan).text = it
-        })
-
-        val insuranceRate = 0.34
-        findViewById<TextView>(R.id.tv_insurance_loan).text = "$insuranceRate"
-
-        viewModel.monthlyDueStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_monthly_due_loan).text = it
-        })
-
-        viewModel.bankFeeStr.observe(this, Observer {
-            findViewById<TextView>(R.id.tv_bank_fees_loan).text = it
-        })
-
-        //CURRENCY
-        viewModel.isEuro.observe(this, Observer {
-            isEuro = it
-        })
     }
 
     //--------------------------------------------------------------------------------------------//
@@ -75,7 +55,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         seekBar ?: return
-        val prog = progress + 1 //Keep it above
+        val prog = progress + 1 //Keep it above 0
 
         when (seekBar.id) {
             R.id.seekbar_amount_loan -> viewModel.adjustAmount(prog)
@@ -100,13 +80,12 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_default_currency_menu -> {
-                if (isEuro) {
+                if (viewModel.isEuro) {
                     item.setIcon(R.drawable.ic_dollard)
                 } else {
                     item.setIcon(R.drawable.ic_euro)
                 }
-                // TODO LUCAS A faire côté ViewModel (et à tester)
-                changeCurrency(!isEuro)
+                changeCurrencyUi()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -114,23 +93,15 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun changeCurrency(euro: Boolean) {
-        viewModel.setCurrency(euro)
+    private fun changeCurrencyUi() {
+        val currencyPath = viewModel.changeCurrency()
+        val currency = resources.getString(currencyPath)
+
         findViewById<SeekBar>(R.id.seekbar_amount_loan).progress = 10
-
-        // TODO LUCAS A faire côté ViewModel (et à tester)
-        val currencyStr =
-                if (euro) resources.getString(R.string.euro_currency)
-                 else resources.getString(R.string.dollard_currency)
-
-        findViewById<TextView>(R.id.tv_amount_currency_loan).text = currencyStr
-        findViewById<TextView>(R.id.tv_bank_fee_currency_loan).text = currencyStr
-        // TODO LUCAS A faire côté ViewModel (et à tester)
-        findViewById<TextView>(R.id.tv_monthly_due_unit_loan).text =
-                "$currencyStr ${resources.getString(R.string.per_month)}"
-
+        findViewById<TextView>(R.id.tv_amount_currency_loan).text = currency
+        findViewById<TextView>(R.id.tv_bank_fee_currency_loan).text = currency
+        findViewById<TextView>(R.id.tv_monthly_due_unit_loan).text = "$currency ${resources.getString(R.string.per_month)}"
     }
-
 
     //--------------------------------------------------------------------------------------------//
     //                                   C O M P A N I O N
@@ -138,7 +109,7 @@ class LoanActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     companion object {
         const val EXTRA_PRICE = "price"
 
-        fun newIntent(context: Context, price: String): Intent {
+        fun newIntent(context: Context, price: Int): Intent {
             val intent = Intent(context, LoanActivity::class.java)
             intent.putExtra(EXTRA_PRICE, price)
             return intent

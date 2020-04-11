@@ -49,7 +49,6 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initSeekBars()
-        // TODO LUCAS A faire côté ViewModel
         datePicker.updateDate(2000, 0, 1)
         initPoiRecyclerView()
 
@@ -70,22 +69,20 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         maxAreaSeekBar.setOnSeekBarChangeListener(this)
         minPicsSeekBar.setOnSeekBarChangeListener(this)
 
-        // TODO LUCAS A faire côté ViewModel
         minPriceView.text = "0"
-        maxPriceView.text = (10 * 100_000).formattedString() //TODO: max or more
+        maxPriceView.text = (100 * PRICE_FACTOR).formattedString()
         minAreaView.text = "0"
-        maxAreaView.text = (10 * 1_000).formattedString() //TODO: max or more
+        maxAreaView.text = (10 * AREA_FACTOR).formattedString()
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         seekBar?: return
 
         when (seekBar.id) {
-            // TODO LUCAS A faire côté ViewModel
-            minPriceSeekBar.id -> minPriceView.text = (seekBar.progress * 100_000).formattedString()
-            maxPriceSeekBar.id -> maxPriceView.text = (seekBar.progress * 100_000).formattedString()
-            minAreaSeekBar.id -> minAreaView.text = (seekBar.progress * 1_000).formattedString()
-            maxAreaSeekBar.id -> maxAreaView.text = (seekBar.progress * 1_000).formattedString()
+            minPriceSeekBar.id -> minPriceView.text = (seekBar.progress * PRICE_FACTOR).formattedString()
+            maxPriceSeekBar.id -> maxPriceView.text = (seekBar.progress * PRICE_FACTOR).formattedString()
+            minAreaSeekBar.id -> minAreaView.text = (seekBar.progress * AREA_FACTOR).formattedString()
+            maxAreaSeekBar.id -> maxAreaView.text = (seekBar.progress * AREA_FACTOR).formattedString()
             minPicsSeekBar.id -> minPicsView.text = (seekBar.progress).formattedString()
         }
     }
@@ -204,6 +201,8 @@ class SearchActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     companion object {
         const val CRITERIA_EXTRA = "criteria"
         const val CRITERIA_RC = 101
+        const val PRICE_FACTOR = 100_000
+        const val AREA_FACTOR = 1_000
 
         fun newIntent(context: Context): Intent = Intent(context, SearchActivity::class.java)
     }

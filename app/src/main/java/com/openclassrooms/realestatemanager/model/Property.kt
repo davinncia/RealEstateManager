@@ -14,7 +14,6 @@ data class Property(
         @ColumnInfo(name = "room_number") val roomNbr: Int,
         val description: String,
         @Embedded val address: Address, //This will store all Address fields in the same table
-        //array POI,
         @ColumnInfo(name = "creation_time") var creationTime: Long,
         val agent: String,
         @ColumnInfo(name = "is_sold") var isSold: Boolean = false,
@@ -22,6 +21,5 @@ data class Property(
         @ColumnInfo(name = "thumbnail_uri") var thumbnailUri: String =
                 "android.resource://com.openclassrooms.realestatemanager/drawable/default_house") {
 
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+    @PrimaryKey(autoGenerate = true) var id: Int = 0  //Let room handle the Id
 }

@@ -20,27 +20,25 @@ import com.openclassrooms.realestatemanager.view.details.DetailsActivity
 class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
     private lateinit var viewModel: ListViewModel
-
     private lateinit var propertyAdapter: PropertyAdapter
-    // TODO LUCAS Non nécessaire en Property
-    private lateinit var rootView: View
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        rootView = inflater.inflate(R.layout.fragment_list, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
         initRecyclerView(rootView)
 
         viewModel = ViewModelProvider(this, ViewModelFactory(requireActivity().application))
                 .get(ListViewModel::class.java)
 
-        viewModel.properties.observe(viewLifecycleOwner, Observer {
+        viewModel.uiProperties.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty())
                 rootView.findViewById<LinearLayout>(R.id.list_empty_view).visibility = View.VISIBLE
             else {
                 rootView.findViewById<LinearLayout>(R.id.list_empty_view).visibility = View.GONE
-                propertyAdapter.populateList(ArrayList(it))
+                propertyAdapter.populateList(it)
             }
         })
 
@@ -62,7 +60,7 @@ class ListFragment : Fragment(), PropertyAdapter.OnItemClickListener {
 
     override fun onItemClick(propertyId: Int) {
         viewModel.selectProperty(propertyId)
-        //Open details if portrait (handset)
+        //Open details if portrait
         if (!resources.getBoolean(R.bool.is_landscape)) {
             //PORTRAIT
             startActivity(DetailsActivity.newIntent(this.requireContext()))

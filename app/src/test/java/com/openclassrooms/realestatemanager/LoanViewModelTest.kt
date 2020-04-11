@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.openclassrooms.realestatemanager.utils.awaitValue
+import com.openclassrooms.realestatemanager.utils.getOrAwaitValue
 import com.openclassrooms.realestatemanager.view.loan.LoanViewModel
 import org.junit.Assert
 import org.junit.Before
@@ -34,10 +34,9 @@ class LoanViewModelTest {
         viewModel.setInitialAmount(initialAmount)
         viewModel.setDuration(duration)
         //WHEN
-        val rate = awaitValue(viewModel.loanPercentStr)
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        //Assert.assertEquals(0.008, viewModel.loanRate.toDouble(), 0.001)
-        Assert.assertEquals("0,80", rate!!)
+        Assert.assertEquals("0,80", info.interest)
     }
 
     @Test
@@ -46,10 +45,9 @@ class LoanViewModelTest {
         viewModel.setInitialAmount(initialAmount)
         viewModel.setDuration(20)
         //WHEN
-        val rate = awaitValue(viewModel.loanPercentStr)
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        //Assert.assertEquals(0.012, viewModel.loanRate.toDouble(), 0.001)
-        Assert.assertEquals("1,20", rate!!)
+        Assert.assertEquals("1,20", info.interest)
     }
 
     //Monthly due
@@ -59,10 +57,9 @@ class LoanViewModelTest {
         viewModel.setInitialAmount(initialAmount)
         viewModel.setDuration(duration)
         //WHEN
-        val monthlyDue = awaitValue(viewModel.monthlyDueStr)
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        //Assert.assertEquals(928.33, viewModel.monthlyDue.toDouble(), 0.01)
-        Assert.assertEquals("928,33", monthlyDue!!)
+        Assert.assertEquals("928,33", info.monthlyDue)
     }
 
     //Bank fee
@@ -72,67 +69,38 @@ class LoanViewModelTest {
         viewModel.setInitialAmount(initialAmount)
         viewModel.setDuration(duration)
         //WHEN
-        val fees = awaitValue(viewModel.bankFeeStr)
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        //Assert.assertEquals(11_400.00, viewModel.bankFee.toDouble(), 0.01)
-        Assert.assertEquals("11 400,00", fees!!)
-    }
-
-    /*
-    //Loan rate
-    @Test
-    fun loanRateForTenYearsIsAccurate() {
-        //GIVEN
-        viewModel.initialAmount.value = initialAmount
-        viewModel.amount.value = initialAmount
-        viewModel.duration.value = duration
-        //WHEN
-        viewModel.monthlyDue.observeForever {  } //Needed to trigger mediator sources
-        val rate = awaitValue(viewModel.loanRate)
-        //THEN
-        Assert.assertEquals(0.008, rate!!.toDouble(), 0.001)
+        Assert.assertEquals("11 400,00", info.bankFee)
     }
 
     @Test
-    fun loanRateForTwentyYearsIsAccurate() {
+    fun convertToEuro() {
         //GIVEN
-        viewModel.initialAmount.value = initialAmount
-        viewModel.amount.value = initialAmount
-        viewModel.duration.value = BigDecimal(20)
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(duration)
         //WHEN
-        viewModel.monthlyDue.observeForever {  } //Needed to trigger mediator sources
-        val rate = awaitValue(viewModel.loanRate)
+        val currency = viewModel.changeCurrency()
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        Assert.assertEquals(0.012, rate!!.toDouble(), 0.001)
+        Assert.assertTrue(viewModel.isEuro)
+        Assert.assertEquals(R.string.euro_currency, currency)
+        Assert.assertEquals("92 670", info.amount)
     }
 
-    //Monthly due
     @Test
-    fun monthlyDueIsAccurate() {
+    fun convertToDollars() {
         //GIVEN
-        viewModel.initialAmount.value = initialAmount
-        viewModel.amount.value = initialAmount
-        viewModel.duration.value = duration
+        viewModel.setInitialAmount(initialAmount)
+        viewModel.setDuration(duration)
         //WHEN
-        val monthlyDue = awaitValue(viewModel.monthlyDue)
+        viewModel.changeCurrency() //To euro
+        val currency = viewModel.changeCurrency() //Back to dollars
+        val info = viewModel.loanInfo.getOrAwaitValue()
         //THEN
-        Assert.assertEquals(928.33, monthlyDue!!.toDouble(), 0.01)
+        Assert.assertFalse(viewModel.isEuro)
+        Assert.assertEquals(R.string.dollar_currency, currency)
+        Assert.assertEquals("100 000", info.amount)
     }
-
-    //Bank fee
-    @Test
-    fun bankFeesAreAccurate() {
-        //GIVEN
-        viewModel.initialAmount.value = initialAmount
-        viewModel.amount.value = initialAmount
-        viewModel.duration.value = duration
-        //WHEN
-        viewModel.monthlyDue.observeForever {  } //Triggering mediator sources
-        val fees = awaitValue(viewModel.bankFee)
-        //THEN
-        Assert.assertEquals(11_400.00, fees!!.toDouble(), 0.01)
-    }
-
-     */
 
 }

@@ -12,18 +12,17 @@ import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
 class PoiAdapter(private val listener: OnPoiCLickListener)
     : RecyclerView.Adapter<PoiAdapter.PoiViewHolder>() {
 
-    // TODO LUCAS T'embête pas et fait un petit listOf() ici au lieux de faire une 'List?'
-    private var poiList: List<PoiUi>? = null
+    private var poiList: List<PoiUi> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PoiViewHolder {
         val textView = LayoutInflater.from(parent.context).inflate(R.layout.item_poi, parent, false)
         return PoiViewHolder(textView)
     }
 
-    override fun getItemCount(): Int = poiList?.size ?: 0
+    override fun getItemCount(): Int = poiList.size
 
     override fun onBindViewHolder(holder: PoiViewHolder, position: Int) {
-        holder.bind(poiList!![position])
+        holder.bind(poiList[position])
     }
 
     fun populateData(allPoi: List<PoiUi>) {
@@ -38,7 +37,7 @@ class PoiAdapter(private val listener: OnPoiCLickListener)
 
         init {
             itemView.setOnClickListener{
-                listener.onPoiClicked(poiList!![adapterPosition])
+                listener.onPoiClicked(poiList[adapterPosition])
             }
         }
 
@@ -48,7 +47,6 @@ class PoiAdapter(private val listener: OnPoiCLickListener)
             iconView.setImageResource(poi.iconResourceId)
 
             if (poi.isSelected) {
-                //iconView.setColorFilter(R.color.colorAccent)
                 iconView.setBackgroundColor(iconView.context.resources.getColor(R.color.colorAccent))
             } else {
                 iconView.setBackgroundColor(iconView.context.resources.getColor(android.R.color.transparent))

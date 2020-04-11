@@ -15,25 +15,40 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
+import com.openclassrooms.realestatemanager.view.details.DetailsViewModel.PropertyDetailsUi
 import com.openclassrooms.realestatemanager.view.edit.EditActivity
 import com.openclassrooms.realestatemanager.view.loan.LoanActivity
 import com.openclassrooms.realestatemanager.view.map.MapsActivity
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 
 
 class DetailsFragment : Fragment() {
 
     private lateinit var viewModel: DetailsViewModel
+    private val picturesAdapter = PicturesAdapter()
 
     private var networkAvailable = false
     private var activeSelection = false
+
+    //VIEWS
+    private lateinit var descriptionView: TextView
+    private lateinit var areaView: TextView
+    private lateinit var roomView: TextView
+    private lateinit var locationView: TextView
+    private lateinit var mapImageView: ImageView
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
 
         val rootView = inflater.inflate(R.layout.fragment_details, container, false)
+        descriptionView = rootView.findViewById(R.id.tv_property_description)
+        areaView = rootView.findViewById(R.id.tv_area_data)
+        roomView = rootView.findViewById(R.id.tv_rooms_data)
+        locationView = rootView.findViewById(R.id.tv_location_data)
+        mapImageView = rootView.findViewById(R.id.iv_static_map)
 
+        initPicturesRecyclerView(rootView)
         rootView.findViewById<ImageView>(R.id.iv_static_map).setOnClickListener { launchGoogleMaps() }
 
         //VIEW MODEL
@@ -48,18 +63,13 @@ class DetailsFragment : Fragment() {
             } else {
                 rootView.visibility = View.VISIBLE
                 activeSelection = true
-                completeUi(rootView, it)
+                completeUi(it)
             }
         })
 
         //Pictures
-        viewModel.allPictures.observe(viewLifecycleOwner, Observer { pictures ->
-            initPicturesRecyclerView(
-                rootView,
-                // TODO LUCAS ne pas faire côté vue
-                ArrayList(pictures.map { it.strUri }
-                )
-            )
+        viewModel.allPictureUris.observe(viewLifecycleOwner, Observer {
+            picturesAdapter.populatePictures(it)
         })
 
         //Network
@@ -70,54 +80,36 @@ class DetailsFragment : Fragment() {
         return rootView
     }
 
-    private fun initPicturesRecyclerView(rootView: View, uris: ArrayList<String>) {
+    private fun initPicturesRecyclerView(rootView: View) {
 
-        // TODO LUCAS Ne pas faire côté vue (pas testé)
-        if (uris.isEmpty()) {
-            val uri = "android.resource://com.openclassrooms.realestatemanager/drawable/default_house"
-            uris.add(uri)
+        rootView.findViewById<RecyclerView>(R.id.recycler_view_property_pictures).apply {
+            adapter = picturesAdapter
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         }
-
-        rootView.findViewById<RecyclerView>(R.id.recycler_view_property_pictures)
-                .apply {
-                    // TODO LUCAS L'adapter est recréé à chaque changement de photo,
-                    //  bind ton adapter à la création de la vue et change son contenu dynamiquement
-                    adapter = PicturesAdapter(uris)
-                    // TODO LUCAS Pareil le layout manager ne devrait pas changer (pas besoin et ça coute cher en CPU)
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun completeUi(rootView: View, property: PropertyUi) {
-        // TODO LUCAS Ne cherche tes views qu'une seule fois à la création de ton fragments,
-        //  là tu recherches tes vues à chaque changement !
+    private fun completeUi(property: PropertyDetailsUi) {
         //Description
-        rootView.findViewById<TextView>(R.id.tv_property_description).text = property.description
-        // TODO LUCAS Mapping à faire côté viewmodel
+        descriptionView.text = property.description
         //Area
-        rootView.findViewById<TextView>(R.id.tv_area_data).text = "${property.area}m2"
-        // TODO LUCAS Mapping à faire côté viewmodel
+        areaView.text = property.area
         //Rooms
-        rootView.findViewById<TextView>(R.id.tv_rooms_data).text = property.roomNbr.toString()
+        roomView.text= property.roomNbr.toString()
         //Location
-        // TODO LUCAS Mapping à faire côté viewmodel
-        rootView.findViewById<TextView>(R.id.tv_location_data).text =
-                "${property.address.city}\n${property.address.streetNbr} ${property.address.street}"
+        locationView.text = "${property.city}\n${property.vicinity}"
         //Static map
-        val mapView = rootView.findViewById<ImageView>(R.id.iv_static_map)
-        val pictureUrl = viewModel.getStaticMapStringUrlGivenAddress(property.address, resources.getString(R.string.googleApiKey))
-        Glide.with(this.requireContext()).load(pictureUrl).error(R.drawable.static_map).into(mapView)
+        Glide.with(this.requireContext()).load(property.staticMapUrl).error(R.drawable.static_map).into(mapImageView)
     }
 
     private fun launchGoogleMaps() {
         //Check internet connection
-        if (networkAvailable) {
+        if (networkAvailable)
             //Start map activity
             startActivity(MapsActivity.newIntent(this.requireContext()))
-        } else {
+        else
             Toast.makeText(this.requireContext(), getString(R.string.internet_connection_missing), Toast.LENGTH_SHORT).show()
-        }
+
     }
 
 
@@ -143,7 +135,7 @@ class DetailsFragment : Fragment() {
                 true
             }
             R.id.item_details_menu_loan -> {
-                startActivity(LoanActivity.newIntent(this.requireContext(), viewModel.getPropertyPriceStr()))
+                startActivity(LoanActivity.newIntent(this.requireContext(), viewModel.getPropertyPrice()))
                 true
             }
             else -> return super.onOptionsItemSelected(item)

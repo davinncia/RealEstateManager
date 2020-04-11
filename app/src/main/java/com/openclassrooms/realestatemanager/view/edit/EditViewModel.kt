@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.view.edit
 
 import android.app.Application
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
@@ -16,10 +17,7 @@ import com.openclassrooms.realestatemanager.repository.NotificationRepository
 import com.openclassrooms.realestatemanager.repository.PoiRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
-import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.view.model_ui.EmptyProperty
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,27 +28,20 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     : AndroidViewModel(application) {
 
     //CURRENT SELECTION
-    // TODO LUCAS Pas besoin d'une LiveData ici je pense, tu peux utiliser une simple property mutable
-    private val isNew: LiveData<Boolean> = Transformations.map(inMemoRepo.getPropertySelection()) {
-        return@map when (it) {
-            is EmptyProperty -> true
-            else -> false
-        }
-    }
-
-    val selectedProperty = MediatorLiveData<PropertyUi>()
+    private val isNew = inMemoRepo.getPropertySelection().value == null
+    val selectedProperty = MutableLiveData<Property>()
 
     //PICTURES
     val allPictures = MediatorLiveData<List<String>>() //Combination of pics from db and the ones being added
     private val dbPictures: LiveData<List<Picture>> = Transformations.switchMap(selectedProperty) {
         propertyRepo.getPictures(it.id)
     }
-    // TODO LUCAS Non nécessaire : tu observes déjà les pictures liées à ton id de property
+
     private val addedPictures = MutableLiveData<List<String>>()
 
     //POI
     val allPoi = MediatorLiveData<List<PoiUi>>()
-    // TODO LUCAS Pas besoin, utilise ton allPoi uniquement pour simplifier le code
+
     private val savedPoi = Transformations.switchMap(selectedProperty) { property ->
         Transformations.map(propertyRepo.getPoiList(property.id)) { poiList ->
             poiList.map { it.poiName }
@@ -58,10 +49,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     }
 
     init {
-        selectedProperty.addSource(isNew) { isNew ->
-            if (!isNew) {
-                selectedProperty.value = inMemoRepo.getPropertySelection().value as PropertyUi
-            }
+        inMemoRepo.getPropertySelection().value?.let {
+            //Get the property that is currently selected
+            selectedProperty.value = it
         }
 
         allPictures.addSource(dbPictures) { mergePictureLists() }
@@ -86,42 +76,49 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         }
     }
 
-    fun saveInDb(uiProperty: PropertyUi, isNew: Boolean) {
+    fun saveDataInDb(type: String, strPrice: String, strArea: String, strRooms: String,
+                     description: String, city: String, street: String, strStreetNbr: String, agent: String) {
+
+        //Parsing object
+        val address = Address(city, street, strStreetNbr.toInt())
+
+        val property = Property(type, strPrice.toInt(), strArea.toFloat(), strRooms.toInt(),
+                description, address, 0L, agent, false, 0L)
+
+        //Insert or Update
         if (isNew) {
-            insert(uiProperty)
+            insert(property)
             notifRepo.sendNewPropertyNotif(getApplication())
         } else
-            update(uiProperty)
+            update(property)
     }
 
     //--------------------------------------------------------------------------------------//
     //                                 O L D   P R O P E R T Y
     //--------------------------------------------------------------------------------------//
-    private fun update(uiProperty: PropertyUi) {
+    private fun update(updatedProperty: Property) {
 
         viewModelScope.launch {
             //Getting corresponding Property
-            val oldProperty = propertyRepo.getProperty(uiProperty.id)
+            val oldProperty = propertyRepo.getProperty(selectedProperty.value!!.id)
 
-            //Modify fields
-            val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
-            // TODO LUCAS Tu peux utiliser oldProperty.copy() ici !
-            val updatedProperty = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr,
-                    uiProperty.description, address, oldProperty.creationTime, uiProperty.agentName,
-                    oldProperty.isSold, oldProperty.sellingTime)
-            updatedProperty.id = oldProperty.id
-            updatedProperty.thumbnailUri = oldProperty.thumbnailUri
+            //Restore immutable fields
+            updatedProperty.apply {
+                creationTime = oldProperty.creationTime
+                isSold = oldProperty.isSold
+                sellingTime = oldProperty.sellingTime
+                id = oldProperty.id
+                thumbnailUri = oldProperty.thumbnailUri
+            }
 
             //Updating LatLng if address changed
-            val oldAddress = AddressUi(oldProperty.address.city, oldProperty.address.street, oldProperty.address.streetNbr)
-            if (uiProperty.address != oldAddress) {
-                val latLng = findLatLng(address)
+            if (updatedProperty.address != oldProperty.address) {
+                val latLng = findLatLng(updatedProperty.address)
                 updatedProperty.address.latitude = latLng.latitude
                 updatedProperty.address.longitude = latLng.longitude
             }
 
-            //Updating new property
-            inMemoRepo.setPropertySelection(uiProperty)
+            inMemoRepo.setPropertySelection(updatedProperty)
             propertyRepo.update(updatedProperty)
 
             //Saving new pictures if any
@@ -140,12 +137,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     //--------------------------------------------------------------------------------------//
     //                               N E W     P R O P E R T Y
     //--------------------------------------------------------------------------------------//
-    private fun insert(uiProperty: PropertyUi) {
-
-        val address = Address(uiProperty.address.city, uiProperty.address.street, uiProperty.address.streetNbr)
-        val property = Property(uiProperty.type, uiProperty.price, uiProperty.area, uiProperty.roomNbr, uiProperty.description,
-                address, System.currentTimeMillis(), uiProperty.agentName, uiProperty.isSold)
-
+    private fun insert(property: Property) {
 
         viewModelScope.launch {
             val latLng = findLatLng(property.address)
@@ -166,10 +158,9 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
             //Poi
             savePoiForProperty(id)
 
-            uiProperty.let {
-                it.id = id
-                inMemoRepo.setPropertySelection(it)
-            }
+            //Select
+            property.id = id
+            inMemoRepo.setPropertySelection(property)
         }
     }
 
@@ -201,7 +192,20 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         propertyRepo.insertPicture(pic)
     }
 
-    fun addPicture(uri: String) {
+    fun addPictureFromIntent(data: Intent) {
+
+        val uri: String? =
+                if (data.data != null) {
+                    //GALLERY
+                    data.data.toString()
+
+                } else {
+                    //CAMERA
+                    val imageBitmap = data.extras?.get("data") as Bitmap
+                    saveImageInMediaStore(imageBitmap)?.toString()
+                }
+        uri?: return //No picture found in intent
+
         val pics = arrayListOf<String>()
         addedPictures.value?.let { pics.addAll(it) }
         pics.add(uri)
@@ -228,7 +232,7 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
     }
 
     //MEDIA STORE
-    fun saveImageInMediaStore(pic: Bitmap): Uri? {
+    private fun saveImageInMediaStore(pic: Bitmap): Uri? {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
 
         val values = ContentValues().apply {
@@ -245,9 +249,10 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
                 pic.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 outputStream.close()
             }
-            values.clear()
+
             resolver.update(uri, values, null, null)
-        }
+
+        } ?: throw RuntimeException("MediaStore failed for some reason")
         return uri
     }
 
@@ -260,13 +265,11 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         allPoi.value = poiList
     }
 
-    private fun savePoiForProperty(id: Int) {
+    private suspend fun savePoiForProperty(id: Int) {
         val selectedPoi = allPoi.value?.filter { it.isSelected }
         //If some selected save in db
         selectedPoi?.let { list ->
-            viewModelScope.launch {
-                propertyRepo.addPoiForProperty(list.map { PoiForProperty(id, it.name) })
-            }
+            propertyRepo.addPoiForProperty(list.map { PoiForProperty(id, it.name) })
         }
     }
 
@@ -280,9 +283,8 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
 
         viewModelScope.launch {
             propertyRepo.deleteAllPoiForProperty(id)
+            savePoiForProperty(id)
         }
-        // TODO LUCAS Attention ici tu peux avoir une race condition avec ton delete précédent
-        savePoiForProperty(id)
     }
 
     //--------------------------------------------------------------------------------------//
@@ -292,4 +294,5 @@ class EditViewModel(application: Application, private val inMemoRepo: InMemoryRe
         val strAddress = "${address.streetNbr} ${address.street} ${address.city}"
         return addressConverter.getLatLng(getApplication(), strAddress)
     }
+
 }

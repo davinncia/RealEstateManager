@@ -15,13 +15,11 @@ import com.openclassrooms.realestatemanager.view.map.MapsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
@@ -44,32 +42,19 @@ class MapsViewModelTest {
     @Mock
     lateinit var propertyRepo: PropertyRepository
 
-
-    // Class under test. Uses Dispatchers.Main so that the MainCoroutineRule can control it.
     private lateinit var viewModel: MapsViewModel
-
-    @Before
-    fun setUp() {
-
-        // TODO LUCAS Si tu utilises MockitoJUnitRunner tu n'as pas besoin du initMocks()
-        MockitoAnnotations.initMocks(this)
-        // Initialize the ViewModel after the [MainCoroutineRule] is applied so that it has the right test dispatcher.
-
-    }
 
 
     //Getting corresponding markers for each property with valid LatLng
     @Test
     fun getMarkersForProperties() = mainCoroutineRule.runBlockingTest {
         //GIVEN
-        // TODO LUCAS N'hésite pas à extraire tes objets par défaut dans des méthodes !
-        //  Mets aussi des variables qui ont du sens (ou au pire le nom de la variable genre city ou street)
-        val property1 = Property("HOUSE", 0, 0F, 0, "",
-                Address("", "", 0, 1.0, 1.0),
-                1L, "")
-        val property2 = Property("HOUSE", 0, 0F, 0, "",
-                Address("", "", 0, 2.0, 2.0),
-                1L, "")
+        val property1 = Property("HOUSE", 1000, 10F, 1, "description1",
+                Address("city", "street", 1, 1.0, 1.0),
+                1L, "agent")
+        val property2 = Property("HOUSE", 2000, 20F, 2, "description2",
+                Address("city", "street", 0, 2.0, 2.0),
+                2L, "agent")
         val list = listOf(property1, property2)
         val listLiveData = MutableLiveData(list)
 
@@ -83,9 +68,6 @@ class MapsViewModelTest {
         Assert.assertTrue(markers.size == 2)
         Assert.assertTrue(markers[0].latLng == LatLng(1.0, 1.0))
         Assert.assertTrue(markers[1].latLng == LatLng(2.0, 2.0))
-        // TODO LUCAS Je n'ai pas vu de verify() dans tes TUs, c'est absolument à utiliser !
-        //  Ca te permet de vérifier que ton ViewModel utilise bien le Repository
-        //  et autant de fois que nécessaire
     }
 
     //Fetching lat lng if non existent

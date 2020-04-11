@@ -39,8 +39,6 @@ class PoiDaoTest {
         db.close()
     }
 
-
-
     @Test
     fun insertAndReadPoiForProperty() {
         //WHEN
@@ -64,7 +62,6 @@ class PoiDaoTest {
         }
         //THEN
         Assert.assertTrue(poiList.isNullOrEmpty())
-
     }
 
 }

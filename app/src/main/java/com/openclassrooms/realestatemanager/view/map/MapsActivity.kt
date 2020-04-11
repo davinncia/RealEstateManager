@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
 import com.openclassrooms.realestatemanager.view.details.DetailsActivity
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyMarker
+import com.openclassrooms.realestatemanager.view.map.MapsViewModel.PropertyMarker
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -34,7 +34,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
 
         viewModel  = ViewModelProvider(this, ViewModelFactory(this.application)).get(MapsViewModel::class.java)
     }
@@ -113,7 +112,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     //--------------------------------------------------------------------------------------//
     //                                   C O M P A N I O N
     //--------------------------------------------------------------------------------------//
-
     companion object {
         const val LOCATION_REQUEST_CODE = 100
 

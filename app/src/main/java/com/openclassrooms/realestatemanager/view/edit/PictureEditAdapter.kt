@@ -11,8 +11,7 @@ import com.openclassrooms.realestatemanager.R
 
 class PictureEditAdapter(private val listener: DeleteButtonClickListener) : RecyclerView.Adapter<PictureEditAdapter.PictureEditViewHolder>() {
 
-    // TODO LUCAS listOf() suffit !
-    private var picUris = arrayListOf<String>()
+    private var picUris = listOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureEditViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -23,16 +22,12 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
     override fun getItemCount(): Int = picUris.size
 
     override fun onBindViewHolder(holder: PictureEditViewHolder, position: Int) {
-
         val currentItem = picUris[position]
         holder.bindView(currentItem)
-
     }
 
     fun populateData(uris: List<String>) {
-        // TODO LUCAS Pas besoin de wrapper dans une ArrayList,
-        //  expose toujours une liste immutable pour ne pas avoir de problème avec le ListAdapter
-        picUris = ArrayList(uris)
+        picUris = uris
         notifyDataSetChanged()
     }
 
@@ -50,7 +45,6 @@ class PictureEditAdapter(private val listener: DeleteButtonClickListener) : Recy
         fun bindView(uri: String) {
             Glide.with(imageView.context).load(uri).into(imageView)
         }
-
     }
 
     interface DeleteButtonClickListener {

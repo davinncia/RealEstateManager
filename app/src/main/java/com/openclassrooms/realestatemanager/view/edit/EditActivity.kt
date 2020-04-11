@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -22,22 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.di.ViewModelFactory
+import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.utils.bind
 import com.openclassrooms.realestatemanager.view.map.MapsActivity
-import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
 import com.openclassrooms.realestatemanager.view.model_ui.PoiUi
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import com.openclassrooms.realestatemanager.view.search.PoiAdapter
 
 class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickListener, PoiAdapter.OnPoiCLickListener {
 
-
-    //DATA
     private lateinit var viewModel: EditViewModel
-
-    // TODO LUCAS A "stocker" côté ViewModel
-    private var isNew: Boolean = true
-    private var id = -1
 
     //VIEW
     private val spinner by bind<Spinner>(R.id.spinner_edit_type)
@@ -51,8 +43,6 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     private val agentView by bind<EditText>(R.id.et_edit_agent_name)
     private val addImageView by bind<ImageView>(R.id.iv_edit_add_picture)
 
-    // TODO LUCAS Utilise le minimum de property, tu peux utiliser uniquement des variables locales
-    //  pour les adapters (tu les passes en paramètres de function)
     private lateinit var pictureAdapter: PictureEditAdapter
     private lateinit var poiAdapter: PoiAdapter
 
@@ -65,6 +55,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         addImageView.setOnClickListener { checkStoragePermission() }
 
+
         initPoiRecyclerView()
         initPictureRecyclerView()
 
@@ -73,8 +64,6 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         viewModel.selectedProperty.observe(this, Observer {
             //Editing an already existing property
-            isNew = false
-            id = it.id
             completeEditTexts(it)
         })
 
@@ -94,7 +83,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
     //                                         U I
     //--------------------------------------------------------------------------------------//
 
-    private fun completeEditTexts(property: PropertyUi) {
+    private fun completeEditTexts(property: Property) {
         priceView.setText(property.price.toString())
         areaView.setText(property.area.toString())
         roomsView.setText(property.roomNbr.toString())
@@ -102,7 +91,7 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         cityView.setText(property.address.city)
         streetView.setText(property.address.street)
         streetNbrView.setText(property.address.streetNbr.toString())
-        agentView.setText(property.agentName)
+        agentView.setText(property.agent)
     }
 
     //RecyclerViews
@@ -154,19 +143,11 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
 
         val inputs = arrayOf(type, strPrice, strArea, strRooms, description, city, street, strStreetNbr, agent)
 
-        // TODO LUCAS Tu peux utiliser isBlank() pour éviter les petits rigolos qui mettent des espaces :p
-        if (inputs.any { it.isEmpty() }) {
+        if (inputs.any { it.isEmpty() || it.isBlank() }) {
             Toast.makeText(this, getString(R.string.field_missing), Toast.LENGTH_SHORT).show()
         } else {
-
-            // TODO LUCAS A faire côté ViewModel (balance juste des Strings à ton ViewModel c'est son rôle de parser)
-            val address = AddressUi(city, street, strStreetNbr.toInt())
-
-            // TODO LUCAS A faire côté ViewModel (balance juste des Strings à ton ViewModel c'est son rôle de parser)
-            val property = PropertyUi(type, strPrice.toInt(), strArea.toFloat(), strRooms.toInt(),
-                    description, address, agent, false, id)
-
-            viewModel.saveInDb(property, isNew)
+            viewModel.saveDataInDb(type, strPrice, strArea, strRooms,
+                    description, city, street, strStreetNbr, agent)
             Toast.makeText(this, getString(R.string.saving), Toast.LENGTH_SHORT).show()
             this.finish()
         }
@@ -197,26 +178,11 @@ class EditActivity : AppCompatActivity(), PictureEditAdapter.DeleteButtonClickLi
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CODE && resultCode == RESULT_OK) {
-            // TODO LUCAS A faire côté ViewModel (balance juste le data au ViewModel, il se débrouille)
-            //  viewModel.addPicture(data)
-            val uri: String? =
-                    if (data?.data != null) {
-                        //GALLERY
-                        data.data.toString()
-
-                    } else {
-                        //CAMERA
-                        val imageBitmap = data?.extras?.get("data") as Bitmap
-                        viewModel.saveImageInMediaStore(imageBitmap)?.toString()
-                    }
-
-            //Pass it to the viewModel
-            uri?.let { viewModel.addPicture(it) }
+            data?.let { viewModel.addPictureFromIntent(it) }
         }
     }
 

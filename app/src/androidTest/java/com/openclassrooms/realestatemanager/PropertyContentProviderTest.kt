@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager
 
 import android.content.ContentResolver
-import android.content.ContentUris
+import android.content.ContentUris.withAppendedId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.openclassrooms.realestatemanager.model.Address
@@ -30,40 +30,27 @@ class PropertyContentProviderTest {
         contentResolver = InstrumentationRegistry.getInstrumentation().context.contentResolver
     }
 
-    //ProviderTest: Run on test db
-/*
     @Test
-    fun getPropertyWhenNoPropertyInserted() { //It's actually going on real db, so not empty !
+    fun whenFetchingNonExistingPropertyThenCursorIsEmpty() {
         //WHEN
-        val cursor = contentResolver.query(withAppendedId(PropertyContentProvider.URI_PROPERTY, propertyID.toLong()), null, null, null, null)
+        val cursor = contentResolver.query(withAppendedId(PropertyContentProvider.URI_PROPERTY, nonExistingPropertyId.toLong()), null, null, null, null)
         //THEN
         Assert.assertNotNull(cursor)
         Assert.assertTrue(cursor!!.count == 0)
         cursor.close()
     }
- */
 
     @Test
-    fun whenFetchingNonExistingPropertyThenCursorIsEmpty() {
+    fun getFirstPropertyOfTableIfExists() {
         //WHEN
-        val cursor = contentResolver.query(ContentUris.withAppendedId(PropertyContentProvider.URI_PROPERTY, nonExistingPropertyId.toLong()), null, null, null, null)
-        //THEN
-        Assert.assertNotNull(cursor)
-        Assert.assertTrue(cursor!!.count == 0)
-    }
-
-    @Test
-    fun getFirstPropertyOfTablebIfExists() {
-        //WHEN
-        val cursor = contentResolver.query(ContentUris.withAppendedId(PropertyContentProvider.URI_PROPERTY, propertyID.toLong()), null, null, null, null)
+        val cursor = contentResolver.query(withAppendedId(PropertyContentProvider.URI_PROPERTY, propertyID.toLong()), null, null, null, null)
         //THEN
         if (cursor!!.count == 1) {
             //Make sure we're not running on an empty db
             Assert.assertTrue(cursor.moveToFirst())
             Assert.assertEquals(propertyID, cursor.getInt(cursor.getColumnIndexOrThrow("id")))
         }
+        cursor.close()
     }
-
-
 
 }

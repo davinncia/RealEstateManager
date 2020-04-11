@@ -1,21 +1,17 @@
 package com.openclassrooms.realestatemanager.view.loan
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.utils.Utils
 import java.math.BigDecimal
 import kotlin.math.roundToInt
 
 class LoanViewModel : ViewModel() {
 
-    //LiveData exposed
-    // TODO LUCAS Expose plutôt une seule LiveData avec tous les champs,
-    //  t'inquiète c'est optimisé côté vue, elle se met pas à jour si pas besoin !
-    val amountStr = MutableLiveData<String>()
-    val durationStr = MutableLiveData<String>()
-    val loanPercentStr = MutableLiveData<String>()
-    val monthlyDueStr = MutableLiveData<String>()
-    val bankFeeStr = MutableLiveData<String>()
+    private val loanInfoMutable = MutableLiveData(LoanInfo())
+    val loanInfo: LiveData<LoanInfo> = loanInfoMutable
 
     //BigDecimal workers
     private var initialAmount = BigDecimal(0)
@@ -25,18 +21,17 @@ class LoanViewModel : ViewModel() {
     private var monthlyDue = BigDecimal(0)
     private var bankFee = BigDecimal(0)
 
-    val isEuro = MutableLiveData<Boolean>(false)
-
+    var isEuro = false
 
     fun setInitialAmount(price: Int) {
         initialAmount = BigDecimal(price)
         amount = BigDecimal(price)
-        amountStr.value = decimalToIntString(amount)
+        loanInfoMutable.value = loanInfo.value?.copy(amount = decimalToIntString(amount))
     }
 
     fun setDuration(years: Int) {
         duration = years.toBigDecimal()
-        durationStr.value = decimalToIntString(duration)
+        loanInfoMutable.value = loanInfo.value?.copy(duration = decimalToIntString(duration))
         computeLoanRate(years)
         computeMonthlyDue()
     }
@@ -44,13 +39,13 @@ class LoanViewModel : ViewModel() {
     fun adjustAmount(progress: Int) {
         val ratio = (progress.toDouble() / 10).toBigDecimal()
         amount = initialAmount * ratio //Getting percentage of the amount given progress bar
-        amountStr.value = decimalToIntString(amount)
+        loanInfoMutable.value = loanInfo.value?.copy(amount = decimalToIntString(amount))
         computeMonthlyDue()
     }
 
     fun adjustDuration(years: Int) {
         duration = years.toBigDecimal()
-        durationStr.value = decimalToIntString(duration)
+        loanInfoMutable.value = loanInfo.value?.copy(duration = decimalToIntString(duration))
         computeLoanRate(years)
         computeMonthlyDue()
     }
@@ -64,7 +59,7 @@ class LoanViewModel : ViewModel() {
             }
         }
         loanRate = rate.toBigDecimal()
-        loanPercentStr.value = decimalToString(loanRate * BigDecimal(100))
+        loanInfoMutable.value = loanInfo.value?.copy(interest = decimalToString(loanRate * BigDecimal(100)))
     }
 
     private fun computeMonthlyDue() {
@@ -73,23 +68,34 @@ class LoanViewModel : ViewModel() {
         val totalAmount = amount + totalInterest + totalInsurance
 
         monthlyDue = (totalAmount / (duration * 12.toBigDecimal()))
-        monthlyDueStr.value = decimalToString(monthlyDue)
+        loanInfoMutable.value = loanInfo.value?.copy(monthlyDue = decimalToString(monthlyDue))
         bankFee = totalInsurance + totalInterest
-        bankFeeStr.value = decimalToString(bankFee)
+        loanInfoMutable.value = loanInfo.value?.copy(bankFee = decimalToString(bankFee))
+    }
+
+    fun changeCurrency(): Int {
+        isEuro = !isEuro
+
+        return if (isEuro) {
+            setInitialAmount(Utils.convertDollarToEuro(initialAmount).toInt())
+            setDuration(duration.toInt()) //Update values
+            R.string.euro_currency
+        } else {
+            setInitialAmount(Utils.convertEuroToDollar(initialAmount).toInt())
+            setDuration(duration.toInt()) //Update values
+            R.string.dollar_currency
+        }
     }
 
     private fun decimalToString(dec: BigDecimal): String = String.format("%1$,.2f", dec)
     private fun decimalToIntString(dec: BigDecimal): String = String.format("%,d", dec.toDouble().roundToInt())
 
-
-    fun setCurrency(euro: Boolean) {
-        isEuro.value = euro
-
-        if (euro)
-            setInitialAmount(Utils.convertDollarToEuro(initialAmount).toInt())
-         else
-            setInitialAmount(Utils.convertEuroToDollar(initialAmount).toInt())
-
-        setDuration(duration.toInt()) //Update values
-    }
+    data class LoanInfo (
+            var amount: String = "0",
+            val duration: String = "0",
+            val interest: String = "0",
+            val monthlyDue: String = "0",
+            val bankFee: String = "0",
+            val insuranceRate: String = "0.34"
+    )
 }

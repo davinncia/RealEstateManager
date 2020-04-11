@@ -7,9 +7,6 @@ import com.openclassrooms.realestatemanager.model.Property
 import com.openclassrooms.realestatemanager.repository.InMemoryRepository
 import com.openclassrooms.realestatemanager.repository.PropertyRepository
 import com.openclassrooms.realestatemanager.utils.AddressConverter
-import com.openclassrooms.realestatemanager.view.model_ui.AddressUi
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyMarker
-import com.openclassrooms.realestatemanager.view.model_ui.PropertyUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,13 +27,11 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
         return@map markers
     }
 
-
     init {
         fetchProperties()
     }
 
     private fun fetchProperties() {
-
         //Get data
         val properties = propertyRepo.allProperties.value ?: return
 
@@ -74,14 +69,10 @@ class MapsViewModel(application: Application, private val inMemoRepo: InMemoryRe
         }
     }
 
-
     fun selectProperty(id: Int){
         val property = propertiesMutable.value?.find { it.id == id } ?: return
-
-        val addressUi = AddressUi(property.address.city, property.address.street, property.address.streetNbr)
-        val uiProperty = PropertyUi(property.type, property.price, property.area, property.roomNbr,
-                property.description, addressUi, property.agent, property.isSold, id)
-
-         inMemoRepo.setPropertySelection(uiProperty)
+        inMemoRepo.setPropertySelection(property)
     }
+
+    data class PropertyMarker(val latLng: LatLng, val title: String, val id: Int)
 }

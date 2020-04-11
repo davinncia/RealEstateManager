@@ -47,7 +47,7 @@
     <string name="text_in_description">Text in description</string>
     <string name="apply">APPLY</string>
     <string name="loan_simulator">Loan Simulator</string>
-    <string name="dollard_currency">$</string>
+    <string name="dollar_currency">$</string>
     <string name="euro_currency">€</string>
     <string name="years">years</string>
     <string name="dollars_per_month">$ /month</string>

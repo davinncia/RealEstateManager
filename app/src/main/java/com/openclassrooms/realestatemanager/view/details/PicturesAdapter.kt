@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.openclassrooms.realestatemanager.R
 
-// TODO LUCAS Utiliser un ListAdapter<T, VH> est un axe d'amélioration
-class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adapter<PicturesAdapter.PicturesViewHolder>() {
 
+class PicturesAdapter(/*private val pictureUris: List<String>*/) : RecyclerView.Adapter<PicturesAdapter.PicturesViewHolder>() {
+
+    private var pictureUris: List<String> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicturesViewHolder {
         val imageView = LayoutInflater.from(parent.context).inflate(
@@ -20,9 +21,13 @@ class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adap
     override fun getItemCount(): Int = pictureUris.size
 
     override fun onBindViewHolder(holder: PicturesViewHolder, position: Int) {
-
         val currentItem = pictureUris[position]
         holder.bindView(currentItem)
+    }
+
+    fun populatePictures(uris: List<String>) {
+        pictureUris = uris
+        notifyDataSetChanged()
     }
 
     inner class PicturesViewHolder(private val imageView: ImageView) : RecyclerView.ViewHolder(imageView) {
@@ -31,6 +36,5 @@ class PicturesAdapter(private val pictureUris: List<String>) : RecyclerView.Adap
             Glide.with(imageView.context).load(uri).into(imageView)
         }
     }
-
 
 }
